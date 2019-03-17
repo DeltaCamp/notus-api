@@ -19,8 +19,9 @@ export class DappService {
     const dapp = new Dapp();
     dapp.dappName = dappName;
     dapp.email = email;
+    dapp.views = 0;
     
-    return await this.dappRepository.create(dapp);
+    return await this.dappRepository.save(dapp);
   }
   
 }
