@@ -5,6 +5,8 @@
   "author": "Chuck Bergeron & Brendan Asselstine of Delta Camp",
   "license": "MIT",
   "scripts": {
+    "migrate": "yarn build && typeorm migration:run",
+    "revert": "typeorm migration:revert",
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nodemon",
