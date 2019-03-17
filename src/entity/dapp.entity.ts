@@ -6,7 +6,10 @@ export class Dapp {
     public id: number;
 
     @Column({ length: 120 })
-    public name: string = '';
+    public dappName: string = '';
+
+    @Column({ length: 320 })
+    public email: string = '';
 
     @Column('int')
     views: number;
