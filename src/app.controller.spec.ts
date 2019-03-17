@@ -15,8 +15,10 @@ describe('AppController', () => {
   });
 
   describe('root', () => {
-    it('should return "Hello World!"', () => {
-      expect(appController.getHello()).toBe('Hello World!');
+    it('should return the msg', () => {
+      expect(appController.getHello()).toBe(
+        'Please refer to the docs for how to use the notus api'
+      );
     });
   });
 });
