@@ -5,7 +5,7 @@
    "username": "chuckbergeron",
    "password": "",
    "database": "notusapi",
-   "synchronize": true,
+   "synchronize": false,
    "logging": false,
    "entities": [
       "./**/**.entity{.ts,.js}"

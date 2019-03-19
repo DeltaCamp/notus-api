@@ -3,14 +3,20 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Dapp {
     @PrimaryGeneratedColumn()
-    public id: number;
+    id!: number;
 
     @Column({ length: 120 })
-    public dappName: string = '';
+    dappName: string = '';
 
     @Column({ length: 320 })
-    public email: string = '';
+    email: string = '';
 
     @Column('int')
     views: number;
+
+    @Column()
+    apiKey: string = '';
+
+    @Column()
+    confirmed: boolean = false;
 }
