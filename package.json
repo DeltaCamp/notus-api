@@ -5,8 +5,10 @@
   "author": "Chuck Bergeron & Brendan Asselstine of Delta Camp",
   "license": "MIT",
   "scripts": {
-    "migrate": "yarn build && typeorm migration:run",
-    "revert": "typeorm migration:revert",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "migration:create": "yarn run typeorm migration:generate -n",
+    "migration:migrate": "yarn build && yarn run typeorm migration:run",
+    "migration:revert": "yarn run typeorm migration:revert",
     "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "start": "nodemon",
@@ -22,6 +24,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@nest-modules/mailer": "^1.0.4",
     "@nestjs/common": "^5.7.4",
     "@nestjs/core": "^5.7.4",
     "@nestjs/typeorm": "^5.3.0",
