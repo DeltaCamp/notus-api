@@ -1,0 +1,12 @@
+# You can automatically load this file using direnv: https://direnv.net/
+# or just `source .envrc`
+
+// Prod: https://api.notus.network (leave PORT out)
+
+export PROTOCOL=http
+export HOST=localhost
+export PORT=3000
+export NODE_ENV=development
+
+export SEND_IN_BLUE_EMAIL='your@email.com
+export SEND_IN_BLUE_APIV2=<YOUR_SIB_API_KEY>

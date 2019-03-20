@@ -19,4 +19,7 @@ export class Dapp {
 
     @Column()
     confirmed: boolean = false;
+
+    @Column()
+    confirmationCode: string = '';
 }

@@ -3,6 +3,8 @@ import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
+import { ConfigModule } from './config.module';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -13,7 +15,7 @@ import { Dapp } from './entity/dapp.entity';
 
 const mailerModuleConfig = MailerModule.forRootAsync({
   useFactory: () => ({
-    transport: 'smtps://chuck@delta.camp:a6S0f2QHxzvwAPhX@smtp-relay.sendinblue.com',
+    transport: `smtps://${process.env.SEND_IN_BLUE_EMAIL}:${process.env.SEND_IN_BLUE_APIV2}@smtp-relay.sendinblue.com`,
     defaults: {
       from: '"Notus Network" <noreply@notus.network>'
     },
@@ -34,8 +36,15 @@ const mailerModuleConfig = MailerModule.forRootAsync({
     DappModule,
     mailerModuleConfig
   ],
-  controllers: [ AppController, DappController ],
-  providers: [ AppService, DappService ],
+  controllers: [
+    AppController,
+    DappController
+  ],
+  providers: [ 
+    AppService,
+    DappService,
+    ConfigModule
+  ],
 })
 
 export class AppModule {

@@ -14,27 +14,24 @@ export class DappController {
     return this.dappService.findAll();
   }
 
-  // @Get()
-  // public async getAllDapp(@Response() res) {
-  //   const dapps = await this.dappService.findAll();
-  //   res.status(HttpStatus.OK).json(dapps);
-  // }
-
-  // @Get('/:id')
-  // public async getDapp(@Response() res,
-  //   @Param('id') id) {
-  //   const dapp = await this.dappService.getDapp(id);
-  //   res.status(HttpStatus.OK).json(dapp);
-  // }
-
-  @Post()
-  public async createDapp(
+  @Post('/')
+  public async create(
     @Response() res,
     @Body('dappName') dappName,
     @Body('email') email
   ) {
-    const result = await this.dappService.createDapp(dappName, email);
+    const result = await this.dappService.create(dappName, email);
     res.status(HttpStatus.CREATED).json(result);
+  }
+
+  @Get('/confirm/:email/:confirmationCode')
+  public async confirm(
+    @Response() res,
+    @Param('confirmationCode') confirmationCode,
+    @Param('email') email
+  ) {
+    const result = await this.dappService.confirm(confirmationCode, email);
+    res.status(HttpStatus.OK).json(result);
   }
 
   // @Put('/:id')
@@ -53,4 +50,19 @@ export class DappController {
   //   const result = await this.dappService.deleteDapp(id);
   //   res.status(HttpStatus.ACCEPTED).json(result);
   // }
+
+
+  // @Get()
+  // public async getAllDapp(@Response() res) {
+  //   const dapps = await this.dappService.findAll();
+  //   res.status(HttpStatus.OK).json(dapps);
+  // }
+
+  // @Get('/:id')
+  // public async getDapp(@Response() res,
+  //   @Param('id') id) {
+  //   const dapp = await this.dappService.getDapp(id);
+  //   res.status(HttpStatus.OK).json(dapp);
+  // }
+
 }

@@ -4,7 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Dapp } from '../entity/dapp.entity';
 
-const crypto = require('crypto');
+import { resolveProtocolHostAndPort } from '../utils/resolveProtocolHostAndPort';
+import { generateRandomBytes } from '../utils/generateRandomBytes';
+// import { sendApiKeyEmail } from '../utils/sendApiKeyEmail';
 
 @Injectable()
 export class DappService {
@@ -19,61 +21,70 @@ export class DappService {
     return await this.dappRepository.find();
   }
 
-  sendApiKeyEmail(dappInstance): void {
-    this
-      .mailerService
-      .sendMail({
-        to: dappInstance.email, // sender address
-        // from: 'noreply@nestjs.com', // list of receivers
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
-        html: '<b>welcome</b>', // HTML body content
-      })
-      .then(() => {})
-      .catch(() => {});
-  }
-
-  async generateApiKey(): Promise<string> {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(256, function (ex, buffer) {
-        if (ex) {
-          reject("error generating token");
-        }
-        
-        const token = crypto
-          .createHash("sha1")
-          .update(buffer)
-          .digest("hex");
-
-        resolve(token);
-      });
-    });
+  sendApiKeyEmail = (dapp): void => {
+    console.log('here')
+    this.mailerService.sendMail({
+      to: dapp.email,
+      // from: 'noreply@nestjs.com',
+      subject: 'Welcome - Your Notus API Key ✔',
+      // text: 'welcome',
+      // html: '<b>welcome</b>',
+      template: 'test', // The `.pug` or `.hbs` extension is appended automatically.
+      text: 'This is the text version of the email',
+      context: {
+        protocolHostAndPort: resolveProtocolHostAndPort(),
+        email: dapp.email,
+        apiKey: dapp.apiKey,
+        dappName: dapp.dappName,
+        confirmationCode: dapp.confirmationCode
+      }
+    })
+      .then((val) => { console.log(val) })
+      .catch((err) => { console.warn(err) });
   }
 
   // Don't return sensitive information, or perhaps don't
-  // even return anything but 200
-  async createDapp(dappName, email): Promise<Dapp> {
+  // even return anything but a 200 in the controller
+  async create(dappName, email): Promise<Dapp> {
+    let dapp
     let dappEntity = await this.dappRepository.findOne({ dappName, email });
 
-    if (dappEntity === undefined) {
-      try {
+    console.log('dappEntity', dappEntity)
+    
+    try {
+      if (dappEntity === undefined) {
         dappEntity = new Dapp();
         dappEntity.dappName = dappName;
         dappEntity.email = email;
         dappEntity.views = 0;
-        dappEntity.apiKey = await this.generateApiKey();;
-      } catch (e) {
-        console.error(e)
+        dappEntity.apiKey = await generateRandomBytes();
+        dappEntity.confirmationCode = await generateRandomBytes();
+
+        dapp = await this.dappRepository.save(dappEntity);
+      } else {
+        dapp = dappEntity
       }
-    }
-    
-    const dappInstance = await this.dappRepository.save(dappEntity);
 
-    if (!dappInstance.confirmed) {
-      this.sendApiKeyEmail(dappInstance);
-    }
+      if (!dapp.confirmed) {
+        this.sendApiKeyEmail(dapp);
+      }
 
-    return dappInstance;
+      return dapp;
+    } catch (err) {
+      console.error(err)
+      return err
+    }
+  }
+
+  async confirm(confirmationCode, email): Promise<Dapp> {
+    const dappEntity = await this.dappRepository.findOne({ confirmationCode, email });
+
+    if (dappEntity === undefined) {
+      return new Dapp()
+    } else {
+      dappEntity.confirmed = true;
+      return await this.dappRepository.save(dappEntity);
+    }
   }
   
 }
