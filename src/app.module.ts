@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
+import { Connection, getConnectionOptions } from 'typeorm';
+
+import { ormconfig } from './ormconfig'
 
 import { ConfigModule } from './config.module';
 
@@ -32,7 +34,7 @@ const mailerModuleConfig = MailerModule.forRootAsync({
 @Module({
   imports: [
     TypeOrmModule.forFeature([Dapp]),
-    TypeOrmModule.forRoot(),
+    TypeOrmModule.forRoot(ormconfig),
     DappModule,
     mailerModuleConfig
   ],
@@ -40,7 +42,7 @@ const mailerModuleConfig = MailerModule.forRootAsync({
     AppController,
     DappController
   ],
-  providers: [ 
+  providers: [
     AppService,
     DappService,
     ConfigModule
