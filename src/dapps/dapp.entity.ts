@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  CreateDateColumn,
+  UpdateDateColumn,
+  PrimaryGeneratedColumn
+} from 'typeorm';
 
 @Entity()
 export class Dapp {
@@ -8,15 +14,12 @@ export class Dapp {
     @Column({ length: 120 })
     name: string = '';
 
-    @Column({ length: 320 })
-    email: string = '';
-
     @Column()
     api_key: string = '';
 
-    @Column()
-    confirmed: boolean = false;
+    @CreateDateColumn({ type: 'timestamp' })
+    created_at: Date;
 
-    @Column()
-    confirmation_code: string = '';
+    @UpdateDateColumn({ type: 'timestamp' })
+    updated_at: Date;
 }
