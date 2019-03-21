@@ -24,7 +24,7 @@ export class DappController {
       try {
         await this.dappService.create(dappName, email);
         res.status(HttpStatus.CREATED).json({
-          message: 'Created'
+          message: 'GOOD'
         });
       } catch (err) {
         console.error(err)
@@ -32,9 +32,6 @@ export class DappController {
           error: 'INTERNAL_SERVER_ERROR'
         });
       }
-      
-      // const result = await this.dappService.create(dappName, email);
-      // res.status(HttpStatus.CREATED).json(result);
     } else {
       res.status(HttpStatus.NOT_ACCEPTABLE).json({
         error: 'NOT_ACCEPTABLE: proper params data not included'
