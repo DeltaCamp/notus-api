@@ -3,8 +3,6 @@ import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection, getConnectionOptions } from 'typeorm';
 
-import { ConfigModule } from './config.module';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
@@ -43,8 +41,7 @@ const mailerModuleConfig = MailerModule.forRootAsync({
   ],
   providers: [
     AppService,
-    DappService,
-    ConfigModule
+    DappService
   ],
 })
 
