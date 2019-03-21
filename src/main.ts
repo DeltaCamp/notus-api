@@ -6,7 +6,6 @@ async function bootstrap() {
   app.enableCors({ origin: process.env.CORS_ALLOWED_ORIGINS  });
 
   await app.listen(process.env.PORT);
-  // await app.listen(app.get('ConfigService')['PORT']);
 }
 
 bootstrap();
