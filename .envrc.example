@@ -11,3 +11,5 @@ export CORS_ALLOWED_ORIGINS='http://localhost:3000'
 
 export SEND_IN_BLUE_EMAIL='your@email.com
 export SEND_IN_BLUE_APIV2=<YOUR_SIB_API_KEY>
+
+# export DATABASE_URL=postgres://username:password@host:port/database
