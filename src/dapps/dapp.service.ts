@@ -22,7 +22,6 @@ export class DappService {
   }
 
   sendApiKeyEmail = (dapp): void => {
-    console.log('here')
     this.mailerService.sendMail({
       to: dapp.email,
       // from: 'noreply@nestjs.com',
@@ -49,8 +48,6 @@ export class DappService {
     let dapp
     let dappEntity = await this.dappRepository.findOne({ dappName, email });
 
-    console.log('dappEntity', dappEntity)
-    
     try {
       if (dappEntity === undefined) {
         dappEntity = new Dapp();
