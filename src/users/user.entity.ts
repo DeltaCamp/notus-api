@@ -12,9 +12,6 @@ export class Dapp {
     email: string = '';
 
     @Column()
-    api_key: string = '';
-
-    @Column()
     confirmed: boolean = false;
 
     @Column()
