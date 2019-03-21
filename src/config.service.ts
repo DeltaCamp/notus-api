@@ -30,7 +30,7 @@ export class ConfigService {
       HOST: Joi.string()
         .valid(['localhost', 'api.notus.network'])
         .default('localhost'),
-      PORT: Joi.number().default(3000),
+      PORT: Joi.number().default(4000),
       // API_AUTH_ENABLED: Joi.boolean().required(),
     });
 
