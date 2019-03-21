@@ -39,10 +39,10 @@ export class DappController {
     }
   }
 
-  @Get('/confirm/:email/:confirmationCode')
+  @Get('/confirm/:email/:confirmation_code')
   public async confirm(
     @Response() res,
-    @Param('confirmationCode') confirmationCode,
+    @Param('confirmation_code') confirmationCode,
     @Param('email') email
   ) {
     const result = await this.dappService.confirm(confirmationCode, email);

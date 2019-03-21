@@ -6,20 +6,17 @@ export class Dapp {
     id!: number;
 
     @Column({ length: 120 })
-    dappName: string = '';
+    name: string = '';
 
     @Column({ length: 320 })
     email: string = '';
 
-    @Column('int')
-    views: number;
-
     @Column()
-    apiKey: string = '';
+    api_key: string = '';
 
     @Column()
     confirmed: boolean = false;
 
     @Column()
-    confirmationCode: string = '';
+    confirmation_code: string = '';
 }

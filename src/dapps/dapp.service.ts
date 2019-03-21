@@ -6,7 +6,6 @@ import { Dapp } from '../entity/dapp.entity';
 
 import { resolveProtocolHostAndPort } from '../utils/resolveProtocolHostAndPort';
 import { generateRandomBytes } from '../utils/generateRandomBytes';
-// import { sendApiKeyEmail } from '../utils/sendApiKeyEmail';
 
 @Injectable()
 export class DappService {
@@ -28,14 +27,14 @@ export class DappService {
       subject: 'Welcome - Your Notus API Key ✔',
       // text: 'welcome',
       // html: '<b>welcome</b>',
-      template: 'test', // The `.pug` or `.hbs` extension is appended automatically.
+      template: 'send_api_key.template', // The `.pug` or `.hbs` extension is appended automatically.
       text: 'This is the text version of the email',
       context: {
         protocolHostAndPort: resolveProtocolHostAndPort(),
         email: dapp.email,
-        apiKey: dapp.apiKey,
+        apiKey: dapp.api_key,
         dappName: dapp.dappName,
-        confirmationCode: dapp.confirmationCode
+        confirmationCode: dapp.confirmation_code
       }
     })
       .then((val) => { console.log(val) })
@@ -53,9 +52,8 @@ export class DappService {
         dappEntity = new Dapp();
         dappEntity.dappName = dappName;
         dappEntity.email = email;
-        dappEntity.views = 0;
-        dappEntity.apiKey = await generateRandomBytes();
-        dappEntity.confirmationCode = await generateRandomBytes();
+        dappEntity.api_key = await generateRandomBytes();
+        dappEntity.confirmation_code = await generateRandomBytes();
 
         dapp = await this.dappRepository.save(dappEntity);
       } else {
@@ -74,7 +72,10 @@ export class DappService {
   }
 
   async confirm(confirmationCode, email): Promise<Dapp> {
-    const dappEntity = await this.dappRepository.findOne({ confirmationCode, email });
+    const dappEntity = await this.dappRepository.findOne({
+      confirmation_code: confirmationCode,
+      email
+    });
 
     if (dappEntity === undefined) {
       return new Dapp()
