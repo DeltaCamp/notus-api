@@ -20,8 +20,26 @@ export class DappController {
     @Body('dappName') dappName,
     @Body('email') email
   ) {
-    const result = await this.dappService.create(dappName, email);
-    res.status(HttpStatus.CREATED).json(result);
+    if (dappName && email) {
+      try {
+        await this.dappService.create(dappName, email);
+        res.status(HttpStatus.CREATED).json({
+          message: 'Created'
+        });
+      } catch (err) {
+        console.error(err)
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          error: 'INTERNAL_SERVER_ERROR'
+        });
+      }
+      
+      // const result = await this.dappService.create(dappName, email);
+      // res.status(HttpStatus.CREATED).json(result);
+    } else {
+      res.status(HttpStatus.NOT_ACCEPTABLE).json({
+        error: 'NOT_ACCEPTABLE: proper params data not included'
+      });
+    }
   }
 
   @Get('/confirm/:email/:confirmationCode')
