@@ -4,18 +4,18 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  ManyToMany
+  OneToMany
 } from 'typeorm';
-import { User } from "../users/user.entity";
+import { DappUser } from "../dapp_users/dapp_user.entity";
 
 @Entity({ name: 'dapps' })
 export class Dapp {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToMany(type => User, user => user.dapps)
+  @OneToMany(type => DappUser, dapp_user => dapp_user.dapps)
   // @JoinTable()
-  users: User[];
+  dapp_users: DappUser[];
 
   @Column({ length: 120 })
   name: string = '';

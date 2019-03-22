@@ -26,6 +26,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@angular-devkit/schematics": "^7.3.6",
     "@nest-modules/mailer": "^1.0.4",
     "@nestjs/common": "^6.0.2",
     "@nestjs/core": "^6.0.2",
