@@ -4,24 +4,24 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  ManyToMany
+  OneToMany
 } from 'typeorm';
 import { User } from "../users/user.entity";
 
-@Entity({ name: 'dapps' })
-export class Dapp {
+@Entity({ name: 'webhooks' })
+export class Webhook {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToMany(type => User, user => user.dapps)
+  @OneToMany(type => User, user => user.webhooks)
   // @JoinTable()
   users: User[];
 
   @Column({ length: 120 })
   name: string = '';
 
-  @Column()
-  api_key: string = '';
+  @Column('text')
+  data: string = '';
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
