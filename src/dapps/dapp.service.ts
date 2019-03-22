@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nest-modules/mailer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Dapp } from './dapp.entity';
+import { DappEntity } from './DappEntity';
 
 import { resolveProtocolHostAndPort } from '../utils/resolveProtocolHostAndPort';
 import { generateRandomBytes } from '../utils/generateRandomBytes';
@@ -11,12 +11,12 @@ import { generateRandomBytes } from '../utils/generateRandomBytes';
 export class DappService {
 
   constructor(
-    @InjectRepository(Dapp)
-    private readonly dappRepository: Repository<Dapp>,
+    @InjectRepository(DappEntity)
+    private readonly dappRepository: Repository<DappEntity>,
     private readonly mailerService: MailerService
   ) { }
 
-  async findAll(): Promise<Dapp[]> {
+  async findAll(): Promise<DappEntity[]> {
     return await this.dappRepository.find();
   }
 
@@ -43,14 +43,14 @@ export class DappService {
 
   // Don't return sensitive information, or perhaps don't
   // even return anything but a 200 in the controller
-  async create(name, email): Promise<Dapp> {
+  async create(name, email): Promise<DappEntity> {
     return new Promise(() => {})
     // let dapp
     // let dappEntity = await this.dappRepository.findOne({ name, email });
 
     // try {
     //   if (dappEntity === undefined) {
-    //     dappEntity = new Dapp();
+    //     dappEntity = new DappEntity();
     //     dappEntity.name = name;
     //     dappEntity.email = email;
     //     dappEntity.api_key = await generateRandomBytes();
@@ -72,7 +72,7 @@ export class DappService {
     // }
   }
 
-  async confirm(confirmationCode, email): Promise<Dapp> {
+  async confirm(confirmationCode, email): Promise<DappEntity> {
     return new Promise(() => { })
 
     // const dappEntity = await this.dappRepository.findOne({
@@ -81,7 +81,7 @@ export class DappService {
     // });
 
     // if (dappEntity === undefined) {
-    //   return new Dapp()
+    //   return new DappEntity()
     // } else {
     //   dappEntity.confirmed = true;
     //   return await this.dappRepository.save(dappEntity);

@@ -6,26 +6,26 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
-import { DappUserEntity } from "../dapp_users/DappUserEntity";
+import { UserWebhookEntity } from "../user_webhooks/UserWebhookEntity";
 
-@Entity({ name: 'dapps' })
-export class Dapp {
+@Entity({ name: 'webhooks' })
+export class WebhookEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp)
-  // @JoinTable()
-  dapp_users: DappUserEntity[];
-
+  // @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.webhook)
+  // user_webhooks: UserWebhookEntity[];
+/*
   @Column({ length: 120 })
   name: string = '';
 
-  @Column()
-  api_key: string = '';
+  @Column('text')
+  data: string = '';
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+  */
 }

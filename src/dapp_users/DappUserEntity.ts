@@ -7,21 +7,21 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne
 } from 'typeorm';
-import { User } from "../users/user.entity";
-import { Dapp } from "../dapps/dapp.entity";
+import { UserEntity } from "../users/UserEntity";
+import { DappEntity } from "../dapps/DappEntity";
 
 @Entity({ name: 'dapp_users' })
 export class DappUserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
-
-  @ManyToOne(type => User, user => user.dapp_users)
+/*
+  @ManyToOne(type => UserEntity, user => user.dapp_users)
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: UserEntity;
 
-  @ManyToOne(type => Dapp, dapp => dapp.dapp_users)
+  @ManyToOne(type => DappEntity, dapp => dapp.dapp_users)
   @JoinColumn({ name: 'dapp_id' })
-  dapp: Dapp;
+  dapp: DappEntity;
 
   @Column()
   owner: boolean = false;
@@ -31,4 +31,5 @@ export class DappUserEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+  */
 }
