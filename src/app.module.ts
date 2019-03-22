@@ -9,7 +9,7 @@ import { AppService } from './app.service';
 import { DappController } from './dapps/dapp.controller';
 import { DappModule } from './dapps/dapp.module';
 import { DappService } from './dapps/dapp.service';
-import { Dapp } from './entity/dapp.entity';
+import { Dapp } from './dapps/dapp.entity';
 
 const mailerModuleConfig = MailerModule.forRootAsync({
   useFactory: () => ({

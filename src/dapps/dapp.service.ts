@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nest-modules/mailer';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Dapp } from '../entity/dapp.entity';
+import { Dapp } from './dapp.entity';
 
 import { resolveProtocolHostAndPort } from '../utils/resolveProtocolHostAndPort';
 import { generateRandomBytes } from '../utils/generateRandomBytes';
@@ -33,7 +33,7 @@ export class DappService {
         protocolHostAndPort: resolveProtocolHostAndPort(),
         email: dapp.email,
         apiKey: dapp.api_key,
-        dappName: dapp.dappName,
+        name: dapp.name,
         confirmationCode: dapp.confirmation_code
       }
     })
@@ -43,14 +43,14 @@ export class DappService {
 
   // Don't return sensitive information, or perhaps don't
   // even return anything but a 200 in the controller
-  async create(dappName, email): Promise<Dapp> {
+  async create(name, email): Promise<Dapp> {
     let dapp
-    let dappEntity = await this.dappRepository.findOne({ dappName, email });
+    let dappEntity = await this.dappRepository.findOne({ name, email });
 
     try {
       if (dappEntity === undefined) {
         dappEntity = new Dapp();
-        dappEntity.dappName = dappName;
+        dappEntity.name = name;
         dappEntity.email = email;
         dappEntity.api_key = await generateRandomBytes();
         dappEntity.confirmation_code = await generateRandomBytes();

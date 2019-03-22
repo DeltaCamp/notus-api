@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Request, Response, Body, Param, HttpStatus } from '@nestjs/common';
 import { DappService } from "./dapp.service";
-import { Dapp } from "../entity/dapp.entity";
+import { Dapp } from "./dapp.entity";
 
 @Controller('dapps')
 export class DappController {
@@ -17,12 +17,12 @@ export class DappController {
   @Post('/')
   public async create(
     @Response() res,
-    @Body('dappName') dappName,
+    @Body('name') name,
     @Body('email') email
   ) {
-    if (dappName && email) {
+    if (name && email) {
       try {
-        await this.dappService.create(dappName, email);
+        await this.dappService.create(name, email);
         res.status(HttpStatus.CREATED).json({
           message: 'GOOD'
         });
@@ -52,10 +52,10 @@ export class DappController {
   // @Put('/:id')
   // public async updateDapp(@Response() res,
   //   @Param('id') id,
-  //   @Body('dappName') dappName,
+  //   @Body('name') name,
   //   @Body('email') email
   // ) {
-  //   const result = await this.dappService.updateDapp(id, dappName, email);
+  //   const result = await this.dappService.updateDapp(id, name, email);
   //   res.status(HttpStatus.ACCEPTED).json(result);
   // }
 
