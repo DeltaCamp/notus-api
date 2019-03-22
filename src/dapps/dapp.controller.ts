@@ -17,12 +17,14 @@ export class DappController {
   @Post('/')
   public async create(
     @Response() res,
-    @Body('name') name,
+    @Body('dappName') dappName,
     @Body('email') email
   ) {
-    if (name && email) {
+    if (dappName && email) {
       try {
-        await this.dappService.create(name, email);
+        const user = await this.userService.findOrCreate(email);
+        await this.dappService.findOrCreate(name, user);
+
         res.status(HttpStatus.CREATED).json({
           message: 'GOOD'
         });
