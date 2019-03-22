@@ -18,18 +18,25 @@ export class DappUserController {
     if (dappId && email) {
       try {
         await this.dappUserService.create(dappId, email);
+
         res.status(HttpStatus.CREATED).json({
-          message: 'GOOD'
+          "status": "success",
+          "data": {},
+          "message": "Dapp User creation successful"
         });
       } catch (err) {
         console.error(err)
         res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          error: 'INTERNAL_SERVER_ERROR'
+          "status": "error",
+          "data": {},
+          "message": "INTERNAL_SERVER_ERROR"
         });
       }
     } else {
       res.status(HttpStatus.NOT_ACCEPTABLE).json({
-        error: 'NOT_ACCEPTABLE: proper params data not included'
+        "status": "error",
+        "data": {},
+        "message": "NOT_ACCEPTABLE: proper params data not included"
       });
     }
   }
