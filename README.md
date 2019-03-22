@@ -1,6 +1,12 @@
 # notus-api
 The Notus API Server in Node/Express.
 
+# Creating DB Migrations
+
+```sh
+y migration:create NameOfNewMigration
+```
+
 ```sh
 curl http://localhost:4000/dapps -X POST -H 'Authorization: Bearer dG9rOjIwMDU4MmRkXzMzZDFfNDkyZl85NDViX2Q0ZjZhNDc2OWM0ZDoxOjA=' -H 'Accept: application/json' -H 'Content-Type: application/json' -d '
 {
