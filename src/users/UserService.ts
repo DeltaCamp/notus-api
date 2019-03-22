@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { UserEntity } from './UserEntity';
 
 import { generateRandomBytes } from '../utils/generateRandomBytes';
 
@@ -9,16 +9,16 @@ import { generateRandomBytes } from '../utils/generateRandomBytes';
 export class UserService {
 
   constructor(
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>
   ) { }
 
-  async findAll(): Promise<User[]> {
+  async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
   }
 
-  async create(email): Promise<User> {
-    const userEntity = new User();
+  async create(email): Promise<UserEntity> {
+    const userEntity = new UserEntity();
 
     userEntity.email = email;
     userEntity.confirmation_code = await generateRandomBytes();
@@ -26,12 +26,12 @@ export class UserService {
     return await this.userRepository.save(userEntity);
   }
 
-  async findOrCreate(email): Promise<User> {
+  async findOrCreate(email): Promise<UserEntity> {
     try {
-      let user = await this.userService.findOne({ email });
+      let user = await this.userRepository.findOne({ email });
 
       if (!user) {
-        user = await this.createUser(email);
+        user = await this.create(email);
       }
 
       return user;
@@ -41,7 +41,7 @@ export class UserService {
     }
   }
 
-  async confirm(confirmationCode, email): Promise<User> {
+  async confirm(confirmationCode, email): Promise<UserEntity> {
     return new Promise(() => { })
 
     // const userEntity = await this.userRepository.findOne({

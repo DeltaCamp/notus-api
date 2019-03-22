@@ -1,12 +1,26 @@
-import { Controller, Get, Post, Put, Delete, Request, Response, Body, Param, HttpStatus } from '@nestjs/common';
-import { DappService } from "./dapp.service";
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Request,
+  Response,
+  Body,
+  Param,
+  HttpStatus
+} from '@nestjs/common';
+import { DappService } from "./DappService";
 import { DappEntity } from "./DappEntity";
+
+import { UserService } from "../users/UserService";
 
 @Controller('dapps')
 export class DappController {
 
   constructor(
-    private readonly dappService: DappService
+    private readonly dappService: DappService,
+    private readonly userService: UserService
   ) { }
 
   @Get()

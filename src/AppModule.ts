@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection, getConnectionOptions } from 'typeorm';
 import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AppController } from './AppController';
+import { AppService } from './AppService';
 
-import { DappModule } from './dapps/dapp.module';
+import { DappModule } from './dapps/DappModule';
 import { DappUserModule } from './dapp_users/DappUserModule';
 
 const mailModule = MailerModule.forRootAsync({

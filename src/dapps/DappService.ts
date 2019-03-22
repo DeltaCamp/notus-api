@@ -41,20 +41,20 @@ export class DappService {
       .catch((err) => { console.warn(err) });
   }
 
-  async create(email, user): Promise<User> {
-    const dappEntity = new Dapp();
+  async create(email, user): Promise<DappEntity> {
+    const dappEntity = new DappEntity();
 
     dappEntity.name = name;
     dappEntity.api_key = await generateRandomBytes();
 
-    dappEntity.dapp_user = user;
+    dappEntity.dapp_users = user;
 
     return await this.dappRepository.save(dappEntity);
   }
 
-  async findOrCreate(name, user): Promise<Dapp> {
+  async findOrCreate(name, user): Promise<DappEntity> {
     // TODO: USE QUERY BUILDER HERE TO SELECT ACROSS RELATIONS
-    let dapp = await this.dappRepository.findOne({ name, email });
+    let dapp = await this.dappRepository.findOne({ name });
 
     try {
       if (!dapp) {
@@ -72,20 +72,20 @@ export class DappService {
     }
   }
 
-  // async confirm(confirmationCode, email): Promise<Dapp> {
-  //   return new Promise(() => { })
+  async confirm(confirmationCode, email): Promise<DappEntity> {
+    return new Promise(() => { })
 
-  //   // const dappEntity = await this.dappRepository.findOne({
-  //   //   confirmation_code: confirmationCode,
-  //   //   email
-  //   // });
+    // const dappEntity = await this.dappRepository.findOne({
+    //   confirmation_code: confirmationCode,
+    //   email
+    // });
 
-  //   // if (dappEntity === undefined) {
-  //   //   return new Dapp()
-  //   // } else {
-  //   //   dappEntity.confirmed = true;
-  //   //   return await this.dappRepository.save(dappEntity);
-  //   // }
-  // }
+    // if (dappEntity === undefined) {
+    //   return new Dapp()
+    // } else {
+    //   dappEntity.confirmed = true;
+    //   return await this.dappRepository.save(dappEntity);
+    // }
+  }
   
 }
