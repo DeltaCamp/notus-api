@@ -1,5 +1,5 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './AppModule';
 import { RollbarExceptionsFilter } from './filters/RollbarExceptionsFilter';
 import { rollbar } from './rollbar';
 

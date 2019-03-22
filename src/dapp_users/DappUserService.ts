@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm'
 
 import { DappUserEntity } from './DappUserEntity'
+
 import { DappEntity } from '../dapps/DappEntity'
 import { UserEntity } from '../users/UserEntity'
 
@@ -19,8 +20,6 @@ export class DappUserService {
   ) {}
 
   public create(dappId: string, email: string) {
-
-
-
   }
+
 }
