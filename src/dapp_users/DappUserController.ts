@@ -17,7 +17,7 @@ export class DappUserController {
   ) {
     if (dappId && email) {
       try {
-        await this.dappUserService.create();
+        await this.dappUserService.create(dappId, email);
         res.status(HttpStatus.CREATED).json({
           message: 'GOOD'
         });
