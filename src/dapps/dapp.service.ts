@@ -44,45 +44,48 @@ export class DappService {
   // Don't return sensitive information, or perhaps don't
   // even return anything but a 200 in the controller
   async create(name, email): Promise<Dapp> {
-    let dapp
-    let dappEntity = await this.dappRepository.findOne({ name, email });
+    return new Promise(() => {})
+    // let dapp
+    // let dappEntity = await this.dappRepository.findOne({ name, email });
 
-    try {
-      if (dappEntity === undefined) {
-        dappEntity = new Dapp();
-        dappEntity.name = name;
-        dappEntity.email = email;
-        dappEntity.api_key = await generateRandomBytes();
-        dappEntity.confirmation_code = await generateRandomBytes();
+    // try {
+    //   if (dappEntity === undefined) {
+    //     dappEntity = new Dapp();
+    //     dappEntity.name = name;
+    //     dappEntity.email = email;
+    //     dappEntity.api_key = await generateRandomBytes();
+    //     dappEntity.confirmation_code = await generateRandomBytes();
 
-        dapp = await this.dappRepository.save(dappEntity);
-      } else {
-        dapp = dappEntity
-      }
+    //     dapp = await this.dappRepository.save(dappEntity);
+    //   } else {
+    //     dapp = dappEntity
+    //   }
 
-      if (!dapp.confirmed) {
-        this.sendApiKeyEmail(dapp);
-      }
+    //   if (!dapp.confirmed) {
+    //     this.sendApiKeyEmail(dapp);
+    //   }
 
-      return dapp;
-    } catch (err) {
-      console.error(err)
-      return err
-    }
+    //   return dapp;
+    // } catch (err) {
+    //   console.error(err)
+    //   return err
+    // }
   }
 
   async confirm(confirmationCode, email): Promise<Dapp> {
-    const dappEntity = await this.dappRepository.findOne({
-      confirmation_code: confirmationCode,
-      email
-    });
+    return new Promise(() => { })
 
-    if (dappEntity === undefined) {
-      return new Dapp()
-    } else {
-      dappEntity.confirmed = true;
-      return await this.dappRepository.save(dappEntity);
-    }
+    // const dappEntity = await this.dappRepository.findOne({
+    //   confirmation_code: confirmationCode,
+    //   email
+    // });
+
+    // if (dappEntity === undefined) {
+    //   return new Dapp()
+    // } else {
+    //   dappEntity.confirmed = true;
+    //   return await this.dappRepository.save(dappEntity);
+    // }
   }
   
 }

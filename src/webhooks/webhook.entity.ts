@@ -6,16 +6,16 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
-import { User } from "../users/user.entity";
+import { UserWebhook } from "../user_webhooks/user_webhook.entity";
 
 @Entity({ name: 'webhooks' })
 export class Webhook {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => User, user => user.webhooks)
+  @OneToMany(type => UserWebhook, user_webhook => user_webhook.users)
   // @JoinTable()
-  users: User[];
+  user_webhooks: UserWebhook[];
 
   @Column({ length: 120 })
   name: string = '';
