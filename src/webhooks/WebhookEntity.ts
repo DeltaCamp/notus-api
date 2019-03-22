@@ -13,9 +13,9 @@ export class WebhookEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.webhook)
-  // user_webhooks: UserWebhookEntity[];
-/*
+  @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.webhook)
+  user_webhooks: UserWebhookEntity[];
+
   @Column({ length: 120 })
   name: string = '';
 
@@ -27,5 +27,4 @@ export class WebhookEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
-  */
 }

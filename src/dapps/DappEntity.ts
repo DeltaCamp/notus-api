@@ -13,9 +13,9 @@ export class DappEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp)
-  // dapp_users: DappUserEntity[];
-/*
+  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp)
+  dapp_users: DappUserEntity[];
+
   @Column({ length: 120 })
   name: string = '';
 
@@ -27,5 +27,4 @@ export class DappEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
-  */
 }

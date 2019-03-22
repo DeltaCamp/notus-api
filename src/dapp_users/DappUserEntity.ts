@@ -14,7 +14,7 @@ import { DappEntity } from "../dapps/DappEntity";
 export class DappUserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
-/*
+
   @ManyToOne(type => UserEntity, user => user.dapp_users)
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
@@ -31,5 +31,4 @@ export class DappUserEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
-  */
 }

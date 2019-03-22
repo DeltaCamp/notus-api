@@ -15,14 +15,14 @@ export class UserWebhookEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  // @ManyToOne(type => UserEntity, user => user.user_webhooks)
-  // @JoinColumn({ name: 'user_id' })
-  // user: UserEntity;
-  //
-  // @ManyToOne(type => WebhookEntity, webhook => webhook.user_webhooks)
-  // @JoinColumn({ name: 'webhook_id' })
-  // webhook: WebhookEntity;
-/*
+  @ManyToOne(type => UserEntity, user => user.user_webhooks)
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
+
+  @ManyToOne(type => WebhookEntity, webhook => webhook.user_webhooks)
+  @JoinColumn({ name: 'webhook_id' })
+  webhook: WebhookEntity;
+
   @Column()
   active: boolean = false;
 
@@ -31,5 +31,4 @@ export class UserWebhookEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
-  */
 }
