@@ -3,6 +3,7 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne
 } from 'typeorm';
@@ -15,9 +16,11 @@ export class UserWebhook {
   id!: number;
 
   @ManyToOne(type => User, user => user.user_webhooks)
+  @JoinColumn({ name: 'user_id' })
   users: User[];
 
   @ManyToOne(type => Webhook, webhook => webhook.user_webhooks)
+  @JoinColumn({ name: 'webhook_id' })
   user_webhooks: Webhook[];
   
   @Column()

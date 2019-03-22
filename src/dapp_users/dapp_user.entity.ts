@@ -3,6 +3,7 @@ import {
   Entity,
   CreateDateColumn,
   UpdateDateColumn,
+  JoinColumn,
   PrimaryGeneratedColumn,
   ManyToOne
 } from 'typeorm';
@@ -15,13 +16,15 @@ export class DappUser {
   id!: number;
 
   @ManyToOne(type => User, user => user.dapp_users)
+  @JoinColumn({ name: 'user_id' })
   users: User[];
 
   @ManyToOne(type => Dapp, dapp => dapp.dapp_users)
+  @JoinColumn({ name: 'dapp_id' })
   dapps: Dapp[];
   
   @Column()
-  active: boolean = false;
+  owner: boolean = false;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
