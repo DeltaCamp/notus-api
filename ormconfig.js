@@ -4,8 +4,7 @@ module.exports = {
    synchronize: false,
    logging: false,
    entities: [
-      "./**/**.entity{.ts,.js}",
-      "./**/**Entity{.ts,.js}"
+      "src/**/*Entity.ts"
    ],
    migrations: [
       "./dist/migrations/*{.ts,.js}"

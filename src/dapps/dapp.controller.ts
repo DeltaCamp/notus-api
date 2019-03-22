@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Request, Response, Body, Param, HttpStatus } from '@nestjs/common';
 import { DappService } from "./dapp.service";
-import { Dapp } from "./dapp.entity";
+import { DappEntity } from "./DappEntity";
 
 @Controller('dapps')
 export class DappController {
@@ -10,7 +10,7 @@ export class DappController {
   ) { }
 
   @Get()
-  findAll(): Promise<Dapp[]> {
+  findAll(): Promise<DappEntity[]> {
     return this.dappService.findAll();
   }
 
@@ -50,33 +50,33 @@ export class DappController {
   }
 
   // @Put('/:id')
-  // public async updateDapp(@Response() res,
+  // public async updateDappEntity(@Response() res,
   //   @Param('id') id,
   //   @Body('name') name,
   //   @Body('email') email
   // ) {
-  //   const result = await this.dappService.updateDapp(id, name, email);
+  //   const result = await this.dappService.updateDappEntity(id, name, email);
   //   res.status(HttpStatus.ACCEPTED).json(result);
   // }
 
   // @Delete('/:id')
-  // public async deleteDapp(@Response() res,
+  // public async deleteDappEntity(@Response() res,
   //   @Param('id') id) {
-  //   const result = await this.dappService.deleteDapp(id);
+  //   const result = await this.dappService.deleteDappEntity(id);
   //   res.status(HttpStatus.ACCEPTED).json(result);
   // }
 
 
   // @Get()
-  // public async getAllDapp(@Response() res) {
+  // public async getAllDappEntity(@Response() res) {
   //   const dapps = await this.dappService.findAll();
   //   res.status(HttpStatus.OK).json(dapps);
   // }
 
   // @Get('/:id')
-  // public async getDapp(@Response() res,
+  // public async getDappEntity(@Response() res,
   //   @Param('id') id) {
-  //   const dapp = await this.dappService.getDapp(id);
+  //   const dapp = await this.dappService.getDappEntity(id);
   //   res.status(HttpStatus.OK).json(dapp);
   // }
 

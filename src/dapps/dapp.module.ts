@@ -3,11 +3,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DappController } from './dapp.controller';
 import { DappService } from './dapp.service';
-import { Dapp } from './dapp.entity';
+import { DappEntity } from './DappEntity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([ Dapp ])
+    TypeOrmModule.forFeature([ DappEntity ])
   ],
   providers: [ DappService ],
   controllers: [ DappController ],

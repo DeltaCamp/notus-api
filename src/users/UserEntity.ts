@@ -7,19 +7,20 @@ import {
   OneToMany
 } from 'typeorm';
 import { DappUserEntity } from "../dapp_users/DappUserEntity";
-import { UserWebhook } from "../user_webhooks/user_webhook.entity";
+import { UserWebhookEntity } from "../user_webhooks/UserWebhookEntity";
 
 @Entity({ name: 'users' })
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.user)
-  dapp_users: DappUserEntity[];
+  // @OneToMany(type => DappUserEntity, dapp_user => dapp_user.user)
+  // dapp_users: DappUserEntity[];
 
-  @OneToMany(type => UserWebhook, user_webhook => user_webhook.user)
-  user_webhooks: UserWebhook[];
+  // @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.user)
+  // user_webhooks: UserWebhookEntity[];
 
+/*
   @Column({ length: 120 })
   name: string = '';
 
@@ -37,4 +38,5 @@ export class User {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+  */
 }
