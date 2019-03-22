@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-import { PugAdapter, MailerModule } from '@nest-modules/mailer'
+import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection, getConnectionOptions } from 'typeorm';
+import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -11,7 +11,7 @@ import { DappModule } from './dapps/dapp.module';
 import { DappService } from './dapps/dapp.service';
 import { Dapp } from './dapps/dapp.entity';
 
-const mailerModuleConfig = MailerModule.forRootAsync({
+const mailModule = MailerModule.forRootAsync({
   useFactory: () => ({
     transport: `smtps://${process.env.SEND_IN_BLUE_EMAIL}:${process.env.SEND_IN_BLUE_APIV2}@smtp-relay.sendinblue.com`,
     defaults: {
@@ -27,21 +27,18 @@ const mailerModuleConfig = MailerModule.forRootAsync({
   })
 })
 
+@Global()
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Dapp]),
-    // @ts-ignore: config options are really unhappy here
     TypeOrmModule.forRoot(),
-    DappModule,
-    mailerModuleConfig
+    mailModule,
+    DappModule
   ],
   controllers: [
-    AppController,
-    DappController
+    AppController
   ],
   providers: [
-    AppService,
-    DappService
+    AppService
   ],
 })
 
