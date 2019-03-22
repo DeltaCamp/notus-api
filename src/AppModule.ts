@@ -1,6 +1,6 @@
 import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection, getConnectionOptions } from 'typeorm';
+import { Connection } from 'typeorm';
 import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 
 import { AppController } from './AppController';
@@ -39,6 +39,9 @@ const mailModule = MailerModule.forRootAsync({
   providers: [
     AppService
   ],
+  exports: [
+    mailModule
+  ]
 })
 
 export class AppModule {
