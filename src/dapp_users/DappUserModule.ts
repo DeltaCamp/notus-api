@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DappUserController } from './DappUserController';
-import { DappUser } from '../entity/DappUser';
+import { DappUserEntity } from '../dapp_users/DappUserEntity';
 import { DappUserService } from './DappUserService';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([DappUser])
+    TypeOrmModule.forFeature([DappUserEntity])
   ],
   controllers: [
     DappUserController

@@ -11,7 +11,7 @@ import { User } from "../users/user.entity";
 import { Dapp } from "../dapps/dapp.entity";
 
 @Entity({ name: 'dapp_users' })
-export class DappUser {
+export class DappUserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 

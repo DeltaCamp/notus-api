@@ -13,7 +13,7 @@ export class Webhook {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => UserWebhook, user_webhook => user_webhook.users)
+  @OneToMany(type => UserWebhook, user_webhook => user_webhook.webhook)
   // @JoinTable()
   user_webhooks: UserWebhook[];
 

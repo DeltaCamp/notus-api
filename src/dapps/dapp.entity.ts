@@ -6,16 +6,16 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
-import { DappUser } from "../dapp_users/dapp_user.entity";
+import { DappUserEntity } from "../dapp_users/DappUserEntity";
 
 @Entity({ name: 'dapps' })
 export class Dapp {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUser, dapp_user => dapp_user.dapps)
+  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp)
   // @JoinTable()
-  dapp_users: DappUser[];
+  dapp_users: DappUserEntity[];
 
   @Column({ length: 120 })
   name: string = '';

@@ -7,7 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { DappModule } from './dapps/dapp.module';
-import { DappUserModule } from './dapp-users/DappUserModule';
+import { DappUserModule } from './dapp_users/DappUserModule';
 
 const mailModule = MailerModule.forRootAsync({
   useFactory: () => ({
