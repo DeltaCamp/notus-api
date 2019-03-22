@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
-import { DappUser } from "../dapp_users/dapp_user.entity";
+import { DappUserEntity } from "../dapp_users/DappUserEntity";
 import { UserWebhook } from "../user_webhooks/user_webhook.entity";
 
 @Entity({ name: 'users' })
@@ -14,15 +14,15 @@ export class User {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUser, dapp_user => dapp_user.users)
-  dapp_users: DappUser[];
+  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.user)
+  dapp_users: DappUserEntity[];
 
-  @OneToMany(type => UserWebhook, user_webhook => user_webhook.users)
+  @OneToMany(type => UserWebhook, user_webhook => user_webhook.user)
   user_webhooks: UserWebhook[];
-  
+
   @Column({ length: 120 })
   name: string = '';
-  
+
   @Column({ length: 320 })
   email: string = '';
 

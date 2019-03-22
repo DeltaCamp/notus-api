@@ -17,11 +17,11 @@ export class UserWebhook {
 
   @ManyToOne(type => User, user => user.user_webhooks)
   @JoinColumn({ name: 'user_id' })
-  users: User[];
+  user: User;
 
   @ManyToOne(type => Webhook, webhook => webhook.user_webhooks)
   @JoinColumn({ name: 'webhook_id' })
-  user_webhooks: Webhook[];
+  webhook: Webhook;
   
   @Column()
   active: boolean = false;
