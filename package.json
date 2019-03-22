@@ -43,6 +43,7 @@
     "rimraf": "^2.6.2",
     "rollbar": "^2.5.4",
     "rxjs": "^6.4.0",
+    "speakeasy": "^2.0.0",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.5.0",
     "typeorm": "^0.2.15",
