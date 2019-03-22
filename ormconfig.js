@@ -7,7 +7,7 @@ module.exports = {
       "./**/**.entity{.ts,.js}"
    ],
    migrations: [
-      "./**/migrations/**/*{.ts,.js}"
+      "./dist/migrations/*{.ts,.js}"
    ],
    subscribers: [
       "./**/subscribers/**/*{.ts,.js}"
