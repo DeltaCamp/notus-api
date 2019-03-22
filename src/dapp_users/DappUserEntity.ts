@@ -15,7 +15,9 @@ export class DappUserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(type => UserEntity, user => user.dapp_users)
+  @ManyToOne(type => UserEntity, user => user.dapp_users, {
+    cascade: true
+  })
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
