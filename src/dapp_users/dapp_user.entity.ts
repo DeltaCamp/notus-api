@@ -17,12 +17,12 @@ export class DappUser {
 
   @ManyToOne(type => User, user => user.dapp_users)
   @JoinColumn({ name: 'user_id' })
-  users: User[];
+  user: User;
 
   @ManyToOne(type => Dapp, dapp => dapp.dapp_users)
   @JoinColumn({ name: 'dapp_id' })
-  dapps: Dapp[];
-  
+  dapp: Dapp;
+
   @Column()
   owner: boolean = false;
 

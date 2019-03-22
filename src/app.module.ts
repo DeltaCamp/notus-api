@@ -6,10 +6,8 @@ import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { DappController } from './dapps/dapp.controller';
 import { DappModule } from './dapps/dapp.module';
-import { DappService } from './dapps/dapp.service';
-import { Dapp } from './dapps/dapp.entity';
+import { DappUserModule } from './dapp-users/DappUserModule';
 
 const mailModule = MailerModule.forRootAsync({
   useFactory: () => ({
@@ -32,7 +30,8 @@ const mailModule = MailerModule.forRootAsync({
   imports: [
     TypeOrmModule.forRoot(),
     mailModule,
-    DappModule
+    DappModule,
+    DappUserModule
   ],
   controllers: [
     AppController
