@@ -13,8 +13,13 @@ export class DappEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp)
+  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp, {
+    cascade: true
+  })
   dapp_users: DappUserEntity[];
+
+  // @OneToMany(type => UserEntity, user => user.dapp)
+  // owner: DappUserEntity.find({ owner: true });
 
   @Column({ length: 120 })
   name: string = '';

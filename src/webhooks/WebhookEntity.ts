@@ -13,7 +13,9 @@ export class WebhookEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.webhook)
+  @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.webhook, {
+    cascade: true
+  })
   user_webhooks: UserWebhookEntity[];
 
   @Column({ length: 120 })

@@ -12,8 +12,8 @@ import {
 } from '@nestjs/common';
 import { DappService } from "./DappService";
 import { DappEntity } from "./DappEntity";
-
 import { UserService } from "../users/UserService";
+import { notusJsonResponse } from "../utils/notusJsonResponse";
 
 @Controller('dapps')
 export class DappController {
@@ -37,27 +37,21 @@ export class DappController {
     if (dappName && email) {
       try {
         const user = await this.userService.findOrCreate(email);
-        await this.dappService.findOrCreate(name, user);
+        await this.dappService.findOrCreate(dappName, user);
 
-        res.status(HttpStatus.CREATED).json({
-          "status": "success",
-          "data": {},
-          "message": 'GOOD'
-        });
+        res.status(HttpStatus.CREATED).json(
+          notusJsonResponse('success', {}, 'SUCCESS: Dapp Created')
+        );
       } catch (err) {
         console.error(err)
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          "status": "error",
-          "data": {},
-          "message": 'INTERNAL_SERVER_ERROR'
-        });
+        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
+          notusJsonResponse('error', {}, 'INTERNAL_SERVER_ERROR')
+        );
       }
     } else {
-      res.status(HttpStatus.NOT_ACCEPTABLE).json({
-        "status": "error",
-        "data": {},
-        "message": 'NOT_ACCEPTABLE: proper params data not included'
-      });
+      res.status(HttpStatus.NOT_ACCEPTABLE).json(
+        notusJsonResponse('error', {}, 'NOT_ACCEPTABLE: proper params data not included')
+      );
     }
   }
 
@@ -68,11 +62,9 @@ export class DappController {
     @Param('email') email
   ) {
     const result = await this.dappService.confirm(confirmationCode, email);
-    res.status(HttpStatus.OK).json({
-      "status": "success",
-      "data": result,
-      "message": "Confirmation successful"
-    });
+    res.status(HttpStatus.OK).json(
+      notusJsonResponse('success', result, 'SUCCESS: Confirmation ok')
+    );
   }
 
 }
