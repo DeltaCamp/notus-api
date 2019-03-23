@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { DappEntity } from './DappEntity';
 
+import { DappUserEntity } from '../dapp_users/DappUserEntity';
+
 import { resolveProtocolHostAndPort } from '../utils/resolveProtocolHostAndPort';
 import { generateRandomBytes } from '../utils/generateRandomBytes';
 
@@ -41,15 +43,26 @@ export class DappService {
       .catch((err) => { console.warn(err) });
   }
 
-  async create(email, user): Promise<DappEntity> {
-    const dappEntity = new DappEntity();
+  async create(name, user): Promise<DappEntity> {
+    const dapp = new DappEntity();
+    dapp.name = name;
+    dapp.api_key = await generateRandomBytes();
 
-    dappEntity.name = name;
-    dappEntity.api_key = await generateRandomBytes();
+    const dappUserEntity = new DappUserEntity();
+    dappUserEntity.owner = true;
+    dappUserEntity.user = user;
+    dapp.dapp_users = [dappUserEntity];
 
-    dappEntity.dapp_users = user;
+    // dapp.dapp_users.push(dappUserEntity);
+    // await this.dappRepository
+    //   .createQueryBuilder()
+    //   .relation(DappEntity, 'dapp_users')
+    //   .of(dapp)
+    //   .add(dappUser);
+    
+    await this.dappRepository.save(dapp);
 
-    return await this.dappRepository.save(dappEntity);
+    return dapp;
   }
 
   async findOrCreate(name, user): Promise<DappEntity> {
@@ -61,7 +74,7 @@ export class DappService {
         dapp = await this.create(name, user);
       }
 
-      // if (!dapp.confirmed) {
+      // if (!dapp.confirmed) { 
       //   this.sendApiKeyEmail(dapp);
       // }
 
