@@ -66,5 +66,4 @@ export class DappController {
       notusJsonResponse('success', result, 'SUCCESS: Confirmation ok')
     );
   }
-
 }

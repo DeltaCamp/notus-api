@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Delete, Request, Response, Body, Param, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Request, Response, Body, Param, HttpStatus, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
 import { DappUserEntity } from "../dapp_users/DappUserEntity";
 import { DappUserService } from './DappUserService'
 
@@ -9,35 +9,47 @@ export class DappUserController {
     private readonly dappUserService: DappUserService
   ) { }
 
+  @Get('/:dappUserId')
+  public async getDappUser(@Param('dappUserId') dappUserId) {
+    if (dappUserId) {
+      try {
+        return await this.dappUserService.get(dappUserId)
+      } catch (err) {
+        throw new InternalServerErrorException(err)
+      }
+    } else {
+      throw new NotAcceptableException('Missing dappUserId')
+    }
+  }
+
   @Post('/')
   public async create(
-    @Response() res,
     @Body('dappId') dappId,
     @Body('email') email
   ) {
     if (dappId && email) {
       try {
-        await this.dappUserService.create(dappId, email);
-
-        res.status(HttpStatus.CREATED).json({
-          "status": "success",
-          "data": {},
-          "message": "Dapp User creation successful"
-        });
+        return await this.dappUserService.create(dappId, email);
       } catch (err) {
-        console.error(err)
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
-          "status": "error",
-          "data": {},
-          "message": "INTERNAL_SERVER_ERROR"
-        });
+        throw new InternalServerErrorException(err)
       }
     } else {
-      res.status(HttpStatus.NOT_ACCEPTABLE).json({
-        "status": "error",
-        "data": {},
-        "message": "NOT_ACCEPTABLE: proper params data not included"
-      });
+      throw new NotAcceptableException('Missing dappId or email')
+    }
+  }
+
+  @Post('/confirm')
+  public async confirm(
+    @Body('requestKey') requestKey
+  ) {
+    if (requestKey) {
+      try {
+        return await this.dappUserService.confirm(requestKey)
+      } catch (err) {
+        throw new InternalServerErrorException(err)
+      }
+    } else {
+      throw new NotAcceptableException('Missing requestKey')
     }
   }
 }

@@ -22,21 +22,20 @@ export class DappService {
     return await this.dappRepository.find();
   }
 
-  sendApiKeyEmail = (dapp): void => {
+  sendApiKeyEmail = (dapp, user): void => {
     this.mailerService.sendMail({
-      to: dapp.email,
+      to: user.email,
       // from: 'noreply@nestjs.com',
       subject: 'Welcome - Your Notus API Key ✔',
       // text: 'welcome',
       // html: '<b>welcome</b>',
-      template: 'send_api_key.template', // The `.pug` or `.hbs` extension is appended automatically.
+      template: 'send_api_key.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
       text: 'This is the text version of the email',
       context: {
         protocolHostAndPort: resolveProtocolHostAndPort(),
-        email: dapp.email,
+        email: user.email,
         apiKey: dapp.api_key,
-        name: dapp.name,
-        confirmationCode: dapp.confirmation_code
+        name: dapp.name
       }
     })
       .then((val) => { console.log(val) })
@@ -59,7 +58,7 @@ export class DappService {
     //   .relation(DappEntity, 'dapp_users')
     //   .of(dapp)
     //   .add(dappUser);
-    
+
     await this.dappRepository.save(dapp);
 
     return dapp;
@@ -74,9 +73,7 @@ export class DappService {
         dapp = await this.create(name, user);
       }
 
-      // if (!dapp.confirmed) { 
-      //   this.sendApiKeyEmail(dapp);
-      // }
+      this.sendApiKeyEmail(dapp, user);
 
       return dapp;
     } catch (err) {
@@ -100,5 +97,5 @@ export class DappService {
     //   return await this.dappRepository.save(dappEntity);
     // }
   }
-  
+
 }
