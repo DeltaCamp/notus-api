@@ -1,0 +1,9 @@
+html(lang="en")
+  head
+    title Welcome - Confirm Your Subscription to #{name}
+  body
+    h2 You've subscribed to notifications from #{name}
+
+    p To complete your subscription, please click the link below
+
+    p #{protocolHostAndPort}/dapp-users/confirm?requestKey=#{requestKey}
