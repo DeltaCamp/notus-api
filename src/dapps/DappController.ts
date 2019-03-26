@@ -8,7 +8,9 @@ import {
   Response,
   Body,
   Param,
-  HttpStatus
+  HttpStatus,
+  InternalServerErrorException,
+  NotAcceptableException
 } from '@nestjs/common';
 import { DappService } from "./DappService";
 import { DappEntity } from "./DappEntity";
@@ -30,40 +32,27 @@ export class DappController {
 
   @Post('/')
   public async create(
-    @Response() res,
     @Body('dappName') dappName,
     @Body('email') email
   ) {
     if (dappName && email) {
       try {
         const user = await this.userService.findOrCreate(email);
-        await this.dappService.findOrCreate(dappName, user);
-
-        res.status(HttpStatus.CREATED).json(
-          notusJsonResponse('success', {}, 'SUCCESS: Dapp Created')
-        );
+        return await this.dappService.findOrCreate(dappName, user);
       } catch (err) {
         console.error(err)
-        res.status(HttpStatus.INTERNAL_SERVER_ERROR).json(
-          notusJsonResponse('error', {}, 'INTERNAL_SERVER_ERROR')
-        );
+        throw new InternalServerErrorException(err)
       }
     } else {
-      res.status(HttpStatus.NOT_ACCEPTABLE).json(
-        notusJsonResponse('error', {}, 'NOT_ACCEPTABLE: proper params data not included')
-      );
+      throw new NotAcceptableException('NOT_ACCEPTABLE: proper params data not included')
     }
   }
 
   @Get('/confirm/:email/:confirmation_code')
   public async confirm(
-    @Response() res,
     @Param('confirmation_code') confirmationCode,
     @Param('email') email
   ) {
-    const result = await this.dappService.confirm(confirmationCode, email);
-    res.status(HttpStatus.OK).json(
-      notusJsonResponse('success', result, 'SUCCESS: Confirmation ok')
-    );
+    return await this.dappService.confirm(confirmationCode, email);
   }
 }
