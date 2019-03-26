@@ -45,6 +45,9 @@ export class DappUserEntity {
   @Column({ type: 'timestamptz' })
   request_key_expires_at: Date;
 
+  @Column({ type: 'bool' })
+  confirmed: boolean = false;
+
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 

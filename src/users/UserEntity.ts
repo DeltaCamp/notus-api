@@ -14,14 +14,10 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.user, {
-    cascade: true
-  })
+  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.user)
   dapp_users: DappUserEntity[];
 
-  @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.user, {
-    cascade: true
-  })
+  @OneToMany(type => UserWebhookEntity, user_webhook => user_webhook.user)
   user_webhooks: UserWebhookEntity[];
 
   @Column({ length: 120 })

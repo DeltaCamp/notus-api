@@ -15,6 +15,8 @@ export class DappService {
   constructor(
     @InjectRepository(DappEntity)
     private readonly dappRepository: Repository<DappEntity>,
+    @InjectRepository(DappUserEntity)
+    private readonly dappUserRepository: Repository<DappUserEntity>,
     private readonly mailerService: MailerService
   ) { }
 
@@ -60,6 +62,7 @@ export class DappService {
     //   .add(dappUser);
 
     await this.dappRepository.save(dapp);
+    await this.dappUserRepository.save(dappUserEntity)
 
     return dapp;
   }

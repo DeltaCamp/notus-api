@@ -67,6 +67,7 @@ export class DappUserService {
       text: `Confirmation subscription to ${dapp.name}`,
       context: {
         protocolHostAndPort: resolveProtocolHostAndPort(),
+        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
         name: dapp.name,
         requestKey
       }
@@ -80,8 +81,13 @@ export class DappUserService {
     let requestKeyHashed = sha256(requestKey).toString('ascii')
     let dappUser = await this.dappUserRepository.findOneOrFail({ requestKey: requestKeyHashed })
     const accessKey = dappUser.generateAccessKey(requestKey)
+    dappUser.confirmed = true
+    dappUser.request_key = null
+    dappUser.request_key_expires_at = null
     this.dappUserRepository.save(dappUser)
 
-    return accessKey
+    return {
+      accessKey
+    }
   }
 }

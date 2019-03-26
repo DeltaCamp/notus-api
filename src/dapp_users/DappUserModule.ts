@@ -14,9 +14,7 @@ import { UserEntity } from '../users/UserEntity'
       DappUserEntity,
       DappEntity,
       UserEntity
-    ]),
-    // TypeOrmModule.forFeature([DappEntity]),
-    // TypeOrmModule.forFeature([UserEntity])
+    ])
   ],
   controllers: [
     DappUserController
