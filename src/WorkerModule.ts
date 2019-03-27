@@ -1,12 +1,11 @@
 import {
-  Module, Global
+  Module, Global, DynamicModule
 } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
 import { WorkerNotificationManager } from './worker/WorkerNotificationManager'
 import { LogManager } from './worker/LogManager'
-import { MailModule } from './MailModule'
 
 import { NotificationEntity } from './notifications/NotificationEntity'
 import { NotificationService } from './notifications/NotificationService'
@@ -17,11 +16,13 @@ import { DappUserService } from './dapp_users/DappUserService'
 import { UserEntity } from './users/UserEntity'
 import { UserService } from './users/UserService'
 
+const mailModule: DynamicModule = require('./mailModule')
+
 @Global()
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
-    MailModule,
+    mailModule,
     TypeOrmModule.forFeature([
       NotificationEntity,
       DappUserEntity,
@@ -38,7 +39,7 @@ import { UserService } from './users/UserService'
     UserService
   ],
   exports: [
-    MailModule
+    mailModule
   ]
 })
 export class WorkerModule {

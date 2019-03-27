@@ -40,7 +40,7 @@ export class NotificationController {
       subject,
       body
     )
-    this.notificationGateway.add(notification.id)
+    this.notificationGateway.add(`${notification.id}`)
     return notification
   }
 

@@ -1,4 +1,4 @@
-import { Module, Global } from '@nestjs/common';
+import { Module, Global, DynamicModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { PassportModule } from '@nestjs/passport';
@@ -12,14 +12,14 @@ import { DappModule } from './dapps/DappModule';
 import { DappUserModule } from './dapp_users/DappUserModule';
 import { NotificationModule } from './notifications/NotificationModule';
 
-import { MailModule } from './MailModule'
+const mailModule: DynamicModule = require('./mailModule')
 
 @Global()
 @Module({
   imports: [
     PassportModule.register({ defaultStrategy: 'bearer' }),
     TypeOrmModule.forRoot(),
-    MailModule,
+    mailModule,
     DappModule,
     DappUserModule,
     NotificationModule
@@ -31,7 +31,7 @@ import { MailModule } from './MailModule'
     AppService, AuthService, HttpStrategy
   ],
   exports: [
-    MailModule, PassportModule, AuthService
+    mailModule, PassportModule, AuthService
   ]
 })
 
