@@ -1,6 +1,6 @@
 import { PugAdapter, MailerModule } from '@nest-modules/mailer'
 
-export const MailModule = MailerModule.forRootAsync({
+export default MailerModule.forRootAsync({
   useFactory: () => ({
     transport: `smtps://${process.env.SEND_IN_BLUE_EMAIL}:${process.env.SEND_IN_BLUE_APIV2}@smtp-relay.sendinblue.com`,
     defaults: {
