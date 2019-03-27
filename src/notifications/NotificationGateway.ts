@@ -1,6 +1,7 @@
 import {
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
+  SubscribeMessage
 } from '@nestjs/websockets'
 import { Client, Server } from 'socket.io';
 
@@ -9,11 +10,11 @@ export class NotificationGateway {
   @WebSocketServer()
   server: Server;
 
-  async add(notification) {
-    this.server.of('/notifications').emit('add', notification.id)
+  async add(notificationId: string) {
+    this.server.sockets.emit('/notifications/add', notificationId)
   }
 
-  async remove(notification) {
-    this.server.of('/notifications').emit('remove', notification.id)
+  async remove(notificationId: string) {
+    this.server.sockets.emit('/notifications/remove', notificationId)
   }
 }

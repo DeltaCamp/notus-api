@@ -4,12 +4,14 @@ import {
   Delete,
   Param,
   Body,
-  UseGuards
+  UseGuards,
+  ForbiddenException
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport'
 import { NotificationEntity } from "./NotificationEntity";
 import { DappUserEntity } from '../dapp_users/DappUserEntity'
 import { NotificationService } from './NotificationService'
+import { NotificationGateway } from './NotificationGateway'
 import { DappUserService } from '../dapp_users/DappUserService'
 import { DappUser } from '../decorators/DappUser'
 
@@ -18,6 +20,7 @@ export class NotificationController {
 
   constructor(
     private readonly dappUserService: DappUserService,
+    private readonly notificationGateway: NotificationGateway,
     private readonly notificationService: NotificationService
   ) { }
 
@@ -30,13 +33,15 @@ export class NotificationController {
     @Body('subject') subject: string,
     @Body('body') body: string
   ) {
-    return await this.notificationService.create(
+    let notification = await this.notificationService.create(
       dappUser,
       contractAddress,
       topics,
       subject,
       body
     )
+    this.notificationGateway.add(notification.id)
+    return notification
   }
 
   @Delete('/:notificationId')
@@ -45,6 +50,15 @@ export class NotificationController {
     @DappUser() dappUser,
     @Param('notificationId') notificationId
   ) {
+    let notification = await this.notificationService.find(notificationId)
+    if (notification.dapp_user.id !== dappUser.id) {
+      throw new ForbiddenException()
+    }
 
+    await this.notificationService.destroy(notification)
+
+    await this.notificationGateway.remove(notificationId)
+
+    return notification;
   }
 }

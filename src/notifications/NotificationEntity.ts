@@ -17,7 +17,7 @@ export class NotificationEntity {
   @Column({ type: 'text' })
   name: string = '';
 
-  @ManyToOne(type => DappUserEntity, user => user.notifications)
+  @ManyToOne(type => DappUserEntity, dapp_user => dapp_user.notifications)
   @JoinColumn({ name: 'dapp_user_id' })
   dapp_user: DappUserEntity;
 
