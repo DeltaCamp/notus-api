@@ -4,6 +4,7 @@
 export PROTOCOL=http
 export HOST=localhost
 export PORT=4000
+export PORT_WS=4001
 export NODE_ENV=development
 export CORS_ALLOWED_ORIGINS='http://localhost:3000'
 export SEND_IN_BLUE_EMAIL='your@email.com
@@ -11,3 +12,4 @@ export SEND_IN_BLUE_APIV2=<YOUR_SIB_API_KEY>
 export DATABASE_URL=postgres://username:password@host:port/database
 # export ROLLBAR_ACCESS_TOKEN='youraccesstoken'
 export NOTUS_NETWORK_URI='http://localhost:3000'
+export WEB3_PROVIDER_WS_URI=wss://ropsten.infura.io/ws/v3/5e378f49a3994737940a897b2d95222b
