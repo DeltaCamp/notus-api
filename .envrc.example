@@ -4,7 +4,6 @@
 export PROTOCOL=http
 export HOST=localhost
 export PORT=4000
-export PORT_WS=4001
 export NODE_ENV=development
 export CORS_ALLOWED_ORIGINS='http://localhost:3000'
 export SEND_IN_BLUE_EMAIL='your@email.com
