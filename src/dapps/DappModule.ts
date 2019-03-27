@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DappEntity } from './DappEntity';
 import { DappUserEntity } from '../dapp_users/DappUserEntity'
+import { UserEntity } from '../users/UserEntity'
 import { DappService } from './DappService';
 import { DappController } from './DappController';
 
