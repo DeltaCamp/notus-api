@@ -53,7 +53,7 @@ export class DappUserService {
       dappUser.dapp = dapp
     }
 
-    const requestKey = Buffer.from(dappUser.generateRequestKey(), 'ascii').toString('hex')
+    const requestKey = dappUser.generateRequestKey()
 
     this.dappUserRepository.save(dappUser)
 
@@ -76,10 +76,18 @@ export class DappUserService {
     return dappUser
   }
 
-  public async confirm(requestKeyHex: string) {
-    let requestKey = Buffer.from(requestKeyHex, 'hex').toString('ascii')
-    let requestKeyHashed = sha256(requestKey).toString('ascii')
-    let dappUser = await this.dappUserRepository.findOneOrFail({ requestKey: requestKeyHashed })
+  public async findOneOrFail(id) {
+    return await this.dappUserRepository.findOneOrFail(id)
+  }
+
+  public async findOneByAccessKey(accessKey: string) {
+    let accessKeyHashed = sha256(accessKey).toString('hex')
+    return await this.dappUserRepository.findOneOrFail({ access_key: accessKeyHashed })
+  }
+
+  public async confirm(requestKey: string) {
+    let requestKeyHashed = sha256(requestKey).toString('hex')
+    let dappUser = await this.dappUserRepository.findOneOrFail({ request_key: requestKeyHashed })
     const accessKey = dappUser.generateAccessKey(requestKey)
     dappUser.confirmed = true
     dappUser.request_key = null

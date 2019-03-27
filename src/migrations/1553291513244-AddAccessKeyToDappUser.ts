@@ -4,9 +4,9 @@ export class AddAccessKeyToDappUser1553291513244 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     await queryRunner.query(`
       ALTER TABLE dapp_users
-      ADD COLUMN access_key VARCHAR(32),
+      ADD COLUMN access_key text,
       ADD COLUMN access_key_expires_at timestamptz,
-      ADD COLUMN request_key VARCHAR(32),
+      ADD COLUMN request_key text,
       ADD COLUMN request_key_expires_at timestamptz
     `)
   }

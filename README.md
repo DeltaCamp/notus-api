@@ -1,7 +1,21 @@
 # notus-api
 The Notus API Server in Node/Express.
 
-# Creating DB Migrations
+# REST API
+
+POST /dapps dappName,email - create a new Dapp
+POST /dapp-users/notification - create a new notification
+{
+  name,
+  address,
+  topics,
+  subject,
+  body
+}
+
+# Development
+
+## Creating DB Migrations
 
 ```sh
 y migration:create NameOfNewMigration
@@ -23,7 +37,7 @@ CREATE DATABASE notusapi;
 GRANT ALL PRIVILEGES ON DATABASE notusapi TO chuckbergeron;
 ```
 
-# DB SCHEMA
+## DB SCHEMA
 
 DAPPS
 id

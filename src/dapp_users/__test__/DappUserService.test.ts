@@ -2,7 +2,7 @@ import { DappUserService } from '../DappUserService'
 import { DappUserEntity } from '../DappUserEntity'
 import { DappEntity } from '../../dapps/DappEntity'
 import { UserEntity } from '../../users/UserEntity'
-import { newKeyAscii } from '../../utils/newKeyAscii'
+import { newKeyHex } from '../../utils/newKeyHex'
 import { sha256 } from '../../utils/sha256'
 
 describe('the test', () => {
@@ -79,7 +79,7 @@ describe('the test', () => {
       describe('with an existing dappuser ', () => {
         it('should use an existing dappUser', async () => {
           dappUser = {
-            generateRequestKey: jest.fn(() => newKeyAscii())
+            generateRequestKey: jest.fn(() => newKeyHex())
           }
           dappUserRepository = {
             find: jest.fn(() => [dappUser]),
@@ -114,9 +114,9 @@ describe('the test', () => {
 
       dappUserService = newService()
 
-      await dappUserService.confirm(Buffer.from(requestKey, 'ascii').toString('hex'))
+      await dappUserService.confirm(requestKey)
 
-      expect(dappUserRepository.findOneOrFail).toHaveBeenCalledWith({ requestKey: sha256(requestKey).toString('ascii') })
+      expect(dappUserRepository.findOneOrFail).toHaveBeenCalledWith({ request_key: sha256(requestKey).toString('hex') })
       expect(dappUser.access_key).toBeDefined()
       expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
     })

@@ -21,6 +21,9 @@ import { UserEntity } from '../users/UserEntity'
   ],
   providers: [
     DappUserService
+  ],
+  exports: [
+    DappUserService
   ]
 })
 

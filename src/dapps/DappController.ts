@@ -48,7 +48,7 @@ export class DappController {
     }
   }
 
-  @Get('/confirm/:email/:confirmation_code')
+  @Post('/confirm')
   public async confirm(
     @Param('confirmation_code') confirmationCode,
     @Param('email') email

@@ -22,7 +22,7 @@ describe('DappUserEntity', () => {
       expect(dappUser.request_key_expires_at).toBeUndefined()
       dappUser.generateRequestKey()
       expect(dappUser.request_key).toBeDefined()
-      expect(dappUser.request_key.length).toEqual(32)
+      expect(dappUser.request_key.length).toEqual(64)
       expect(dappUser.request_key_expires_at).toEqual(addHours(now, 24))
     })
   })
@@ -34,7 +34,7 @@ describe('DappUserEntity', () => {
       expect(dappUser.access_key_expires_at).toBeUndefined()
       dappUser.generateAccessKey(requestKey)
       expect(dappUser.access_key).toBeDefined()
-      expect(dappUser.access_key.length).toEqual(32)
+      expect(dappUser.access_key.length).toEqual(64)
       expect(dappUser.access_key_expires_at).toEqual(addHours(now, 24))
     })
 

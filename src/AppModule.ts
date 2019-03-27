@@ -2,12 +2,16 @@ import { Module, Global } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 import { PugAdapter, MailerModule } from '@nest-modules/mailer'
+import { PassportModule } from '@nestjs/passport';
 
 import { AppController } from './AppController';
 import { AppService } from './AppService';
+import { AuthService } from './AuthService';
+import { HttpStrategy } from './HttpStrategy';
 
 import { DappModule } from './dapps/DappModule';
 import { DappUserModule } from './dapp_users/DappUserModule';
+import { NotificationModule } from './notifications/NotificationModule';
 
 const mailModule = MailerModule.forRootAsync({
   useFactory: () => ({
@@ -28,19 +32,21 @@ const mailModule = MailerModule.forRootAsync({
 @Global()
 @Module({
   imports: [
+    PassportModule.register({ defaultStrategy: 'bearer' }),
     TypeOrmModule.forRoot(),
     mailModule,
     DappModule,
-    DappUserModule
+    DappUserModule,
+    NotificationModule
   ],
   controllers: [
     AppController
   ],
   providers: [
-    AppService
+    AppService, AuthService, HttpStrategy
   ],
   exports: [
-    mailModule
+    mailModule, PassportModule, AuthService
   ]
 })
 
