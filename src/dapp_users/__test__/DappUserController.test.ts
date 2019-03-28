@@ -23,9 +23,9 @@ describe('DappUserController', () => {
 
   describe('create()', () => {
     it('should create a new DappUser', () => {
-      dappUserController.create('1234', 'asdf@asdf.com')
+      dappUserController.create('1234', null, 'asdf@asdf.com')
 
-      expect(dappUserService.create).toHaveBeenCalledWith('1234', 'asdf@asdf.com')
+      expect(dappUserService.create).toHaveBeenCalledWith('1234', null, 'asdf@asdf.com')
     });
   });
 });

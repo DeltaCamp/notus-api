@@ -25,17 +25,10 @@ export class DappUserController {
   @Post('/')
   public async create(
     @Body('dappId') dappId,
+    @Body('dappName') dappName,
     @Body('email') email
   ) {
-    if (dappId && email) {
-      try {
-        return await this.dappUserService.create(dappId, email);
-      } catch (err) {
-        throw new InternalServerErrorException(err)
-      }
-    } else {
-      throw new NotAcceptableException('Missing dappId or email')
-    }
+    return await this.dappUserService.create(dappId, dappName, email);
   }
 
   @Post('/confirm')
