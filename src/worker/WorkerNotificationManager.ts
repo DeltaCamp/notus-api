@@ -74,8 +74,8 @@ export class WorkerNotificationManager {
       })
   }
 
-  onRemove = (notificationId, test) => {
-    console.log(`Removing notification ${notificationId}`, test)
+  onRemove = (notificationId) => {
+    console.log(`Removing notification ${notificationId}`)
     this.triggerManager.remove(notificationId)
   }
 
