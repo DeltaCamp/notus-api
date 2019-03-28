@@ -1,2 +1,2 @@
-web: yarn start:prod
-worker: yarn worker:prod
+web: yarn start-heroku
+worker: yarn worker-heroku
