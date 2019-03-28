@@ -17,16 +17,18 @@ describe('the test', () => {
 
   beforeEach(() => {
     dapp = new DappEntity()
+    dapp.id = '1'
     dapp.name = 'My Dapp'
 
     dappRepository = {
-      findOneOrFail: jest.fn(() => dapp)
+      findOneOrFail: jest.fn(() => dapp),
+      save: jest.fn()
     };
     userRepository = {
-      find: jest.fn(() => [])
+      findOne: jest.fn(() => null)
     };
     dappUserRepository = {
-      find: jest.fn(() => []),
+      findOne: jest.fn(() => null),
       save: jest.fn()
     };
     mailerService = {
@@ -60,20 +62,21 @@ describe('the test', () => {
         user.id = '1234'
         user.email = 'foo@bar.ca'
         userRepository = {
-          find: jest.fn(() => [user])
+          findOne: jest.fn(() => user)
         }
       })
 
       it('should use the existing user', async () => {
         dappUserService = newService()
 
-        const dappUser = await dappUserService.create('1', 'foo@bar.com')
+        const dappUser = await dappUserService.create('1', null, 'foo@bar.com')
 
-        expect(userRepository.find).toHaveBeenCalledWith({ email: 'foo@bar.com' })
+        expect(userRepository.findOne).toHaveBeenCalledWith({ email: 'foo@bar.com' })
         expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
 
         expect(dappUser.request_key).toBeDefined()
         expect(dappUser.request_key_expires_at).toBeDefined()
+        expect(dappUser.owner).toBeFalsy()
       })
 
       describe('with an existing dappuser ', () => {
@@ -82,7 +85,7 @@ describe('the test', () => {
             generateRequestKey: jest.fn(() => newKeyHex())
           }
           dappUserRepository = {
-            find: jest.fn(() => [dappUser]),
+            findOne: jest.fn(() => dappUser),
             save: jest.fn()
           }
 
@@ -90,6 +93,7 @@ describe('the test', () => {
 
           await dappUserService.create('1', 'foo@bar.com')
 
+          expect(dappUserRepository.findOne).toHaveBeenCalledWith({ dapp, user })
           expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
           expect(dappUser.generateRequestKey).toHaveBeenCalled()
           expect(mailerService.sendMail).toHaveBeenCalledWith(expect.objectContaining({
@@ -100,6 +104,21 @@ describe('the test', () => {
           }))
         })
       })
+    })
+
+    it('should create a new dapp if a dappName is passed', async () => {
+
+      dappUserService = newService()
+
+      let dappUser = await dappUserService.create(null, 'asdf', 'foo@bar.com')
+
+      expect(dappRepository.save)
+        .toHaveBeenCalledWith(expect.objectContaining({ name: 'asdf'}))
+      expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
+      expect(dappUser.owner).toBeTruthy()
+      expect(mailerService.sendMail).toHaveBeenCalledWith(expect.objectContaining({
+        template: 'send_api_key.template.pug'
+      }))
     })
   })
 

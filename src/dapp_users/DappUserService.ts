@@ -27,51 +27,45 @@ export class DappUserService {
     return await this.dappUserRepository.findOneOrFail(dappUserId)
   }
 
-  public async create(dappId: string, email: string) {
-    const dapp = await this.dappRepository.findOneOrFail(dappId)
-    const users = await this.userRepository.find({ email })
+  public async create(dappId: string, dappName: string, email: string) {
+    let owner = false
+    let dapp
+    if (dappId) {
+      dapp = await this.dappRepository.findOneOrFail(dappId)
+    } else {
+      dapp = new DappEntity()
+      dapp.name = dappName
+      this.dappRepository.save(dapp)
+      owner = true
+    }
 
-    let user
-    if (!users.length) {
+    let user = await this.userRepository.findOne({ email })
+    if (!user) {
       user = new UserEntity()
       user.email = email
-    } else {
-      user = users[0]
     }
 
     let dappUser
-    if (user && user.id) {
-      let dappUsers = await this.dappUserRepository.find({ dapp, user })
-      if (dappUsers.length) {
-        dappUser = dappUsers[0]
-      }
+    if (dapp.id && user.id) {
+      dappUser = await this.dappUserRepository.findOne({ dapp, user })
     }
 
     if (!dappUser) {
       dappUser = new DappUserEntity()
       dappUser.user = user
       dappUser.dapp = dapp
+      dappUser.owner = owner
     }
 
     const requestKey = dappUser.generateRequestKey()
 
     this.dappUserRepository.save(dappUser)
 
-    await this.mailerService.sendMail({
-      to: user.email,
-      // from: 'noreply@nestjs.com',
-      subject: `Welcome - Confirm Your Subscription to ${dapp.name}`,
-      // text: 'welcome',
-      // html: '<b>welcome</b>',
-      template: 'confirmation.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
-      text: `Confirmation subscription to ${dapp.name}`,
-      context: {
-        protocolHostAndPort: resolveProtocolHostAndPort(),
-        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        name: dapp.name,
-        requestKey
-      }
-    })
+    if (owner) {
+      this.sendNewDappMail(dapp, user, requestKey)
+    } else {
+      this.sendSubscriptionMail(dapp, user, requestKey)
+    }
 
     return dappUser
   }
@@ -99,5 +93,38 @@ export class DappUserService {
     return {
       accessKey
     }
+  }
+
+
+  public async sendSubscriptionMail(dapp, user, requestKey) {
+    await this.mailerService.sendMail({
+      to: user.email,
+      // from: 'noreply@nestjs.com',
+      subject: `Welcome - Confirm Your Subscription to ${dapp.name}`,
+      // text: 'welcome',
+      // html: '<b>welcome</b>',
+      template: 'confirmation.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
+      text: `Confirmation subscription to ${dapp.name}`,
+      context: {
+        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
+        name: dapp.name,
+        requestKey
+      }
+    })
+  }
+
+  public async sendNewDappMail(dapp, user, requestKey) {
+    await this.mailerService.sendMail({
+      to: user.email,
+      // from: 'noreply@nestjs.com',
+      subject: `Welcome - Confirm Your New App ${dapp.name}`,
+      template: 'send_api_key.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
+      text: `Created App ${dapp.name}`,
+      context: {
+        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
+        name: dapp.name,
+        requestKey
+      }
+    })
   }
 }
