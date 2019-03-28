@@ -10,7 +10,6 @@ import { LogManager } from './worker/LogManager'
 import { NotificationEntity } from './notifications/NotificationEntity'
 import { NotificationService } from './notifications/NotificationService'
 import { DappEntity } from './dapps/DappEntity'
-import { DappService } from './dapps/DappService'
 import { DappUserEntity } from './dapp_users/DappUserEntity'
 import { DappUserService } from './dapp_users/DappUserService'
 import { UserEntity } from './users/UserEntity'
@@ -35,7 +34,6 @@ import { mailModule } from './mailModule'
     LogManager,
     NotificationService,
     DappUserService,
-    DappService,
     UserService
   ],
   exports: [
