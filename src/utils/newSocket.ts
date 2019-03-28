@@ -1,7 +1,7 @@
 const io = require('socket.io-client')
 
 export function newSocket() {
-  const uri = `${process.env.PROTOCOL}://${process.env.HOST}:${process.env.API_PORT}`.replace('http', 'ws')
+  const uri = process.env.NOTUS_API_WS_URI
   console.log(`Connecting to ${uri}`)
   return io(uri)
 }
