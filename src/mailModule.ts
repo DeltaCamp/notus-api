@@ -8,7 +8,7 @@ export const mailModule: DynamicModule = MailerModule.forRootAsync({
       from: '"Notus Network" <noreply@notus.network>'
     },
     template: {
-      dir: __dirname + '/templates',
+      dir: __dirname + '/../templates',
       adapter: new PugAdapter(),
       options: {
         strict: true
