@@ -12,7 +12,7 @@ import { DappModule } from './dapps/DappModule';
 import { DappUserModule } from './dapp_users/DappUserModule';
 import { NotificationModule } from './notifications/NotificationModule';
 
-const mailModule: DynamicModule = require('./mailModule')
+import { mailModule } from './mailModule'
 
 @Global()
 @Module({

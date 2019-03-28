@@ -4,10 +4,10 @@ module.exports = {
    synchronize: false,
    logging: false,
    entities: [
-      "src/**/*Entity.ts"
+      "./**/*Entity{.ts,.js}"
    ],
    migrations: [
-      "./dist/migrations/*{.ts,.js}"
+      "./**/migrations/*{.ts,.js}"
    ],
    subscribers: [
       "./**/subscribers/**/*{.ts,.js}"
