@@ -5,7 +5,7 @@ import {
 } from '@nestjs/websockets'
 import { Client, Server } from 'socket.io';
 
-@WebSocketGateway()
+@WebSocketGateway({ transports: ['websocket'] })
 export class NotificationGateway {
   @WebSocketServer()
   server: Server;
