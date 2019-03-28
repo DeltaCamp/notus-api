@@ -11,7 +11,7 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
   app.useGlobalFilters(new RollbarExceptionsFilter(httpAdapter));
 
-  await app.listen(process.env.API_PORT);
+  await app.listen(process.env.PORT);
 }
 
 bootstrap().catch(e => rollbar.error(e))
