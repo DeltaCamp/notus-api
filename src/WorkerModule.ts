@@ -1,5 +1,5 @@
 import {
-  Module, Global, DynamicModule
+  Module, Global
 } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
@@ -16,7 +16,7 @@ import { DappUserService } from './dapp_users/DappUserService'
 import { UserEntity } from './users/UserEntity'
 import { UserService } from './users/UserService'
 
-const mailModule: DynamicModule = require('./mailModule')
+import { mailModule } from './mailModule'
 
 @Global()
 @Module({
