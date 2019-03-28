@@ -3,7 +3,7 @@
 # Prod: https://api.notus.network (leave PORT out)
 export PROTOCOL=http
 export HOST=localhost
-export PORT=4000
+export API_PORT=4000
 export NODE_ENV=development
 export CORS_ALLOWED_ORIGINS='http://localhost:3000'
 export SEND_IN_BLUE_EMAIL='your@email.com
