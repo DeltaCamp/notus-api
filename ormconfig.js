@@ -4,13 +4,13 @@ module.exports = {
    synchronize: false,
    logging: false,
    entities: [
-      "./**/*Entity{.ts,.js}"
+      "./!(node_modules)/**/*Entity{.ts,.js}"
    ],
    migrations: [
-      "./**/migrations/*{.ts,.js}"
+      "./!(node_modules)/**/migrations/*{.ts,.js}"
    ],
    subscribers: [
-      "./**/subscribers/**/*{.ts,.js}"
+      "./!(node_modules)/**/subscribers/**/*{.ts,.js}"
    ],
    cli: {
       entitiesDir: "./",
