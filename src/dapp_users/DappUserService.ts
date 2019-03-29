@@ -9,6 +9,7 @@ import { DappEntity } from '../dapps/DappEntity'
 import { UserEntity } from '../users/UserEntity'
 import { resolveProtocolHostAndPort } from '../utils/resolveProtocolHostAndPort';
 import { sha256 } from '../utils/sha256'
+import { rollbar } from '../rollbar'
 
 @Injectable()
 export class DappUserService {
@@ -95,9 +96,8 @@ export class DappUserService {
     }
   }
 
-
-  public async sendSubscriptionMail(dapp, user, requestKey) {
-    await this.mailerService.sendMail({
+  public sendSubscriptionMail(dapp, user, requestKey) {
+    this.mailerService.sendMail({
       to: user.email,
       // from: 'noreply@nestjs.com',
       subject: `Welcome - Confirm Your Subscription to ${dapp.name}`,
@@ -110,11 +110,11 @@ export class DappUserService {
         name: dapp.name,
         requestKey
       }
-    })
+    }).catch(error => rollbar.error(error))
   }
 
-  public async sendNewDappMail(dapp, user, requestKey) {
-    await this.mailerService.sendMail({
+  public sendNewDappMail(dapp, user, requestKey) {
+    this.mailerService.sendMail({
       to: user.email,
       // from: 'noreply@nestjs.com',
       subject: `Welcome - Confirm Your New App ${dapp.name}`,
@@ -125,6 +125,6 @@ export class DappUserService {
         name: dapp.name,
         requestKey
       }
-    })
+    }).catch(error => rollbar.error(error))
   }
 }
