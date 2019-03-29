@@ -3,27 +3,37 @@ The Notus API Server in Node/Express.
 
 # REST API
 
-// Who is the target audience for this project?
+Developer Flow:
 
-Users?
-Developers?
+1. Developer signs up and is emailed a magic link:
+POST /user
+2. Developer signs in with magic link and creates a new dapp:
+POST /dapps
+2. The dapp can be configured:
+PATCH /dapps/:dappId
 
-// We should allow developers to send notifications to users
+User Flow:
 
-Developer Ideal:
+1. User signs up and is emailed a magic link:
+POST /user
+2. User signs in with magic link.  They browse dapps and access the dapp notification panel.
+When they want to configure the dapp notifications, they click on a dapp.  Clicking on a dapp will create a
+dapp user and immediately return a link to the dapp page along with a dapp user access code.  The code can be
+used by the dapp to setup notifications on behalf of the user.
+POST /dapp-user
 
-1. Developer signs up and confirms email with magic link
-(POST /user)
-2. Developer creates a new dapp.
-(POST /dapps)
-2. The confirmation email can be configured for the dapp, as well as different notification templates.
-(PATCH /dapps/:dappId)
-3. In the dapp a user can sign up for notifications by clicking a magic link.
+Dapp User Flow:
+
+1. Anyone can create a new user.  The user will be emailed a magic link that will first go to the api server and confirm their account, then redirect to the dapp with an access token.
 (POST /dapp-user)
-4. The user receives a confirmation email with the magic link, and the link takes them to the dapp notification config page.
+2. The user receives a confirmation email with the magic link, and the link takes them to the dapp notification config page.
 (POST /dapp-user/confirm)
-5. The user configures their notifications, and moves on.
+3. An authenticated dapp or the user themselves can create new notifications for the user:
 (POST /notifications)
+
+What is shared:
+
+When the user updates their notifications within a dapp, the notifications it can update are scoped to that dapp.
 
 How to combine both?
 
