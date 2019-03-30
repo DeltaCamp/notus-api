@@ -1,16 +1,21 @@
+let baseDir = 'src'
+if (process.env.NODE_ENV === 'production') {
+  baseDir = 'dist'
+}
+
 module.exports = {
    type: "postgres",
    url: process.env.DATABASE_URL,
    synchronize: false,
    logging: false,
    entities: [
-      "./!(node_modules)/**/*Entity{.ts,.js}"
+      `./${baseDir}/**/*Entity{.ts,.js}`
    ],
    migrations: [
-      "./src/**/migrations/*{.ts,.js}"
+      `./${baseDir}/**/migrations/*{.ts,.js}`
    ],
    subscribers: [
-      "./!(node_modules)/**/subscribers/**/*{.ts,.js}"
+      `./${baseDir}/**/subscribers/**/*{.ts,.js}`
    ],
    cli: {
       entitiesDir: "./",
