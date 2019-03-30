@@ -13,7 +13,8 @@ import { DappUserEntity } from '../dapp_users/DappUserEntity'
 import { NotificationService } from './NotificationService'
 import { NotificationGateway } from './NotificationGateway'
 import { DappUserService } from '../dapp_users/DappUserService'
-import { DappUser } from '../decorators/DappUser'
+import { AuthUser } from '../decorators/AuthUser'
+import { AuthDappUser } from '../decorators/AuthDappUser'
 
 @Controller('notifications')
 export class NotificationController {
@@ -25,16 +26,17 @@ export class NotificationController {
   ) { }
 
   @Post('/')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('userOrDappUser'))
   public async create(
-    @DappUser() dappUser,
+    @AuthUser() user,
+    @AuthDappUser() dappUser,
     @Body('contractAddress') contractAddress: string,
     @Body('topics') topics: string[],
     @Body('subject') subject: string,
     @Body('body') body: string
   ) {
     let notification = await this.notificationService.create(
-      dappUser,
+      user,
       contractAddress,
       topics,
       subject,
@@ -45,13 +47,14 @@ export class NotificationController {
   }
 
   @Delete('/:notificationId')
-  @UseGuards(AuthGuard())
+  @UseGuards(AuthGuard('userOrDappUser'))
   public async destroy(
-    @DappUser() dappUser,
+    @AuthUser() user,
+    @AuthDappUser() dappUser,
     @Param('notificationId') notificationId
   ) {
     let notification = await this.notificationService.find(notificationId)
-    if (notification.dapp_user.id !== dappUser.id) {
+    if (notification.dapp_user.id !== user.id) {
       throw new ForbiddenException()
     }
 

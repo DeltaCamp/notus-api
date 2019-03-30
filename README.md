@@ -16,11 +16,8 @@ User Flow:
 
 1. User signs up and is emailed a magic link:
 POST /user
-2. User signs in with magic link.  They browse dapps and access the dapp notification panel.
-When they want to configure the dapp notifications, they click on a dapp.  Clicking on a dapp will create a
-dapp user and immediately return a link to the dapp page along with a dapp user access code.  The code can be
-used by the dapp to setup notifications on behalf of the user.
-POST /dapp-user
+2. User signs in with magic link.  They browse dapps and create new notifications:
+POST /notification
 
 Dapp User Flow:
 
@@ -30,6 +27,7 @@ Dapp User Flow:
 (POST /dapp-user/confirm)
 3. An authenticated dapp or the user themselves can create new notifications for the user:
 (POST /notifications)
+If a notification was created by a dapp-user then it will be tagged as such so that user can CRUD it.
 
 What is shared:
 

@@ -76,9 +76,7 @@ export class DappUserService {
   }
 
   public async findOneByAccessKey(accessKey: string) {
-    console.log('received :' , accessKey)
     let accessKeyHashed = sha256(accessKey).toString('hex')
-    console.log('looking for ', accessKeyHashed)
     return await this.dappUserRepository.findOneOrFail({ access_key: accessKeyHashed })
   }
 

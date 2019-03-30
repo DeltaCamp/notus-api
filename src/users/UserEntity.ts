@@ -8,6 +8,10 @@ import {
 } from 'typeorm';
 import { DappUserEntity } from "../dapp_users/DappUserEntity";
 
+import { keyHashHex } from '../utils/keyHashHex'
+import { newKeyHex } from '../utils/newKeyHex'
+import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
+
 @Entity({ name: 'users' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
@@ -25,12 +29,44 @@ export class UserEntity {
   @Column()
   confirmed: boolean = false;
 
-  @Column()
-  confirmation_code: string = '';
+  @Column({ type: 'varchar', nullable: true })
+  access_key_hash: string;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  access_key_expires_at: Date;
+
+  @Column({ type: 'varchar', nullable: true })
+  access_request_key_hash: string;
+
+  @Column({ type: 'timestamptz', nullable: true })
+  request_key_expires_at: Date;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
+
+  generateAccessKey(request_key) {
+    if (!this.access_request_key_hash || this.access_request_key_hash !== keyHashHex(request_key)) {
+      throw new Error(`Invalid request key`)
+    }
+    this.request_key_expires_at = new Date()
+    const access_key = newKeyHex()
+    this.access_key_hash = keyHashHex(access_key)
+    this.access_key_expires_at = newKeyExpiryDate()
+    this.confirmed = true
+    this.access_request_key_hash = null
+    this.request_key_expires_at = null
+
+    return access_key
+  }
+
+  generateRequestKey() {
+    const requestKey = newKeyHex()
+    this.access_request_key_hash = keyHashHex(requestKey)
+    this.request_key_expires_at = newKeyExpiryDate()
+
+    return requestKey
+  }
 }

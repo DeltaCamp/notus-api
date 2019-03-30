@@ -8,14 +8,14 @@ import {
   ManyToOne,
   OneToMany
 } from 'typeorm';
-import { addHours } from 'date-fns';
 import * as crypto from 'crypto';
 
 import { UserEntity } from "../users/UserEntity";
 import { DappEntity } from "../dapps/DappEntity";
 import { NotificationEntity } from '../notifications/NotificationEntity';
-import { sha256 } from '../utils/sha256'
+import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
+import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
 
 @Entity({ name: 'dapp_users' })
 export class DappUserEntity {
@@ -38,16 +38,16 @@ export class DappUserEntity {
   @Column()
   owner: boolean = false;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   access_key: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', nullable: true })
   access_key_expires_at: Date;
 
-  @Column({ type: 'varchar' })
+  @Column({ type: 'varchar', nullable: true })
   request_key: string;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', nullable: true })
   request_key_expires_at: Date;
 
   @Column({ type: 'bool' })
@@ -60,21 +60,21 @@ export class DappUserEntity {
   updated_at: Date;
 
   generateAccessKey(request_key) {
-    if (!this.request_key || this.request_key !== sha256(request_key).toString('hex')) {
+    if (!this.request_key || this.request_key !== keyHashHex(request_key)) {
       throw new Error(`Invalid request key`)
     }
     this.request_key_expires_at = new Date()
     const access_key = newKeyHex()
-    this.access_key = sha256(access_key).toString('hex')
-    this.access_key_expires_at = addHours(new Date(), 24)
+    this.access_key = keyHashHex(access_key)
+    this.access_key_expires_at = newKeyExpiryDate()
 
     return access_key
   }
 
   generateRequestKey() {
     const requestKey = newKeyHex()
-    this.request_key = sha256(requestKey).toString('hex')
-    this.request_key_expires_at = addHours(new Date(), 24);
+    this.request_key = keyHashHex(requestKey)
+    this.request_key_expires_at = newKeyExpiryDate()
 
     return requestKey
   }

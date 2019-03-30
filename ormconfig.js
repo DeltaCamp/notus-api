@@ -7,7 +7,7 @@ module.exports = {
       "./!(node_modules)/**/*Entity{.ts,.js}"
    ],
    migrations: [
-      "./!(node_modules)/**/migrations/*{.ts,.js}"
+      "./src/**/migrations/*{.ts,.js}"
    ],
    subscribers: [
       "./!(node_modules)/**/subscribers/**/*{.ts,.js}"
