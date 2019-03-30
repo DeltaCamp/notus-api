@@ -1,60 +1,83 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { MailerService } from '@nest-modules/mailer';
 import { Repository } from 'typeorm';
 import { UserEntity } from './UserEntity';
 
+import { rollbar } from '../rollbar'
 import { generateRandomBytes } from '../utils/generateRandomBytes';
+import { keyHashHex } from '../utils/keyHashHex'
 
 @Injectable()
 export class UserService {
 
   constructor(
     @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>
+    private readonly userRepository: Repository<UserEntity>,
+    private readonly mailerService: MailerService
   ) { }
 
   async findAll(): Promise<UserEntity[]> {
     return await this.userRepository.find();
   }
 
-  async create(email): Promise<UserEntity> {
-    const userEntity = new UserEntity();
+  public async createOrRequestMagicLink(email: string): Promise<UserEntity> {
+    let user = await this.userRepository.findOne({ email })
 
-    userEntity.email = email;
-    userEntity.confirmation_code = await generateRandomBytes();
-
-    return await this.userRepository.save(userEntity);
-  }
-
-  async findOrCreate(email): Promise<UserEntity> {
-    try {
-      let user = await this.userRepository.findOne({ email });
-
-      if (!user) {
-        user = await this.create(email);
-      }
-
-      return user;
-    } catch(err) {
-      console.error(err)
-      return err
+    let newUser = !user
+    if (newUser) {
+      user = new UserEntity()
+      user.email = email
     }
+
+    const requestKey = user.generateRequestKey()
+
+    this.userRepository.save(user)
+
+    if (newUser) {
+      this.sendWelcome(user, requestKey)
+    } else {
+      this.sendMagicLink(user, requestKey)
+    }
+
+    return user
   }
 
-  async confirm(confirmationCode, email): Promise<UserEntity> {
-    return new Promise(() => { })
+  public async confirm(requestKey: string): Promise<string> {
+    let user = await this.userRepository.findOneOrFail({
+      access_request_key_hash: keyHashHex(requestKey)
+    })
+    const accessKey = user.generateAccessKey(requestKey)
+    this.userRepository.save(user)
 
-    // const userEntity = await this.userRepository.findOne({
-    //   confirmation_code: confirmationCode,
-    //   email
-    // });
-
-    // if (userEntity === undefined) {
-    //   return new User()
-    // } else {
-    //   userEntity.confirmed = true;
-    //   return await this.userRepository.save(userEntity);
-    // }
+    return accessKey
   }
-  
+
+  public async findOneByAccessKey(accessKey: string) {
+    return await this.userRepository.findOneOrFail({ access_key_hash: keyHashHex(accessKey) })
+  }
+
+  public sendWelcome(user: UserEntity, requestKey: string) {
+    this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Welcome to Notus Network',
+      template: 'welcome.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
+      context: {
+        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
+        requestKey
+      }
+    }).catch(error => rollbar.error(error))
+  }
+
+  public sendMagicLink(user: UserEntity, requestKey: string) {
+    this.mailerService.sendMail({
+      to: user.email,
+      subject: 'Your Magic Access Link',
+      template: 'magic_link.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
+      context: {
+        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
+        requestKey
+      }
+    }).catch(error => rollbar.error(error))
+  }
 }

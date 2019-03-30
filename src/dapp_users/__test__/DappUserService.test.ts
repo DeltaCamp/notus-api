@@ -32,7 +32,7 @@ describe('the test', () => {
       save: jest.fn()
     };
     mailerService = {
-      sendMail: jest.fn()
+      sendMail: jest.fn(() => Promise.resolve())
     };
   })
 

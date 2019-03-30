@@ -5,11 +5,12 @@ import { PassportModule } from '@nestjs/passport';
 
 import { AppController } from './AppController';
 import { AppService } from './AppService';
-import { AuthService } from './AuthService';
-import { HttpStrategy } from './HttpStrategy';
+import { AuthUserStrategy } from './AuthUserStrategy';
+import { AuthUserOrDappUserStrategy } from './AuthUserOrDappUserStrategy';
 
 import { DappModule } from './dapps/DappModule';
 import { DappUserModule } from './dapp_users/DappUserModule';
+import { UserModule } from './users/UserModule';
 import { NotificationModule } from './notifications/NotificationModule';
 
 import { mailModule } from './mailModule'
@@ -22,16 +23,17 @@ import { mailModule } from './mailModule'
     mailModule,
     DappModule,
     DappUserModule,
+    UserModule,
     NotificationModule
   ],
   controllers: [
     AppController
   ],
   providers: [
-    AppService, AuthService, HttpStrategy
+    AppService, AuthUserStrategy, AuthUserOrDappUserStrategy
   ],
   exports: [
-    mailModule, PassportModule, AuthService
+    mailModule, PassportModule
   ]
 })
 
