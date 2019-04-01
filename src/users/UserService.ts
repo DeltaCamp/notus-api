@@ -21,6 +21,15 @@ export class UserService {
     return await this.userRepository.find();
   }
 
+  async findOne(id): Promise<UserEntity> {
+    return await this.userRepository.findOne(id)
+  }
+
+  public async findByEmailAndPassword(email: string, password: string): Promise<UserEntity> {
+    let password_hash = keyHashHex(password)
+    return this.userRepository.findOne({ email, password_hash })
+  }
+
   public async createOrRequestMagicLink(email: string): Promise<UserEntity> {
     let user = await this.userRepository.findOne({ email })
 
@@ -30,53 +39,49 @@ export class UserService {
       user.email = email
     }
 
-    const requestKey = user.generateRequestKey()
+    const oneTimeKey = user.generateOneTimeKey()
 
     this.userRepository.save(user)
 
     if (newUser) {
-      this.sendWelcome(user, requestKey)
+      this.sendWelcome(user, oneTimeKey)
     } else {
-      this.sendMagicLink(user, requestKey)
+      this.sendMagicLink(user, oneTimeKey)
     }
 
     return user
   }
 
-  public async confirm(requestKey: string): Promise<string> {
-    let user = await this.userRepository.findOneOrFail({
-      access_request_key_hash: keyHashHex(requestKey)
-    })
-    const accessKey = user.generateAccessKey(requestKey)
-    this.userRepository.save(user)
-
-    return accessKey
+  public async confirm(user: UserEntity, password: string): Promise<void> {
+    user.clearOneTimeKey()
+    user.password_hash = keyHashHex(password)
+    await this.userRepository.save(user)
   }
 
-  public async findOneByAccessKey(accessKey: string) {
-    return await this.userRepository.findOneOrFail({ access_key_hash: keyHashHex(accessKey) })
+  public async findOneByOneTimeKey(oneTimeKey: string) {
+    return await this.userRepository.findOneOrFail({ one_time_key_hash: keyHashHex(oneTimeKey) })
   }
 
-  public sendWelcome(user: UserEntity, requestKey: string) {
+  public sendWelcome(user: UserEntity, oneTimeKey: string) {
     this.mailerService.sendMail({
       to: user.email,
       subject: 'Welcome to Notus Network',
       template: 'welcome.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
       context: {
         notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        requestKey
+        oneTimeKey
       }
     }).catch(error => rollbar.error(error))
   }
 
-  public sendMagicLink(user: UserEntity, requestKey: string) {
+  public sendMagicLink(user: UserEntity, oneTimeKey: string) {
     this.mailerService.sendMail({
       to: user.email,
       subject: 'Your Magic Access Link',
       template: 'magic_link.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
       context: {
         notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        requestKey
+        oneTimeKey
       }
     }).catch(error => rollbar.error(error))
   }

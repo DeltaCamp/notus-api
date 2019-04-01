@@ -74,16 +74,12 @@ describe('the test', () => {
         expect(userRepository.findOne).toHaveBeenCalledWith({ email: 'foo@bar.com' })
         expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
 
-        expect(dappUser.request_key).toBeDefined()
-        expect(dappUser.request_key_expires_at).toBeDefined()
         expect(dappUser.owner).toBeFalsy()
       })
 
       describe('with an existing dappuser ', () => {
         it('should use an existing dappUser', async () => {
-          dappUser = {
-            generateRequestKey: jest.fn(() => newKeyHex())
-          }
+          dappUser = {}
           dappUserRepository = {
             findOne: jest.fn(() => dappUser),
             save: jest.fn()
@@ -95,7 +91,6 @@ describe('the test', () => {
 
           expect(dappUserRepository.findOne).toHaveBeenCalledWith({ dapp, user })
           expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
-          expect(dappUser.generateRequestKey).toHaveBeenCalled()
           expect(mailerService.sendMail).toHaveBeenCalledWith(expect.objectContaining({
             to: 'foo@bar.ca',
             subject: 'Welcome - Confirm Your Subscription to My Dapp',
@@ -119,25 +114,6 @@ describe('the test', () => {
       expect(mailerService.sendMail).toHaveBeenCalledWith(expect.objectContaining({
         template: 'send_api_key.template.pug'
       }))
-    })
-  })
-
-  describe('confirm()', () => {
-    it('should generate a new access key', async () => {
-      dappUser = new DappUserEntity()
-      const requestKey = dappUser.generateRequestKey()
-      dappUserRepository = {
-        findOneOrFail: jest.fn(() => dappUser),
-        save: jest.fn()
-      }
-
-      dappUserService = newService()
-
-      await dappUserService.confirm(requestKey)
-
-      expect(dappUserRepository.findOneOrFail).toHaveBeenCalledWith({ request_key: sha256(requestKey).toString('hex') })
-      expect(dappUser.access_key).toBeDefined()
-      expect(dappUserRepository.save).toHaveBeenCalledWith(dappUser)
     })
   })
 })

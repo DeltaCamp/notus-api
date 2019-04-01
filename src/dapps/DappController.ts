@@ -20,7 +20,7 @@ export class DappController {
   ) {}
 
   @Post('/')
-  @UseGuards(AuthGuard('user'))
+  @UseGuards(AuthGuard())
   public async create(
     @AuthUser() user: UserEntity,
     @Body('name') name: string
@@ -32,5 +32,4 @@ export class DappController {
   public async get() {
     return await this.dappService.findAll()
   }
-
 }

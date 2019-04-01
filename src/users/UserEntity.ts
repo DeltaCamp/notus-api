@@ -30,16 +30,13 @@ export class UserEntity {
   confirmed: boolean = false;
 
   @Column({ type: 'varchar', nullable: true })
-  access_key_hash: string;
+  one_time_key_hash: string;
 
   @Column({ type: 'timestamptz', nullable: true })
-  access_key_expires_at: Date;
+  one_time_key_expires_at: Date;
 
-  @Column({ type: 'varchar', nullable: true })
-  access_request_key_hash: string;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  request_key_expires_at: Date;
+  @Column ({ type: 'text', nullable: true })
+  password_hash: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
@@ -47,26 +44,17 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updated_at: Date;
 
-  generateAccessKey(request_key) {
-    if (!this.access_request_key_hash || this.access_request_key_hash !== keyHashHex(request_key)) {
-      throw new Error(`Invalid request key`)
-    }
-    this.request_key_expires_at = new Date()
-    const access_key = newKeyHex()
-    this.access_key_hash = keyHashHex(access_key)
-    this.access_key_expires_at = newKeyExpiryDate()
+  public clearOneTimeKey(): void {
     this.confirmed = true
-    this.access_request_key_hash = null
-    this.request_key_expires_at = null
-
-    return access_key
+    this.one_time_key_hash = null
+    this.one_time_key_expires_at = null
   }
 
-  generateRequestKey() {
-    const requestKey = newKeyHex()
-    this.access_request_key_hash = keyHashHex(requestKey)
-    this.request_key_expires_at = newKeyExpiryDate()
+  public generateOneTimeKey(): string {
+    const oneTimeKey = newKeyHex()
+    this.one_time_key_hash = keyHashHex(oneTimeKey)
+    this.one_time_key_expires_at = newKeyExpiryDate()
 
-    return requestKey
+    return oneTimeKey
   }
 }

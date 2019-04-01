@@ -1,0 +1,32 @@
+import {
+  Controller,
+  Body,
+  Get,
+  Query,
+  NotFoundException
+} from '@nestjs/common'
+
+import { UserEntity } from '../users/UserEntity'
+import { UserService } from '../users/UserService'
+import { AuthJwtService } from './AuthJwtService'
+
+@Controller()
+export class AuthController {
+
+  constructor (
+    private readonly userService: UserService,
+    private readonly authJwtService: AuthJwtService
+  ) {}
+
+  @Get('/sign-in')
+  public async signIn(
+    @Query('email') email: string,
+    @Query('password') password: string
+  ) {
+    let userEntity = await this.userService.findByEmailAndPassword(email, password)
+    if (!userEntity) {
+      throw new NotFoundException()
+    }
+    return this.authJwtService.signIn(userEntity)
+  }
+}

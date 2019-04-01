@@ -1,7 +1,7 @@
 import { UserService } from '../UserService'
 import { UserEntity } from '../UserEntity'
 import { newKeyHex } from '../../utils/newKeyHex'
-import { sha256 } from '../../utils/sha256'
+import { keyHashHex } from '../../utils/keyHashHex'
 
 describe('the test', () => {
   let userService
@@ -38,8 +38,8 @@ describe('the test', () => {
         expect.objectContaining({ subject: 'Welcome to Notus Network' })
       )
 
-      expect(user.access_request_key_hash).toBeDefined()
-      expect(user.request_key_expires_at).toBeDefined()
+      expect(user.one_time_key_hash).toBeDefined()
+      expect(user.one_time_key_expires_at).toBeDefined()
     })
 
     describe('with an existing user', () => {
@@ -64,28 +64,27 @@ describe('the test', () => {
           expect.objectContaining({ subject: 'Your Magic Access Link'})
         )
 
-        expect(user.access_request_key_hash).toBeDefined()
-        expect(user.request_key_expires_at).toBeDefined()
+        expect(user.one_time_key_hash).toBeDefined()
+        expect(user.one_time_key_expires_at).toBeDefined()
       })
     })
   })
 
   describe('confirm()', () => {
-    it('should generate a new access key', async () => {
+    it('should set the password', async () => {
       user = new UserEntity()
-      const requestKey = user.generateRequestKey()
+      user.generateOneTimeKey()
+      let password = 'hello'
       userRepository = {
-        findOneOrFail: jest.fn(() => user),
         save: jest.fn()
       }
 
       userService = newService()
 
-      await userService.confirm(requestKey)
-
-      expect(userRepository.findOneOrFail).toHaveBeenCalledWith({ access_request_key_hash: sha256(requestKey).toString('hex') })
-      expect(user.access_key_hash).toBeDefined()
-      expect(user.access_request_key_hash).toBeNull()
+      await userService.confirm(user, password)
+      expect(user.password_hash).toEqual(keyHashHex(password))
+      expect(user.one_time_key_hash).toBeNull()
+      expect(user.one_time_key_expires_at).toBeNull()
       expect(userRepository.save).toHaveBeenCalledWith(user)
     })
   })
