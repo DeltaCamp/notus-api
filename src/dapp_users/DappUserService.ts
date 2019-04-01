@@ -58,14 +58,12 @@ export class DappUserService {
       dappUser.owner = owner
     }
 
-    const requestKey = dappUser.generateRequestKey()
-
     this.dappUserRepository.save(dappUser)
 
     if (owner) {
-      this.sendNewDappMail(dapp, user, requestKey)
+      this.sendNewDappMail(dapp, user)
     } else {
-      this.sendSubscriptionMail(dapp, user, requestKey)
+      this.sendSubscriptionMail(dapp, user)
     }
 
     return dappUser
@@ -80,21 +78,7 @@ export class DappUserService {
     return await this.dappUserRepository.findOneOrFail({ access_key: accessKeyHashed })
   }
 
-  public async confirm(requestKey: string) {
-    let requestKeyHashed = sha256(requestKey).toString('hex')
-    let dappUser = await this.dappUserRepository.findOneOrFail({ request_key: requestKeyHashed })
-    const accessKey = dappUser.generateAccessKey(requestKey)
-    dappUser.confirmed = true
-    dappUser.request_key = null
-    dappUser.request_key_expires_at = null
-    this.dappUserRepository.save(dappUser)
-
-    return {
-      accessKey
-    }
-  }
-
-  public sendSubscriptionMail(dapp, user, requestKey) {
+  public sendSubscriptionMail(dapp, user) {
     this.mailerService.sendMail({
       to: user.email,
       // from: 'noreply@nestjs.com',
@@ -105,13 +89,12 @@ export class DappUserService {
       text: `Confirmation subscription to ${dapp.name}`,
       context: {
         notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        name: dapp.name,
-        requestKey
+        name: dapp.name
       }
     }).catch(error => rollbar.error(error))
   }
 
-  public sendNewDappMail(dapp, user, requestKey) {
+  public sendNewDappMail(dapp, user) {
     this.mailerService.sendMail({
       to: user.email,
       // from: 'noreply@nestjs.com',
@@ -120,8 +103,7 @@ export class DappUserService {
       text: `Created App ${dapp.name}`,
       context: {
         notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        name: dapp.name,
-        requestKey
+        name: dapp.name
       }
     }).catch(error => rollbar.error(error))
   }

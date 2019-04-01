@@ -21,7 +21,7 @@ export class UserController {
   ) {}
 
   @Get('/')
-  @UseGuards(AuthGuard('user'))
+  @UseGuards(AuthGuard())
   public async get(
     @AuthUser() user: UserEntity
   ) {
@@ -35,19 +35,20 @@ export class UserController {
     return await this.userService.createOrRequestMagicLink(email);
   }
 
-  @Post('/confirm')
+  @Post('confirm')
+  @UseGuards(AuthGuard('oneTimeKey'))
   public async confirm(
-    @Body('requestKey') requestKey
+    @AuthUser() user,
+    @Body('password') password
   ) {
-    if (requestKey) {
+    if (password) {
       try {
-        return await this.userService.confirm(requestKey)
+        return await this.userService.confirm(user, password)
       } catch (err) {
         throw new InternalServerErrorException(err)
       }
     } else {
-      throw new NotAcceptableException('Missing requestKey')
+      throw new NotAcceptableException('Missing password')
     }
   }
-
 }

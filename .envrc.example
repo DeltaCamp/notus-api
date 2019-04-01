@@ -13,3 +13,6 @@ export DATABASE_URL=postgres://username:password@host:port/database
 export NOTUS_NETWORK_URI='http://localhost:3000'
 export WEB3_PROVIDER_WS_URI=wss://ropsten.infura.io/ws/v3/5e378f49a3994737940a897b2d95222b
 export NOTUS_API_WS_URI=ws://localhost:4000
+export JWT_SECRET=someverylongsecret
+export JWT_EXPIRES_IN=3600
+export ONE_TIME_KEY_EXPIRES_IN=300

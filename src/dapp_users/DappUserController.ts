@@ -30,19 +30,4 @@ export class DappUserController {
   ) {
     return await this.dappUserService.create(dappId, dappName, email);
   }
-
-  @Post('/confirm')
-  public async confirm(
-    @Body('requestKey') requestKey
-  ) {
-    if (requestKey) {
-      try {
-        return await this.dappUserService.confirm(requestKey)
-      } catch (err) {
-        throw new InternalServerErrorException(err)
-      }
-    } else {
-      throw new NotAcceptableException('Missing requestKey')
-    }
-  }
 }
