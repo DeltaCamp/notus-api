@@ -12,12 +12,14 @@ import { AuthGuard } from '@nestjs/passport'
 import { AuthUser } from '../decorators/AuthUser'
 import { UserEntity } from "./UserEntity";
 import { UserService } from './UserService'
+import { AuthJwtService } from '../auth/AuthJwtService'
 
 @Controller('users')
 export class UserController {
 
   constructor(
-    private readonly userService: UserService
+    private readonly userService: UserService,
+    private readonly authJwtService: AuthJwtService
   ) {}
 
   @Get('/')
@@ -43,7 +45,8 @@ export class UserController {
   ) {
     if (password) {
       try {
-        return await this.userService.confirm(user, password)
+        await this.userService.confirm(user, password)
+        return this.authJwtService.signIn(user)
       } catch (err) {
         throw new InternalServerErrorException(err)
       }

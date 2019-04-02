@@ -24,7 +24,7 @@ import { AuthOneTimeKeyStrategy } from './AuthOneTimeKeyStrategy';
     AuthController
   ],
   exports: [
-    PassportModule
+    PassportModule, AuthJwtService
   ]
 })
 export class AuthModule {}
