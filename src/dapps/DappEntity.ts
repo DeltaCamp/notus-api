@@ -6,30 +6,36 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
-import { DappUserEntity } from "../dapp_users/DappUserEntity";
+import { Field, Int, ObjectType, ID } from 'type-graphql';
 
+import { DappUserEntity } from "../dapp-users/DappUserEntity";
+import { EventTypeEntity } from '../event-types/EventTypeEntity';
+
+@ObjectType()
 @Entity({ name: 'dapps' })
 export class DappEntity {
+  @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.dapp, {
+  @OneToMany(type => DappUserEntity, dappUser => dappUser.dapp, {
     cascade: true
   })
-  dapp_users: DappUserEntity[];
+  dappUsers: DappUserEntity[];
+
+  @OneToMany(type => EventTypeEntity, contract => contract.dapp)
+  eventTypes: EventTypeEntity[];
 
   // @OneToMany(type => UserEntity, user => user.dapp)
   // owner: DappUserEntity.find({ owner: true });
 
+  @Field()
   @Column({ length: 120 })
   name: string = '';
 
-  @Column()
-  api_key: string = '';
-
   @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  updatedAt: Date;
 }

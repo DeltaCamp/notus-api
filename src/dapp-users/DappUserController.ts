@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Put, Delete, Request, Response, Body, Param, HttpStatus, InternalServerErrorException, NotAcceptableException } from '@nestjs/common';
-import { DappUserEntity } from "../dapp_users/DappUserEntity";
+import { DappUserEntity } from "../dapp-users/DappUserEntity";
 import { DappUserService } from './DappUserService'
 
 @Controller('dapp-users')

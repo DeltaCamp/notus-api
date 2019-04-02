@@ -81,8 +81,8 @@ DAPPS
 id
 name
 api_key
-created_at
-updated_at
+createdAt
+updatedAt
 
 DAPPS_USERS
 user_id
@@ -101,12 +101,12 @@ email
 phone_number
 confirmation_code
 confirmed
-created_at
-updated_at
+createdAt
+updatedAt
 
 WEBHOOKS
 id
 name (ie. 'alert users whenever X is above 1000' or 'alert me whenever Y drops below 40')
 data (blob)
-created_at
-updated_at
+createdAt
+updatedAt

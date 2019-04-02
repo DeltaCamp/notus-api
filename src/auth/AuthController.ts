@@ -23,6 +23,7 @@ export class AuthController {
     @Query('email') email: string,
     @Query('password') password: string
   ) {
+    console.log('SIGN-IN: ', email, password)
     let userEntity = await this.userService.findByEmailAndPassword(email, password)
     if (!userEntity) {
       throw new UnauthorizedException()

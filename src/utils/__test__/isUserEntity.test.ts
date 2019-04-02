@@ -1,5 +1,5 @@
 import { UserEntity } from '../../users/UserEntity'
-import { DappUserEntity } from '../../dapp_users/DappUserEntity'
+import { DappUserEntity } from '../../dapp-users/DappUserEntity'
 import { isUserEntity } from '../isUserEntity'
 
 describe('isUserEntity', () => {
