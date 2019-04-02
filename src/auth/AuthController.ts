@@ -3,7 +3,7 @@ import {
   Body,
   Get,
   Query,
-  NotFoundException
+  UnauthorizedException
 } from '@nestjs/common'
 
 import { UserEntity } from '../users/UserEntity'
@@ -25,7 +25,7 @@ export class AuthController {
   ) {
     let userEntity = await this.userService.findByEmailAndPassword(email, password)
     if (!userEntity) {
-      throw new NotFoundException()
+      throw new UnauthorizedException()
     }
     return this.authJwtService.signIn(userEntity)
   }
