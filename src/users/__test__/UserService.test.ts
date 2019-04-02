@@ -70,6 +70,45 @@ describe('the test', () => {
     })
   })
 
+  describe('requestMagicLinkOrDoNothing()', () => {
+    it('should do nothing if no user found', async () => {
+      userService = newService()
+
+      const user = await userService.requestMagicLinkOrDoNothing('asdf@test.com')
+
+      expect(user).toEqual(
+        null
+      )
+    })
+
+    describe('with an existing user', () => {
+      beforeEach(async () => {
+        user = new UserEntity()
+        user.id = '1234'
+        user.email = 'foo@bar.ca'
+        userRepository = {
+          findOne: jest.fn(() => user),
+          save: jest.fn()
+        }
+      })
+
+      it('should use the existing user and just send a magic link', async () => {
+        userService = newService()
+
+        const user = await userService.requestMagicLinkOrDoNothing('foo@bar.com')
+
+        expect(userRepository.findOne).toHaveBeenCalledWith({ email: 'foo@bar.com' })
+        expect(userRepository.save).toHaveBeenCalledWith(user)
+        expect(mailerService.sendMail).toHaveBeenCalledWith(
+          expect.objectContaining({ subject: 'Your Magic Access Link' })
+        )
+
+        expect(user.one_time_key_hash).toBeDefined()
+        expect(user.one_time_key_expires_at).toBeDefined()
+      })
+    })
+  })
+
   describe('confirm()', () => {
     it('should set the password', async () => {
       user = new UserEntity()

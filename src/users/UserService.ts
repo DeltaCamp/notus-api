@@ -52,6 +52,20 @@ export class UserService {
     return user
   }
 
+  public async requestMagicLinkOrDoNothing(email: string): Promise<UserEntity> {
+    const user = await this.userRepository.findOne({ email })
+
+    if (user) {
+      const oneTimeKey = user.generateOneTimeKey()
+
+      await this.userRepository.save(user)
+
+      this.sendMagicLink(user, oneTimeKey)
+    }
+
+    return user
+  }
+
   public async confirm(user: UserEntity, password: string): Promise<void> {
     user.clearOneTimeKey()
     user.password_hash = keyHashHex(password)

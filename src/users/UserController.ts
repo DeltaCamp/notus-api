@@ -37,6 +37,13 @@ export class UserController {
     return await this.userService.createOrRequestMagicLink(email);
   }
 
+  @Post('password-reset')
+  public async passwordReset(
+    @Body('email') email
+  ) {
+    return await this.userService.requestMagicLinkOrDoNothing(email);
+  }
+
   @Post('confirm')
   @UseGuards(AuthGuard('oneTimeKey'))
   public async confirm(
