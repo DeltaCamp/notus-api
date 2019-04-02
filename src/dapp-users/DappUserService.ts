@@ -73,11 +73,6 @@ export class DappUserService {
     return await this.dappUserRepository.findOneOrFail(id)
   }
 
-  public async findOneByAccessKey(accessKey: string) {
-    let accessKeyHashed = sha256(accessKey).toString('hex')
-    return await this.dappUserRepository.findOneOrFail({ access_key: accessKeyHashed })
-  }
-
   public sendSubscriptionMail(dapp, user) {
     this.mailerService.sendMail({
       to: user.email,

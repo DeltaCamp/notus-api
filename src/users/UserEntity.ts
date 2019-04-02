@@ -6,8 +6,9 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
-import { DappUserEntity } from "../dapp_users/DappUserEntity";
 
+import { DappUserEntity } from "../dapp-users/DappUserEntity";
+import { EventEntity } from '../events/EventEntity';
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
 import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
@@ -17,8 +18,11 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dapp_user => dapp_user.user)
-  dapp_users: DappUserEntity[];
+  @OneToMany(type => DappUserEntity, dappUser => dappUser.user)
+  dappUsers: DappUserEntity[];
+
+  @OneToMany(type => EventEntity, event => event.user)
+  events: EventEntity[];
 
   @Column({ length: 120 })
   name: string = '';
@@ -39,10 +43,10 @@ export class UserEntity {
   password_hash: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  created_at: Date;
+  createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  updated_at: Date;
+  updatedAt: Date;
 
   public clearOneTimeKey(): void {
     this.confirmed = true

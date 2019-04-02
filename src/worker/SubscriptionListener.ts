@@ -16,6 +16,7 @@ export class SubscriptionListener implements ITriggerListener {
     try {
       this.client = apolloClientFactory(graphTrigger.websocketUri)
       let query = gql(graphTrigger.subscriptionQuery)
+      // @ts-ignore
       const { kind, operation } = getMainDefinition(query);
       const isSubscription = kind === 'OperationDefinition' && operation === 'subscription';
       if (!isSubscription) {

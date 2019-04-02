@@ -1,42 +1,47 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+
 import { DappEntity } from './DappEntity';
 import { UserEntity } from '../users/UserEntity';
-import { DappUserEntity } from '../dapp_users/DappUserEntity'
-
+import { DappUserEntity } from '../dapp-users/DappUserEntity'
+import { DappDto } from './DappDto';
 import { rollbar } from '../rollbar'
+import { Transaction } from '../typeorm/Transaction'
+import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
 
 @Injectable()
 export class DappService {
 
   constructor(
-    @InjectRepository(DappEntity)
-    private readonly dappRepository: Repository<DappEntity>
+    private readonly provider: EntityManagerProvider
   ) { }
 
+  @Transaction()
   async findAll(): Promise<DappEntity[]> {
-    return await this.dappRepository.find();
+    return await this.provider.get().find(DappEntity);
   }
 
-  public async create(
+  @Transaction()
+  async findOne(id: number): Promise<DappEntity> {
+    return this.provider.get().findOne(DappEntity, id);
+  }
+
+  @Transaction()
+  public async createDapp(
     user: UserEntity,
-    name: string
+    dappDto: DappDto
   ): Promise<DappEntity> {
-    return await getConnection().transaction(async entityManager => {
-      const dapp = new DappEntity()
-      dapp.name = name
-      entityManager.save(dapp)
+    const dapp = new DappEntity()
+    dapp.name = dappDto.name
+    await this.provider.get().save(dapp)
 
-      const dappUser = new DappUserEntity()
-      Object.assign(dappUser, {
-        dapp,
-        user,
-        owner: true
-      })
-      entityManager.save(dappUser)
-
-      return dapp
+    const dappUser = new DappUserEntity()
+    Object.assign(dappUser, {
+      dapp,
+      user,
+      owner: true
     })
+    await this.provider.get().save(dappUser)
+
+    return dapp
   }
 }

@@ -7,11 +7,9 @@ import { Connection } from 'typeorm';
 import { WorkerNotificationManager } from './worker/WorkerNotificationManager'
 import { LogManager } from './worker/LogManager'
 
-import { NotificationEntity } from './notifications/NotificationEntity'
-import { NotificationService } from './notifications/NotificationService'
 import { DappEntity } from './dapps/DappEntity'
-import { DappUserEntity } from './dapp_users/DappUserEntity'
-import { DappUserService } from './dapp_users/DappUserService'
+import { DappUserEntity } from './dapp-users/DappUserEntity'
+import { DappUserService } from './dapp-users/DappUserService'
 import { UserEntity } from './users/UserEntity'
 import { UserService } from './users/UserService'
 
@@ -23,7 +21,6 @@ import { mailModule } from './mailModule'
     TypeOrmModule.forRoot(),
     mailModule,
     TypeOrmModule.forFeature([
-      NotificationEntity,
       DappUserEntity,
       DappEntity,
       UserEntity
@@ -32,7 +29,6 @@ import { mailModule } from './mailModule'
   providers: [
     WorkerNotificationManager,
     LogManager,
-    NotificationService,
     DappUserService,
     UserService
   ],
