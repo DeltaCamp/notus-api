@@ -46,7 +46,7 @@ describe('EventTypeService', () => {
 
       const variableDto = {
         source: 'transaction.from',
-        type: 'address',
+        sourceDataType: 'address',
         description: 'The address the transaction was sent from',
         isPublic: true
       }

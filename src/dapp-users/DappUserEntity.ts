@@ -16,11 +16,14 @@ export class DappUserEntity {
   id!: number;
 
   @ManyToOne(type => UserEntity, user => user.dappUsers, {
-    cascade: true
+    cascade: true,
+    nullable: false
   })
   user: UserEntity;
 
-  @ManyToOne(type => DappEntity, dapp => dapp.dappUsers)
+  @ManyToOne(type => DappEntity, dapp => dapp.dappUsers, {
+    nullable: false
+  })
   dapp: DappEntity;
 
   @Column()

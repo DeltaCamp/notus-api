@@ -44,7 +44,6 @@ type EventTypeEntity {
   id: ID!
   dapp: DappEntity!
   name: String!
-  address: String!
   createdAt: Date!
   updatedAt: Date!
 }

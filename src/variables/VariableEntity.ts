@@ -20,7 +20,9 @@ export class VariableEntity {
   @Field(type => ID)
   id!: number;
 
-  @ManyToOne(type => EventTypeEntity, eventType => eventType.variables)
+  @ManyToOne(type => EventTypeEntity, eventType => eventType.variables, {
+    nullable: false
+  })
   eventType: EventTypeEntity
 
   @Column({ type: 'text', nullable: false })

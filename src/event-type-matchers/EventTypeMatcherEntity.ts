@@ -12,9 +12,13 @@ export class EventTypeMatcherEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @ManyToOne(type => EventTypeEntity)
+  @ManyToOne(type => EventTypeEntity, {
+    nullable: true
+  })
   eventType: EventTypeEntity;
 
-  @ManyToOne(type => MatcherEntity)
+  @ManyToOne(type => MatcherEntity, {
+    nullable: true
+  })
   matcher: MatcherEntity;
 }

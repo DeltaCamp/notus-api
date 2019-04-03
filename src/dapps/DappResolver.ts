@@ -23,7 +23,6 @@ export class DappResolver {
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => DappEntity)
   async createDapp(@GqlAuthUser() user: UserEntity, @Args('dapp') dappDto: DappDto): Promise<DappEntity> {
-    console.log(user, dappDto)
-    return await this.dappService.createDapp(null, dappDto)
+    return await this.dappService.createDapp(user, dappDto)
   }
 }

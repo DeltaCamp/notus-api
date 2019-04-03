@@ -23,7 +23,9 @@ export class EventTypeEntity {
   id!: number;
 
   @Field(type => DappEntity)
-  @ManyToOne(type => DappEntity, dapp => dapp.eventTypes)
+  @ManyToOne(type => DappEntity, dapp => dapp.eventTypes, {
+    nullable: false
+  })
   dapp: DappEntity;
 
   @Field()
@@ -38,10 +40,6 @@ export class EventTypeEntity {
 
   @OneToMany(type => VariableEntity, variable => variable.eventType)
   variables: VariableEntity[];
-
-  @Field()
-  @Column({ type: 'text' })
-  address: string;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

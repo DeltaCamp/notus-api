@@ -7,7 +7,7 @@
   "scripts": {
     "typeorm": "$(yarn bin)/ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "graphql:generate": "$(yarn bin)/ts-node scripts/generate-typings",
-    "migration:generate": "yarn typeorm migration:generate -n",
+    "migration:generate": "yarn typeorm migration:generate -n Migration",
     "migration:migrate": "yarn typeorm migration:run",
     "migration:revert": "yarn typeorm migration:revert",
     "migration:drop": "yarn typeorm schema:drop",

@@ -20,7 +20,9 @@ export class MatcherEntity {
   @Field(type => ID)
   id!: number;
 
-  @ManyToOne(type => VariableEntity)
+  @ManyToOne(type => VariableEntity, {
+    nullable: false
+  })
   variable: VariableEntity;
 
   @Column({ type: 'text', nullable: false })

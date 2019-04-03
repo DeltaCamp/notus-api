@@ -21,6 +21,10 @@ export class EventTypeService {
     private readonly eventTypeMatcherService: EventTypeMatcherService
   ) {}
 
+  async findOne(id): Promise<EventTypeEntity> {
+    return this.eventTypeRepository.findOne(id, { relations: ['dapp'] })
+  }
+
   async findOneOrFail(id): Promise<EventTypeEntity> {
     return this.eventTypeRepository.findOneOrFail(id, { relations: ['dapp'] })
   }
@@ -29,6 +33,7 @@ export class EventTypeService {
 
     const eventType = new EventTypeEntity()
     eventType.dapp = await this.dappRepository.findOneOrFail(eventTypeDto.dappId)
+    eventType.name = eventTypeDto.name
 
     await this.eventTypeRepository.save(eventType)
 

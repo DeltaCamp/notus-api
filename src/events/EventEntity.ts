@@ -26,10 +26,14 @@ export class EventEntity {
   @Field()
   name: string = '';
 
-  @ManyToOne(type => UserEntity, user => user.events)
+  @ManyToOne(type => UserEntity, user => user.events, {
+    nullable: false
+  })
   user: UserEntity;
 
-  @ManyToOne(type => EventTypeEntity, eventType => eventType.events)
+  @ManyToOne(type => EventTypeEntity, eventType => eventType.events, {
+    nullable: false
+  })
   eventType: EventTypeEntity;
 
   @OneToMany(type => EventMatcherEntity, eventMatcher => eventMatcher.event)

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { DappController } from './DappController';
 import { DappEntity } from './DappEntity';
 import { DappResolver } from './DappResolver';
 import { DappService } from './DappService';
@@ -18,9 +17,6 @@ import { UserEntity } from '../users/UserEntity';
   ],
   providers: [
     DappService, DappResolver
-  ],
-  controllers: [
-    DappController
   ]
 })
 export class DappModule {}
