@@ -18,7 +18,7 @@ export function Transaction(connectionName: string = "default"): MethodDecorator
       if (!context) {
         // This will happen if no CLS namespace has been initialied in your app.
         // At application startup, you need to create a CLS namespace using createNamespace(...) function.
-        throw new Error("No CLS namespace defined in your app ... Cannot use CLS transaction management.");
+        return await originalMethod.apply(this, [...args]);
       }
 
       if (!context.active) {
@@ -56,8 +56,7 @@ export function Transaction(connectionName: string = "default"): MethodDecorator
           return result;
 
         });
-      }
-      else {
+      } else {
 
         // A transaction has already been started. We just call the function.
 

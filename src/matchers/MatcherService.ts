@@ -1,19 +1,19 @@
 import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm'
 
 import { MatcherEntity } from './MatcherEntity'
 import { VariableService } from '../variables/VariableService'
+import { Transaction } from '../typeorm/Transaction'
+import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
 
 @Injectable()
 export class MatcherService {
 
   constructor (
-    @InjectRepository(MatcherEntity)
-    private readonly matcherRepository: Repository<MatcherEntity>,
+    private readonly provider: EntityManagerProvider,
     private readonly variableService: VariableService
   ) {}
 
+  @Transaction()
   async createMatcher(matcherDto): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 
@@ -21,7 +21,7 @@ export class MatcherService {
     matcher.type = matcherDto.type
     matcher.operand = matcherDto.operand
 
-    await this.matcherRepository.save(matcher)
+    await this.provider.get().save(matcher)
 
     return matcher
   }

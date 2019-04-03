@@ -6,13 +6,13 @@ import { keyHashHex } from '../../utils/keyHashHex'
 describe('the test', () => {
   let userService
 
-  let userRepository,
+  let entityManager,
       mailerService
 
   let user
 
   beforeEach(() => {
-    userRepository = {
+    entityManager = {
       findOne: jest.fn(() => null),
       save: jest.fn()
     };
@@ -23,7 +23,7 @@ describe('the test', () => {
 
   function newService() {
     return new UserService(
-      userRepository,
+      { get: () => entityManager },
       mailerService
     )
   }
@@ -47,7 +47,7 @@ describe('the test', () => {
         user = new UserEntity()
         user.id = '1234'
         user.email = 'foo@bar.ca'
-        userRepository = {
+        entityManager = {
           findOne: jest.fn(() => user),
           save: jest.fn()
         }
@@ -58,8 +58,8 @@ describe('the test', () => {
 
         const user = await userService.createOrRequestMagicLink('foo@bar.com')
 
-        expect(userRepository.findOne).toHaveBeenCalledWith({ email: 'foo@bar.com' })
-        expect(userRepository.save).toHaveBeenCalledWith(user)
+        expect(entityManager.findOne).toHaveBeenCalledWith(UserEntity, { email: 'foo@bar.com' })
+        expect(entityManager.save).toHaveBeenCalledWith(user)
         expect(mailerService.sendMail).toHaveBeenCalledWith(
           expect.objectContaining({ subject: 'Your Magic Access Link'})
         )
@@ -86,7 +86,7 @@ describe('the test', () => {
         user = new UserEntity()
         user.id = '1234'
         user.email = 'foo@bar.ca'
-        userRepository = {
+        entityManager = {
           findOne: jest.fn(() => user),
           save: jest.fn()
         }
@@ -97,8 +97,8 @@ describe('the test', () => {
 
         const user = await userService.requestMagicLinkOrDoNothing('foo@bar.com')
 
-        expect(userRepository.findOne).toHaveBeenCalledWith({ email: 'foo@bar.com' })
-        expect(userRepository.save).toHaveBeenCalledWith(user)
+        expect(entityManager.findOne).toHaveBeenCalledWith(UserEntity, { email: 'foo@bar.com' })
+        expect(entityManager.save).toHaveBeenCalledWith(user)
         expect(mailerService.sendMail).toHaveBeenCalledWith(
           expect.objectContaining({ subject: 'Your Magic Access Link' })
         )
@@ -114,7 +114,7 @@ describe('the test', () => {
       user = new UserEntity()
       user.generateOneTimeKey()
       let password = 'hello'
-      userRepository = {
+      entityManager = {
         save: jest.fn()
       }
 
@@ -124,7 +124,7 @@ describe('the test', () => {
       expect(user.password_hash).toEqual(keyHashHex(password))
       expect(user.one_time_key_hash).toBeNull()
       expect(user.one_time_key_expires_at).toBeNull()
-      expect(userRepository.save).toHaveBeenCalledWith(user)
+      expect(entityManager.save).toHaveBeenCalledWith(user)
     })
   })
 })

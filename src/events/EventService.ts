@@ -1,38 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
 
+import { UserEntity } from '../users/UserEntity'
 import { EventEntity } from './EventEntity'
+import { EventTypeEntity } from '../event-types/EventTypeEntity'
 import { EventDto } from './EventDto'
 import { EventTypeService } from '../event-types/EventTypeService'
 import { EventMatcherService } from '../event-matchers/EventMatcherService'
+import { Transaction } from '../typeorm/Transaction'
+import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
 
 @Injectable()
 export class EventService {
 
   constructor (
-    @InjectRepository(EventEntity)
-    private readonly eventRepository: Repository<EventEntity>,
+    private readonly provider: EntityManagerProvider,
     private readonly eventTypeService: EventTypeService,
     private readonly eventMatcherService: EventMatcherService
   ) {}
 
+  @Transaction()
   async findOne(id): Promise<EventEntity> {
-    return this.eventRepository.findOne(id, { relations: ['user'] })
+    return this.provider.get().findOne(EventEntity, id, { relations: ['user'] })
   }
 
-  async createEvent(eventDto: EventDto): Promise<EventEntity> {
+  @Transaction()
+  async createEvent(user: UserEntity, eventDto: EventDto): Promise<EventEntity> {
     const event = new EventEntity()
 
+    event.user = user;
     event.eventType =
-      await this.eventTypeService.findOneOrFail(eventDto.eventTypeId)
-    event.name = eventDto.name
+      await this.provider.get().findOneOrFail(EventTypeEntity, eventDto.eventTypeId)
+    await this.provider.get().save(event)
 
     event.eventMatchers = await Promise.all(eventDto.matchers.map(matcherDto => (
       this.eventMatcherService.createEventMatcher(event, matcherDto)
     )))
-
-    await this.eventRepository.save(event)
 
     return event
   }

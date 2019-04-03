@@ -2,19 +2,17 @@ import { EventTypeService } from '../EventTypeService'
 import { DappEntity } from '../../dapps/DappEntity'
 import { VariableEntity } from '../../variables/VariableEntity'
 import { EventTypeMatcherEntity } from '../../event-type-matchers/EventTypeMatcherEntity'
-import { EventTypeDto } from '../../event-types/EventTypeDto'
+import { EventTypeDto } from '../EventTypeDto'
+import { EventTypeEntity } from '../EventTypeEntity'
 
 describe('EventTypeService', () => {
-  let eventTypeRepository,
-      dappRepository,
+  let entityManager,
       variableService,
       eventTypeMatcherService
 
   beforeEach(() => {
-    eventTypeRepository = {
-      save: jest.fn(() => Promise.resolve('saved'))
-    }
-    dappRepository = {
+    entityManager = {
+      save: jest.fn(() => Promise.resolve('saved')),
       findOneOrFail: jest.fn(() => Promise.resolve(new DappEntity()))
     }
     variableService = {
@@ -27,8 +25,7 @@ describe('EventTypeService', () => {
 
   function newService() {
     return new EventTypeService(
-      eventTypeRepository,
-      dappRepository,
+      { get: () => entityManager },
       variableService,
       eventTypeMatcherService
     )
@@ -62,8 +59,8 @@ describe('EventTypeService', () => {
 
       const eventType = await service.createEventType(eventTypeDto)
 
-      expect(dappRepository.findOneOrFail).toHaveBeenCalledWith(13)
-      expect(eventTypeRepository.save).toHaveBeenCalledTimes(1)
+      expect(entityManager.findOneOrFail).toHaveBeenCalledWith(DappEntity, 13)
+      expect(entityManager.save).toHaveBeenCalledTimes(1)
       expect(variableService.createVariable).toHaveBeenCalledWith(expect.anything(), variableDto)
 
       expect(eventTypeMatcherService.createEventTypeMatcher).toHaveBeenCalledWith(expect.anything(), matcherDto)

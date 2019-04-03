@@ -22,10 +22,6 @@ export class EventEntity {
   @Field(type => ID)
   id!: number;
 
-  @Column({ type: 'text' })
-  @Field()
-  name: string = '';
-
   @ManyToOne(type => UserEntity, user => user.events, {
     nullable: false
   })

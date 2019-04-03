@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class Bootstrap1554329859476 implements MigrationInterface {
+export class Migration1554331341948 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`CREATE TABLE "variables" ("id" SERIAL NOT NULL, "source" text NOT NULL, "sourceDataType" text NOT NULL, "description" text NOT NULL, "isPublic" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "eventTypeId" integer NOT NULL, CONSTRAINT "PK_395ef5737c2bfc06e701bd2f7e8" PRIMARY KEY ("id"))`);
@@ -9,7 +9,7 @@ export class Bootstrap1554329859476 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "dapps" ("id" SERIAL NOT NULL, "name" character varying(120) NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_93d4d9b713eec4e21cf607efbfd" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "event_types" ("id" SERIAL NOT NULL, "name" text NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "dappId" integer NOT NULL, CONSTRAINT "PK_ffe6b2d60596409fb08fb13830d" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "event_matchers" ("id" SERIAL NOT NULL, "eventId" integer NOT NULL, "matcherId" integer NOT NULL, CONSTRAINT "PK_e16aba731f5dac8c01904418e3f" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`CREATE TABLE "events" ("id" SERIAL NOT NULL, "name" text NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer NOT NULL, "eventTypeId" integer NOT NULL, CONSTRAINT "PK_40731c7151fe4be3116e45ddf73" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "events" ("id" SERIAL NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer NOT NULL, "eventTypeId" integer NOT NULL, CONSTRAINT "PK_40731c7151fe4be3116e45ddf73" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "users" ("id" SERIAL NOT NULL, "name" character varying(120) NOT NULL, "email" character varying(320) NOT NULL, "confirmed" boolean NOT NULL, "one_time_key_hash" character varying, "one_time_key_expires_at" TIMESTAMP WITH TIME ZONE, "password_hash" text, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "dapp_users" ("id" SERIAL NOT NULL, "owner" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "userId" integer NOT NULL, "dappId" integer NOT NULL, CONSTRAINT "PK_28acab6f615f4f3cb5911c30850" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "variables" ADD CONSTRAINT "FK_25e962a6300fd1bb42c24889b47" FOREIGN KEY ("eventTypeId") REFERENCES "event_types"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);

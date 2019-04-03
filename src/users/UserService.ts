@@ -1,37 +1,40 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { MailerService } from '@nest-modules/mailer';
-import { Repository } from 'typeorm';
 import { UserEntity } from './UserEntity';
 
 import { rollbar } from '../rollbar'
 import { generateRandomBytes } from '../utils/generateRandomBytes';
 import { keyHashHex } from '../utils/keyHashHex'
+import { Transaction } from '../typeorm/Transaction'
+import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
 
 @Injectable()
 export class UserService {
 
   constructor(
-    @InjectRepository(UserEntity)
-    private readonly userRepository: Repository<UserEntity>,
+    private readonly provider: EntityManagerProvider,
     private readonly mailerService: MailerService
   ) { }
 
+  @Transaction()
   async findAll(): Promise<UserEntity[]> {
-    return await this.userRepository.find();
+    return await this.provider.get().find(UserEntity);
   }
 
+  @Transaction()
   async findOne(id): Promise<UserEntity> {
-    return await this.userRepository.findOne(id)
+    return await this.provider.get().findOne(UserEntity, id)
   }
 
+  @Transaction()
   public async findByEmailAndPassword(email: string, password: string): Promise<UserEntity> {
     let password_hash = keyHashHex(password)
-    return this.userRepository.findOne({ email, password_hash })
+    return this.provider.get().findOne(UserEntity, { email, password_hash })
   }
 
+  @Transaction()
   public async createOrRequestMagicLink(email: string): Promise<UserEntity> {
-    let user = await this.userRepository.findOne({ email })
+    let user = await this.provider.get().findOne(UserEntity, { email })
 
     let newUser = !user
     if (newUser) {
@@ -41,7 +44,7 @@ export class UserService {
 
     const oneTimeKey = user.generateOneTimeKey()
 
-    this.userRepository.save(user)
+    this.provider.get().save(user)
 
     if (newUser) {
       this.sendWelcome(user, oneTimeKey)
@@ -52,13 +55,14 @@ export class UserService {
     return user
   }
 
+  @Transaction()
   public async requestMagicLinkOrDoNothing(email: string): Promise<UserEntity> {
-    const user = await this.userRepository.findOne({ email })
+    const user = await this.provider.get().findOne(UserEntity, { email })
 
     if (user) {
       const oneTimeKey = user.generateOneTimeKey()
 
-      await this.userRepository.save(user)
+      await this.provider.get().save(user)
 
       this.sendMagicLink(user, oneTimeKey)
     }
@@ -66,14 +70,16 @@ export class UserService {
     return user
   }
 
+  @Transaction()
   public async confirm(user: UserEntity, password: string): Promise<void> {
     user.clearOneTimeKey()
     user.password_hash = keyHashHex(password)
-    await this.userRepository.save(user)
+    await this.provider.get().save(user)
   }
 
+  @Transaction()
   public async findOneByOneTimeKey(oneTimeKey: string) {
-    return await this.userRepository.findOneOrFail({ one_time_key_hash: keyHashHex(oneTimeKey) })
+    return await this.provider.get().findOneOrFail(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
   }
 
   public sendWelcome(user: UserEntity, oneTimeKey: string) {

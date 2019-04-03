@@ -19,13 +19,11 @@ scalar Date
 input EventDto {
   id: ID
   eventTypeId: Float!
-  name: String = ""
   matchers: [MatcherDto!]!
 }
 
 type EventEntity {
   id: ID!
-  name: String!
   createdAt: Date!
   updatedAt: Date!
 }

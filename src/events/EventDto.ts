@@ -10,9 +10,6 @@ export class EventDto {
   @Field()
   eventTypeId: number;
 
-  @Field()
-  name: string = '';
-
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];
 }

@@ -1,25 +1,25 @@
 import { Injectable } from '@nestjs/common'
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm'
 
 import { VariableEntity } from './VariableEntity'
 import { VariableDto } from './VariableDto'
 import { EventTypeEntity } from '../event-types/EventTypeEntity'
+import { Transaction } from '../typeorm/Transaction'
+import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
 
 @Injectable()
 export class VariableService {
 
   constructor (
-    @InjectRepository(VariableEntity)
-    private readonly variableRepository: Repository<VariableEntity>
+    private readonly provider: EntityManagerProvider
   ) {}
 
+  @Transaction()
   async findOne(id): Promise<VariableEntity> {
-    return this.variableRepository.findOneOrFail(id)
+    return this.provider.get().findOneOrFail(VariableEntity, id)
   }
 
+  @Transaction()
   async createVariable(eventType: EventTypeEntity, variableDto: VariableDto): Promise<VariableEntity> {
-
     const variable = new VariableEntity();
 
     variable.eventType = eventType;
@@ -28,7 +28,7 @@ export class VariableService {
     variable.description = variableDto.description;
     variable.isPublic = variableDto.isPublic;
 
-    await this.variableRepository.save(variable)
+    await this.provider.get().save(variable)
 
     return variable
   }

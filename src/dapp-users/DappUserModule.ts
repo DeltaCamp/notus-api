@@ -2,9 +2,6 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { DappUserEntity } from './DappUserEntity';
-import { DappUserController } from './DappUserController';
-import { DappUserService } from './DappUserService';
-
 import { DappEntity } from '../dapps/DappEntity'
 import { UserEntity } from '../users/UserEntity'
 
@@ -15,15 +12,6 @@ import { UserEntity } from '../users/UserEntity'
       DappEntity,
       UserEntity
     ])
-  ],
-  controllers: [
-    DappUserController
-  ],
-  providers: [
-    DappUserService
-  ],
-  exports: [
-    DappUserService
   ]
 })
 
