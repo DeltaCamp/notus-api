@@ -2,7 +2,7 @@ entity: variables
 items:
   variable0:
     eventType: '@eventType0'
-    source: 'transaction.from'
-    sourceDataType: 'address'
-    description: 'The sender of the transaction'
+    source: 'transaction.value'
+    sourceDataType: 'uint256'
+    description: 'Value / Amount of Ether Transferred'
     isPublic: true

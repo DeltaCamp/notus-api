@@ -1,11 +1,8 @@
 entity: 'event_types'
+processor: ./EventTypeProcessor
 items:
   eventType0:
-    name: 'ERC20 Token Transfer'
+    name: 'Ethereum Tx'
     subject: 'This is subject'
     body: 'This is the body'
     dapp: '@dapp0'
-    variables: 
-      - 1
-    matchers:
-      - 1
