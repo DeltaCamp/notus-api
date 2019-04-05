@@ -1,0 +1,5 @@
+entity: event_type_matchers
+items:
+  eventTypeMatcher0:
+    eventType: '@eventType0'
+    matcher: '@matcher0'
