@@ -1,4 +1,4 @@
-entity: User
+entity: users
 items:
   user1:
     name: '{{name.firstName}} {{name.lastName}}'
