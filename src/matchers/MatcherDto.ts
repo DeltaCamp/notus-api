@@ -1,4 +1,5 @@
 import { Field, InputType } from 'type-graphql';
+import { MatcherType } from './MatcherType'
 
 @InputType()
 export class MatcherDto {
@@ -6,7 +7,7 @@ export class MatcherDto {
   variableId: number;
 
   @Field()
-  type: string = '';
+  type: MatcherType;
 
   @Field()
   operand: string = '';

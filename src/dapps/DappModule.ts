@@ -10,9 +10,7 @@ import { UserEntity } from '../users/UserEntity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([
-      DappUserEntity,
-      DappEntity,
-      UserEntity
+      DappEntity
     ])
   ],
   providers: [

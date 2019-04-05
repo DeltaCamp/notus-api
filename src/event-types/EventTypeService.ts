@@ -8,6 +8,7 @@ import { UserEntity } from '../users/UserEntity'
 import { VariableService } from '../variables/VariableService'
 import { Transaction } from '../typeorm/Transaction'
 import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { VariableEntity } from '../variables'
 
 @Injectable()
 export class EventTypeService {
@@ -20,12 +21,12 @@ export class EventTypeService {
 
   @Transaction()
   async findOne(id): Promise<EventTypeEntity> {
-    return this.provider.get().findOne(EventTypeEntity, id, { relations: ['dapp'] })
+    return this.provider.get().findOne(EventTypeEntity, id)
   }
 
   @Transaction()
   async findOneOrFail(id): Promise<EventTypeEntity> {
-    return this.provider.get().findOneOrFail(EventTypeEntity, id, { relations: ['dapp'] })
+    return this.provider.get().findOneOrFail(EventTypeEntity, id)
   }
 
   @Transaction()
@@ -46,5 +47,26 @@ export class EventTypeService {
     )))
 
     return eventType
+  }
+
+  @Transaction()
+  async getDapp(eventType: EventTypeEntity): Promise<DappEntity> {
+    return this.provider.get().createQueryBuilder()
+      .select('dapps')
+      .from(DappEntity, 'dapps')
+      .innerJoin('dapps.eventTypes', 'event_types')
+      .where('event_types.id = :id', { id: eventType.id })
+      .printSql()
+      .getOne()
+  }
+
+  @Transaction()
+  async getVariables(eventType: EventTypeEntity): Promise<VariableEntity[]> {
+    return this.provider.get().createQueryBuilder()
+      .select('variables')
+      .from(VariableEntity, 'variables') .innerJoin('variables.eventType', 'event_types')
+      .where('event_types.id = :id', { id: eventType.id })
+      .printSql()
+      .getMany()
   }
 }

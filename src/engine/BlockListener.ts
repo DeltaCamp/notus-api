@@ -6,6 +6,7 @@ import { createTransaction } from './createTransaction'
 import { Transaction } from './Transaction'
 import { EventService, EventEntity } from '../events'
 import { range } from 'lodash'
+import { transactionContextRunner } from '../typeorm'
 
 const debug = require('debug')('notus:BlockListener')
 
@@ -26,12 +27,12 @@ export class BlockListener {
     this.provider.removeListener('block', this.onBlockNumber)
   }
 
-  onBlockNumber = async (blockNumber) => {
+  onBlockNumber = (blockNumber) => {
     debug(`Received block number ${blockNumber}`)
-    const events = await this.eventService.findAllForMatch()
-    // await Promise.all(range(blockNumber - 8, blockNumber - 4).map(async (bn) => {
-    await this.checkBlockNumber(events, blockNumber - 8)
-    // }))
+    transactionContextRunner(async () => {
+      const events = await this.eventService.findAllForMatch()
+      await this.checkBlockNumber(events, blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL))
+    })
   }
 
   checkBlockNumber = async (events: EventEntity[], blockNumber) => {
@@ -42,20 +43,26 @@ export class BlockListener {
   }
 
   handleTransaction = async (events: EventEntity[], block: Block, transactionHash: string) => {
+    debug(`Checking ${events.length} for transaction: ${transactionHash}`)
     const transactionResponse: TransactionResponse = await this.provider.getTransaction(transactionHash)
     const transactionReceipt: TransactionReceipt = await this.provider.getTransactionReceipt(transactionHash)
     if (transactionReceipt) {
-      await Promise.all(transactionReceipt.logs.map(log => (
-        this.handleLog(events, block, transactionResponse, transactionReceipt, log)
-      )))
+      const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
+      if (transactionReceipt.logs && transactionReceipt.logs.length) {
+        debug(`handling logs`)
+        await Promise.all(transactionReceipt.logs.map(log => (
+          this.handleLog(events, block, transaction, log)
+        )))
+      } else {
+        await this.blockHandler.handleBlock(events, block, transaction, { address: transaction.to, data: '', topics: [] })
+      }
     } else {
       debug(`Skipping transaction ${transactionHash} for block ${block.number}`)
     }
   }
 
-  handleLog = async (events: EventEntity[], block: Block, transactionResponse: TransactionResponse, transactionReceipt: TransactionReceipt, log: Log) => {
-    // debug(`Checking log ${log.transactionHash}:${log.logIndex}`)
-    const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
+  handleLog = async (events: EventEntity[], block: Block, transaction: Transaction, log: Log) => {
+    debug(`Checking ${events.length} events for log: ${log.transactionHash}:${log.logIndex}`)
     await this.blockHandler.handleBlock(events, block, transaction, log)
   }
 }

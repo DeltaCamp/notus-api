@@ -13,6 +13,7 @@ import { EventTypeModule } from './event-types'
 import { EventModule } from './events'
 import { VariableModule } from './variables'
 import { EngineModule } from './engine/EngineModule'
+import { MatcherModule } from './matchers';
 import { mailModule } from './mailModule'
 import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
 
@@ -27,10 +28,7 @@ import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
     EventTypeModule,
     EventModule,
     VariableModule,
-    TypeOrmModule.forFeature([
-      DappEntity,
-      UserEntity
-    ])
+    MatcherModule
   ],
   providers: [
     EntityManagerProvider

@@ -38,6 +38,7 @@ export class EventTypeEntity {
   @OneToMany(type => EventEntity, event => event.eventType)
   events: EventEntity[];
 
+  @Field(type => [VariableEntity])
   @OneToMany(type => VariableEntity, variable => variable.eventType)
   variables: VariableEntity[];
 

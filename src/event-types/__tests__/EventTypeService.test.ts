@@ -1,9 +1,10 @@
 import { EventTypeService } from '../EventTypeService'
 import { DappEntity } from '../../dapps/DappEntity'
-import { VariableEntity } from '../../variables/VariableEntity'
+import { VariableEntity, VariableType, SourceDataType } from '../../variables'
 import { EventTypeMatcherEntity } from '../../event-type-matchers/EventTypeMatcherEntity'
 import { EventTypeDto } from '../EventTypeDto'
 import { EventTypeEntity } from '../EventTypeEntity'
+import { MatcherType } from '../../matchers'
 
 describe('EventTypeService', () => {
   let entityManager,
@@ -37,13 +38,13 @@ describe('EventTypeService', () => {
 
       const matcherDto = {
         variableId: 1,
-        type: 'eq',
+        type: MatcherType.EQ,
         operand: '0x1234'
       }
 
       const variableDto = {
-        source: 'transaction.from',
-        sourceDataType: 'address',
+        source: VariableType.TRANSACTION_FROM,
+        sourceDataType: SourceDataType.ADDRESS,
         description: 'The address the transaction was sent from',
         isPublic: true
       }

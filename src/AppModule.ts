@@ -9,18 +9,17 @@ import { AppController } from './AppController';
 import { AppService } from './AppService';
 import { AuthModule } from './auth/AuthModule';
 import { CommonModule } from './common/CommonModule';
-import { DappModule } from './dapps/DappModule';
-import { DappUserModule } from './dapp-users/DappUserModule';
-import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
+import { DappModule } from './dapps';
+import { DappUserModule } from './dapp-users';
 import { EventModule } from './events/EventModule';
-import { EventMatcherModule } from './event-matchers/EventMatcherModule';
-import { EventTypeMatcherModule } from './event-type-matchers/EventTypeMatcherModule';
-import { EventTypeModule } from './event-types/EventTypeModule';
+import { EventMatcherModule } from './event-matchers';
+import { EventTypeMatcherModule } from './event-type-matchers';
+import { EventTypeModule } from './event-types';
 import { mailModule } from './mailModule'
-import { MatcherModule } from './matchers/MatcherModule';
-import { TransactionMiddleware } from './typeorm/TransactionMiddleware';
-import { UserModule } from './users/UserModule';
-import { VariableModule } from './variables/VariableModule';
+import { MatcherModule } from './matchers';
+import { TransactionMiddleware, EntityManagerProvider } from './typeorm';
+import { UserModule } from './users';
+import { VariableModule } from './variables';
 
 const isProduction = process.env.NODE_ENV === 'production'
 let baseDir = 'src'

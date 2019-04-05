@@ -24,8 +24,16 @@ input EventDto {
 
 type EventEntity {
   id: ID!
+  eventType: EventTypeEntity!
+  eventMatchers: [EventMatcherEntity!]!
   createdAt: Date!
   updatedAt: Date!
+}
+
+type EventMatcherEntity {
+  id: ID!
+  event: EventEntity!
+  matcher: MatcherEntity!
 }
 
 input EventTypeDto {
@@ -42,18 +50,26 @@ type EventTypeEntity {
   id: ID!
   dapp: DappEntity!
   name: String!
+  variables: [VariableEntity!]!
   createdAt: Date!
   updatedAt: Date!
 }
 
+type EventTypeMatcherEntity {
+  id: ID!
+  eventType: EventTypeEntity!
+  matcher: MatcherEntity!
+}
+
 input MatcherDto {
   variableId: Float!
-  type: String = ""
+  type: Float!
   operand: String = ""
 }
 
 type MatcherEntity {
   id: ID!
+  variable: VariableEntity!
   type: Float!
   operand: String!
   createdAt: Date!
@@ -62,20 +78,22 @@ type MatcherEntity {
 
 type Mutation {
   createDapp(dapp: DappDto!): DappEntity!
-  createEvent(event: EventDto!): EventEntity!
   createEventType(eventType: EventTypeDto!): EventTypeEntity!
+  createEvent(event: EventDto!): EventEntity!
+  destroy(event: EventDto!): EventEntity!
 }
 
 type Query {
   findDapp(id: Float!): DappEntity
-  findEvent(id: String!): EventEntity
-  contract(id: String!): EventTypeEntity!
+  findEventType(id: String!): EventTypeEntity!
+  event(id: String!): EventEntity
+  events: [EventEntity!]!
 }
 
 input VariableDto {
   id: ID
   source: String!
-  sourceDataType: String = ""
+  sourceDataType: String!
   description: String = ""
   isPublic: Boolean = false
 }

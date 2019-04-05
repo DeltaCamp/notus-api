@@ -1,13 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
-import { UserEntity } from '../users/UserEntity'
+import { UserEntity } from '../users'
 import { EventEntity } from './EventEntity'
-import { EventTypeEntity } from '../event-types/EventTypeEntity'
+import { EventTypeEntity, EventTypeService } from '../event-types'
 import { EventDto } from './EventDto'
-import { EventTypeService } from '../event-types/EventTypeService'
-import { EventMatcherService } from '../event-matchers/EventMatcherService'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { EventMatcherEntity, EventMatcherService } from '../event-matchers'
+import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
 export class EventService {
@@ -20,7 +18,12 @@ export class EventService {
 
   @Transaction()
   async findOne(id): Promise<EventEntity> {
-    return this.provider.get().findOne(EventEntity, id, { relations: ['user'] })
+    return this.provider.get().findOne(EventEntity, id)
+  }
+
+  @Transaction()
+  async findForUser(user: UserEntity): Promise<EventEntity[]> {
+    return this.provider.get().find(EventEntity, { user })
   }
 
   @Transaction()
@@ -40,18 +43,57 @@ export class EventService {
   }
 
   @Transaction()
+  async getUser(event: EventEntity): Promise<UserEntity> {
+    return this.provider.get().createQueryBuilder()
+      .select('users')
+      .from(UserEntity, 'users')
+      .innerJoin('users.events', 'events')
+      .where('events.id = :id', { id: event.id })
+      .getOne()
+  }
+
+  @Transaction()
+  async getEventType(event: EventEntity): Promise<EventTypeEntity> {
+    return this.provider.get().createQueryBuilder()
+      .select('event_types')
+      .from(EventTypeEntity, 'event_types')
+      .innerJoin('event_types.events', 'events')
+      .where('events.id = :id', { id: event.id })
+      .getOne()
+  }
+
+  @Transaction()
+  async getEventMatchers(event: EventEntity): Promise<EventMatcherEntity[]> {
+    return this.provider.get().createQueryBuilder()
+      .select('event_matchers')
+      .from(EventMatcherEntity, 'event_matchers')
+      .innerJoin('event_matchers.event', 'events')
+      .where('events.id = :id', { id: event.id })
+      .printSql()
+      .getMany()
+  }
+
+  @Transaction()
   async createEvent(user: UserEntity, eventDto: EventDto): Promise<EventEntity> {
     const event = new EventEntity()
+    const em = this.provider.get()
 
     event.user = user;
     event.eventType =
-      await this.provider.get().findOneOrFail(EventTypeEntity, eventDto.eventTypeId)
-    await this.provider.get().save(event)
+      await em.findOneOrFail(EventTypeEntity, eventDto.eventTypeId)
+    await em.save(event)
 
     event.eventMatchers = await Promise.all(eventDto.matchers.map(matcherDto => (
       this.eventMatcherService.createEventMatcher(event, matcherDto)
     )))
 
     return event
+  }
+
+  @Transaction()
+  async destroyEvent(user: UserEntity, eventDto: EventDto): Promise<boolean> {
+    const em = this.provider.get()
+    await em.delete(EventEntity, eventDto.id)
+    return true
   }
 }

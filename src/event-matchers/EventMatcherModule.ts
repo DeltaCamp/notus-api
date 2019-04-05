@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { EventMatcherEntity } from './EventMatcherEntity'
 import { EventMatcherService } from './EventMatcherService'
+import { EventMatcherResolver } from './EventMatcherResolver'
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { EventMatcherService } from './EventMatcherService'
   ],
 
   providers: [
-    EventMatcherService
+    EventMatcherService, EventMatcherResolver
   ],
 
   exports: [

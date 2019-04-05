@@ -5,6 +5,8 @@ import { MatchContext } from './MatchContext'
 import { EventEntity } from '../events'
 import { rollbar } from '../rollbar'
 
+const debug = require('debug')('notus:MatchHandler')
+
 @Injectable()
 export class MatchHandler {
 
@@ -13,10 +15,16 @@ export class MatchHandler {
   ) {}
 
   async handle(matchContext: MatchContext, event: EventEntity) {
+    const context = {
+      ...matchContext,
+      ...event
+    }
+    debug(`!!!!!!!!!!!!! FIRING !!!!!!!!!!!!!`)
     this.mailerService.sendMail({
       to: event.user.email,
       subject: event.eventType.name,
-      body: 'The event fired'
+      template: 'event.template.pug',
+      context
     }).catch(error => rollbar.error(error))
   }
 }

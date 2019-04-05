@@ -24,7 +24,7 @@ export class VariableService {
     const variable = new VariableEntity();
 
     variable.eventType = eventType;
-    variable.source = VariableType[variableDto.source];
+    variable.source = variableDto.source;
     variable.sourceDataType = variableDto.sourceDataType;
     variable.description = variableDto.description;
     variable.isPublic = variableDto.isPublic;

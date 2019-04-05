@@ -9,8 +9,7 @@ import { EventTypeMatcherService } from './EventTypeMatcherService'
   imports: [
     TypeOrmModule.forFeature([
       EventTypeMatcherEntity
-    ]),
-    MatcherModule
+    ])
   ],
 
   providers: [

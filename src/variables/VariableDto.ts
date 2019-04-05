@@ -1,4 +1,6 @@
 import { Field, InputType, ID } from 'type-graphql';
+import { VariableType } from './VariableType'
+import { SourceDataType } from './SourceDataType'
 
 @InputType()
 export class VariableDto {
@@ -6,10 +8,10 @@ export class VariableDto {
   id?: number;
 
   @Field()
-  source: string;
+  source: VariableType;
 
   @Field()
-  sourceDataType: string = '';
+  sourceDataType: SourceDataType;
 
   @Field()
   description: string = '';

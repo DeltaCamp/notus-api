@@ -20,7 +20,7 @@ export class BlockListenerManager {
 
   start() {
     debug(`Starting BlockListenerManager...`)
-    this.listeners.push(this.newListener('homestead'))
+    this.listeners.push(this.newListener('localhost'))
     // this.listeners.push(this.newListener('rinkeby'))
     // this.listeners.push(this.newListener('ropsten'))
     // this.listeners.push(this.newListener('kovan'))
@@ -34,7 +34,13 @@ export class BlockListenerManager {
   }
 
   newListener(network) {
-    const listener = new BlockListener(ethers.getDefaultProvider(network), this.blockHandler, this.eventService)
+    let provider
+    if (network === 'localhost') {
+      provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
+    } else {
+      provider = ethers.getDefaultProvider(network)
+    }
+    const listener = new BlockListener(provider, this.blockHandler, this.eventService)
     debug(`Starting BlockListener for ${network}`)
     listener.start()
     return listener

@@ -1,38 +1,44 @@
-import { BigNumber, bigNumberify } from 'ethers/utils';
+import { BigNumber, bigNumberify, getAddress } from 'ethers/utils';
 
 import { MatchContext } from './MatchContext'
 import { MatcherEntity, MatcherType } from '../matchers'
+import { SourceDataType } from '../variables'
+
+const debug = require('debug')('notus:Matcher')
 
 export class Matcher {
 
   matches(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     var value = matchContext.get(matcher.variable.source)
+    var sourceDataType = matcher.variable.sourceDataType
     switch(matcher.type) {
       case MatcherType.EQ:
-        return this.eq(value, matcher.operand)
+        return this.eq(value, sourceDataType, matcher.operand)
         break;
       case MatcherType.LT:
-        return this.lt(value, matcher.operand)
+        return this.lt(value, sourceDataType, matcher.operand)
         break;
       case MatcherType.GT:
-        return this.gt(value, matcher.operand)
+        return this.gt(value, sourceDataType, matcher.operand)
         break;
       case MatcherType.LTE:
-        return this.lte(value, matcher.operand)
+        return this.lte(value, sourceDataType, matcher.operand)
         break;
       case MatcherType.GTE:
-        return this.gte(value, matcher.operand)
+        return this.gte(value, sourceDataType, matcher.operand)
         break;
       default:
-        console.warn(`MatchContext: Unknown matcher type ${matcher.type}`)
+        debug(`MatchContext: Unknown matcher type ${matcher.type}`)
     }
 
     return false
   }
 
-  eq(value, operand): boolean {
+  eq(value, sourceType: SourceDataType, operand): boolean {
     if (BigNumber.isBigNumber(value)) {
       return value.eq(operand)
+    } else if (sourceType === SourceDataType.ADDRESS) {
+      return getAddress(value) === getAddress(operand)
     } else if (isNaN(value)) {
       return value === operand
     } else {
@@ -40,7 +46,7 @@ export class Matcher {
     }
   }
 
-  lt(value, operand): boolean {
+  lt(value, sourceType: SourceDataType, operand): boolean {
     if (BigNumber.isBigNumber(value)) {
       return value.lt(operand)
     } else if (isNaN(value)) {
@@ -50,7 +56,7 @@ export class Matcher {
     }
   }
 
-  gt(value, operand): boolean {
+  gt(value, sourceType: SourceDataType, operand): boolean {
     if (BigNumber.isBigNumber(value)) {
       return value.gt(operand)
     } else if (isNaN(value)) {
@@ -60,7 +66,7 @@ export class Matcher {
     }
   }
 
-  lte(value, operand): boolean {
+  lte(value, sourceType: SourceDataType, operand): boolean {
     if (BigNumber.isBigNumber(value)) {
       return value.lte(operand)
     } else if (isNaN(value)) {
@@ -70,7 +76,7 @@ export class Matcher {
     }
   }
 
-  gte(value, operand): boolean {
+  gte(value, sourceType: SourceDataType, operand): boolean {
     if (BigNumber.isBigNumber(value)) {
       return value.gte(operand)
     } else if (isNaN(value)) {

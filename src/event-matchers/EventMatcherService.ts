@@ -4,10 +4,8 @@ import {
 
 import { EventEntity } from '../events/EventEntity'
 import { EventMatcherEntity } from './EventMatcherEntity'
-import { MatcherDto } from '../matchers/MatcherDto'
-import { MatcherService } from '../matchers/MatcherService'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { MatcherEntity, MatcherDto, MatcherService } from '../matchers'
+import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
 export class EventMatcherService {
@@ -26,5 +24,16 @@ export class EventMatcherService {
     await this.provider.get().save(eventMatcher)
 
     return eventMatcher;
+  }
+
+  @Transaction()
+  async getMatcher(eventMatcher: EventMatcherEntity): Promise<MatcherEntity> {
+    // return this.provider.get()
+    //   .createQueryBuilder(MatcherEntity, 'matcher')
+    //   .innerJoin('event_matchers.matcher', 'matchers')
+    //   .where('event_matchers.id = :id', { id: eventMatcher.id })
+    //   .printSql()
+    //   .getOne()
+    return null
   }
 }

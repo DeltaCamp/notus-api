@@ -7,6 +7,8 @@ import { Transaction } from './Transaction'
 import { EventEntity } from '../events'
 import { MatchHandler } from './MatchHandler'
 
+const debug = require('debug')('notus:BlockHandler')
+
 @Injectable()
 export class BlockHandler {
 
@@ -24,9 +26,10 @@ export class BlockHandler {
 
   async checkEvent(matchContext: MatchContext, event: EventEntity) {
     let failed = false
-
+    debug(`Checking event`)
     event.eventType.eventTypeMatchers.forEach(eventTypeMatcher => {
       if (!this.matcher.matches(matchContext, eventTypeMatcher.matcher)) {
+        debug(`Failing on `, eventTypeMatcher)
         failed = true
         return
       }
@@ -36,6 +39,7 @@ export class BlockHandler {
 
     event.eventMatchers.forEach(eventMatcher => {
       if (!this.matcher.matches(matchContext, eventMatcher.matcher)) {
+        debug(`Failing on `, eventMatcher)
         failed = true
         return
       }

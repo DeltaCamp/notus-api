@@ -1,10 +1,12 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class Migration1554420350307 implements MigrationInterface {
+export class Migration1554485524678 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
+        await queryRunner.query(`CREATE TABLE "contracts" ("id" SERIAL NOT NULL, "name" text NOT NULL, "address" text NOT NULL, "abi" json NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_2c7b8f3a7b1acdd49497d83d0fb" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "variables_source_enum" AS ENUM('block.number', 'block.difficulty', 'block.timestamp', 'block.gasLimit', 'block.gasUsed', 'miner', 'transaction.creates', 'transaction.to', 'transaction.data', 'transaction.from', 'transaction.gasLimit', 'transaction.gasPrice', 'transaction.nonce', 'transaction.value', 'transaction.chainId', 'transaction.contractAddress', 'transaction.cumulativeGasUsed', 'transaction.gasUsed', 'log.address', 'log.topic[0]', 'log.topic[1]', 'log.topic[2]', 'log.topic[3]', 'log.data')`);
-        await queryRunner.query(`CREATE TABLE "variables" ("id" SERIAL NOT NULL, "source" "variables_source_enum" NOT NULL, "sourceDataType" text NOT NULL, "description" text NOT NULL, "isPublic" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "eventTypeId" integer NOT NULL, CONSTRAINT "PK_395ef5737c2bfc06e701bd2f7e8" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TYPE "variables_sourcedatatype_enum" AS ENUM('uint', 'uint8', 'uint16', 'uint24', 'uint32', 'uint40', 'uint48', 'uint56', 'uint64', 'uint72', 'uint80', 'uint88', 'uint96', 'uint104', 'uint112', 'uint120', 'uint128', 'uint136', 'uint144', 'uint152', 'uint160', 'uint168', 'uint176', 'uint184', 'uint192', 'uint200', 'uint208', 'uint216', 'uint224', 'uint232', 'uint240', 'uint248', 'uint256', 'int', 'int8', 'int16', 'int24', 'int32', 'int40', 'int48', 'int56', 'int64', 'int72', 'int80', 'int88', 'int96', 'int104', 'int112', 'int120', 'int128', 'int136', 'int144', 'int152', 'int160', 'int168', 'int176', 'int184', 'int192', 'int200', 'int208', 'int216', 'int224', 'int232', 'int240', 'int248', 'int256', 'address', 'bool', 'string', 'byte', 'bytes', 'bytes1', 'bytes2', 'bytes3', 'bytes4', 'bytes5', 'bytes6', 'bytes7', 'bytes8', 'bytes9', 'bytes10', 'bytes11', 'bytes12', 'bytes13', 'bytes14', 'bytes15', 'bytes16', 'bytes17', 'bytes18', 'bytes19', 'bytes20', 'bytes21', 'bytes22', 'bytes23', 'bytes24', 'bytes25', 'bytes26', 'bytes27', 'bytes28', 'bytes29', 'bytes30', 'bytes31', 'bytes32')`);
+        await queryRunner.query(`CREATE TABLE "variables" ("id" SERIAL NOT NULL, "source" "variables_source_enum" NOT NULL, "sourceDataType" "variables_sourcedatatype_enum" NOT NULL, "description" text NOT NULL, "isPublic" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "eventTypeId" integer NOT NULL, CONSTRAINT "PK_395ef5737c2bfc06e701bd2f7e8" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "matchers_type_enum" AS ENUM('0', '1', '2', '3', '4')`);
         await queryRunner.query(`CREATE TABLE "matchers" ("id" SERIAL NOT NULL, "type" "matchers_type_enum" NOT NULL, "operand" text NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "variableId" integer NOT NULL, CONSTRAINT "PK_84af8b70f57bbdcc106a21b31da" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "event_type_matchers" ("id" SERIAL NOT NULL, "eventTypeId" integer, "matcherId" integer, CONSTRAINT "PK_b57897c5c4df930b5e62c104ed0" PRIMARY KEY ("id"))`);
@@ -49,7 +51,9 @@ export class Migration1554420350307 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE "matchers"`);
         await queryRunner.query(`DROP TYPE "matchers_type_enum"`);
         await queryRunner.query(`DROP TABLE "variables"`);
+        await queryRunner.query(`DROP TYPE "variables_sourcedatatype_enum"`);
         await queryRunner.query(`DROP TYPE "variables_source_enum"`);
+        await queryRunner.query(`DROP TABLE "contracts"`);
     }
 
 }
