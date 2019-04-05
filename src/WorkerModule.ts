@@ -1,39 +1,42 @@
+import "reflect-metadata"
 import {
   Module, Global
 } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { WorkerNotificationManager } from './worker/WorkerNotificationManager'
-import { LogManager } from './worker/LogManager'
-
-import { DappEntity } from './dapps/DappEntity'
-import { DappUserEntity } from './dapp-users/DappUserEntity'
-import { DappUserService } from './dapp-users/DappUserService'
-import { UserEntity } from './users/UserEntity'
-import { UserService } from './users/UserService'
-
+import { DappEntity } from './dapps'
+import { UserEntity, UserService } from './users'
+import { EventMatcherModule } from './event-matchers'
+import { EventTypeMatcherModule } from './event-type-matchers'
+import { EventTypeModule } from './event-types'
+import { EventModule } from './events'
+import { VariableModule } from './variables'
+import { EngineModule } from './engine/EngineModule'
 import { mailModule } from './mailModule'
+import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
 
 @Global()
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
+    EngineModule,
     mailModule,
+    EventMatcherModule,
+    EventTypeMatcherModule,
+    EventTypeModule,
+    EventModule,
+    VariableModule,
     TypeOrmModule.forFeature([
-      DappUserEntity,
       DappEntity,
       UserEntity
     ])
   ],
   providers: [
-    WorkerNotificationManager,
-    LogManager,
-    DappUserService,
-    UserService
+    EntityManagerProvider
   ],
   exports: [
-    mailModule
+    mailModule, EntityManagerProvider
   ]
 })
 export class WorkerModule {

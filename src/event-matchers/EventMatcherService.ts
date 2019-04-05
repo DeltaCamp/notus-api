@@ -1,9 +1,6 @@
 import {
   Injectable
 } from '@nestjs/common'
-import {
-  InjectRepository
-} from '@nestjs/typeorm'
 
 import { EventEntity } from '../events/EventEntity'
 import { EventMatcherEntity } from './EventMatcherEntity'

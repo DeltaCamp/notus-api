@@ -5,6 +5,7 @@ import { VariableDto } from './VariableDto'
 import { EventTypeEntity } from '../event-types/EventTypeEntity'
 import { Transaction } from '../typeorm/Transaction'
 import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { VariableType } from './VariableType'
 
 @Injectable()
 export class VariableService {
@@ -23,7 +24,7 @@ export class VariableService {
     const variable = new VariableEntity();
 
     variable.eventType = eventType;
-    variable.source = variableDto.source;
+    variable.source = VariableType[variableDto.source];
     variable.sourceDataType = variableDto.sourceDataType;
     variable.description = variableDto.description;
     variable.isPublic = variableDto.isPublic;

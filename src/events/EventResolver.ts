@@ -6,15 +6,13 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import { UserEntity } from '../users/UserEntity'
 import { EventEntity } from './EventEntity'
 import { EventService } from './EventService'
-import { EventGateway } from './EventGateway'
 import { EventDto } from './EventDto'
 
 @Resolver(of => EventEntity)
 export class EventResolver {
 
   constructor(
-    private readonly eventService: EventService,
-    private readonly eventGateway: EventGateway
+    private readonly eventService: EventService
   ) {}
 
   @Query(returns => EventEntity, { nullable: true })
@@ -29,7 +27,6 @@ export class EventResolver {
     @Args('event') eventDto: EventDto
   ): Promise<EventEntity> {
     const event = await this.eventService.createEvent(user, eventDto)
-    this.eventGateway.add(event.id)
     return event
   }
 }

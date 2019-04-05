@@ -4,7 +4,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { EventEntity } from './EventEntity';
 import { EventService } from './EventService';
 import { EventResolver } from './EventResolver';
-import { EventGateway } from './EventGateway';
 
 @Module({
   imports: [
@@ -13,7 +12,11 @@ import { EventGateway } from './EventGateway';
     ])
   ],
   providers: [
-    EventService, EventResolver, EventGateway
+    EventService, EventResolver
+  ],
+
+  exports: [
+    EventService
   ]
 })
 export class EventModule {}

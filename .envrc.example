@@ -16,3 +16,4 @@ export NOTUS_API_WS_URI=ws://localhost:4000
 export JWT_SECRET=someverylongsecret
 export JWT_EXPIRES_IN=3600
 export ONE_TIME_KEY_EXPIRES_IN=300
+export DEBUG=notus:*

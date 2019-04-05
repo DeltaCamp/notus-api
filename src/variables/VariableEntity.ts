@@ -9,7 +9,7 @@ import {
 import { IsIn } from 'class-validator'
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { variables } from '../constants/variables'
+import { VariableType } from './VariableType'
 import { solidityDataTypes } from '../constants/solidityDataTypes'
 import { EventTypeEntity } from '../event-types/EventTypeEntity'
 
@@ -23,11 +23,11 @@ export class VariableEntity {
   @ManyToOne(type => EventTypeEntity, eventType => eventType.variables, {
     nullable: false
   })
-  eventType: EventTypeEntity
+  eventType: EventTypeEntity;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'enum', enum: VariableType, nullable: false })
   @Field()
-  source: string = '';
+  source: VariableType;
 
   @Column({ type: 'text', nullable: false })
   @Field()

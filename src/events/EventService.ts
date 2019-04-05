@@ -24,6 +24,22 @@ export class EventService {
   }
 
   @Transaction()
+  async findAllForMatch(): Promise<EventEntity[]> {
+    return this.provider.get().find(EventEntity, {
+      relations: [
+        'user',
+        'eventMatchers',
+        'eventMatchers.matcher',
+        'eventMatchers.matcher.variable',
+        'eventType',
+        'eventType.eventTypeMatchers',
+        'eventType.eventTypeMatchers.matcher',
+        'eventType.eventTypeMatchers.matcher.variable'
+      ]
+    })
+  }
+
+  @Transaction()
   async createEvent(user: UserEntity, eventDto: EventDto): Promise<EventEntity> {
     const event = new EventEntity()
 

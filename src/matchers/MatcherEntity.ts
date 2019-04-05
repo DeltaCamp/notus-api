@@ -8,9 +8,9 @@ import {
   ManyToOne,
   JoinColumn
 } from 'typeorm';
-import { IsIn } from 'class-validator'
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
+import { MatcherType } from './MatcherType'
 import { VariableEntity } from '../variables/VariableEntity'
 
 @Entity({ name: 'matchers' })
@@ -25,10 +25,9 @@ export class MatcherEntity {
   })
   variable: VariableEntity;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'enum', enum: MatcherType, nullable: false })
   @Field()
-  @IsIn(['eq', 'gte', 'lt', 'gt', 'lte'])
-  type: string = '';
+  type: MatcherType;
 
   @Column({ type: 'text', nullable: false })
   @Field()

@@ -54,7 +54,7 @@ input MatcherDto {
 
 type MatcherEntity {
   id: ID!
-  type: String!
+  type: Float!
   operand: String!
   createdAt: Date!
   updatedAt: Date!

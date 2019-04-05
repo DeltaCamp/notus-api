@@ -1,12 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { WorkerModule } from './WorkerModule';
-import { WorkerNotificationManager } from './worker/WorkerNotificationManager'
+import { BlockListenerManager } from './engine'
 import { rollbar } from './rollbar';
 
 async function bootstrap() {
   const app = await NestFactory.createApplicationContext(WorkerModule);
-  const workerNotificationManager = app.get(WorkerNotificationManager)
-  await workerNotificationManager.start()
+  const blockListenerManager = app.get(BlockListenerManager)
+  await blockListenerManager.start()
 }
 
 bootstrap().catch(e => rollbar.error(e))
