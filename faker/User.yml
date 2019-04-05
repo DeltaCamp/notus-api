@@ -1,0 +1,11 @@
+entity: User
+items:
+  user1:
+    name: '{{name.firstName}} {{name.lastName}}'
+    email: '{{internet.email}}'
+    one_time_key_hash: '1234'
+  user2:
+    name: '{{name.firstName}} {{name.lastName}}'
+    email: '{{internet.email}}'
+    one_time_key_hash: 'asdf'
+
