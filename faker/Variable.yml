@@ -1,0 +1,8 @@
+entity: variables
+items:
+  variable0:
+    eventType: '@eventType0'
+    source: 'transaction.from'
+    sourceDataType: 'address'
+    description: 'The sender of the transaction'
+    isPublic: true

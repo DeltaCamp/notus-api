@@ -1,0 +1,5 @@
+entity: dapps
+items:
+  dapp0:
+    name: 'ERC20 Token Transfer'
+

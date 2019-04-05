@@ -1,0 +1,6 @@
+entity: matchers
+items:
+  matcher0:
+    variable: '@variable0'
+    type: '0'
+    operand: '0xb9589ca9d932b83c80c6491b3e4d61a52475e287'
