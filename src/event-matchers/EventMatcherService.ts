@@ -2,8 +2,8 @@ import {
   Injectable
 } from '@nestjs/common'
 
-import { EventEntity, EventMatcherEntity } from '../entities'
-import { MatcherEntity, MatcherDto, MatcherService } from '../matchers'
+import { EventEntity, EventMatcherEntity, MatcherEntity } from '../entities'
+import { MatcherDto, MatcherService } from '../matchers'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
