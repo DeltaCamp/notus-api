@@ -17,8 +17,8 @@ export enum VariableType {
   TRANSACTION_CONTRACT_ADDRESS = 'transaction.contractAddress',
   TRANSACTION_CUMULATIVE_GAS_USED = 'transaction.cumulativeGasUsed',
   TRANSACTION_GAS_USED = 'transaction.gasUsed',
-  LOG_ADDRESS = 'log.address',
-  LOG_TOPIC_0 = 'log.topic[0]',
+  LOG_ADDRESS = 'log.address', // originator address
+  LOG_TOPIC_0 = 'log.topic[0]', // eventSignature(x, y, z)
   LOG_TOPIC_1 = 'log.topic[1]',
   LOG_TOPIC_2 = 'log.topic[2]',
   LOG_TOPIC_3 = 'log.topic[3]',
