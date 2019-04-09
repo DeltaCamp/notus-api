@@ -5,12 +5,16 @@ import { DappDto } from './DappDto';
 import { rollbar } from '../rollbar'
 import { Transaction } from '../typeorm/Transaction'
 import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { DappUserService } from '../dapp-users/DappUserService'
+import { EventTypeService } from '../event-types/EventTypeService'
 
 @Injectable()
 export class DappService {
 
   constructor(
-    private readonly provider: EntityManagerProvider
+    private readonly provider: EntityManagerProvider,
+    private readonly dappUserService: DappUserService,
+    private readonly eventTypeService: EventTypeService
   ) { }
 
   @Transaction()
@@ -21,6 +25,11 @@ export class DappService {
   @Transaction()
   async findOne(id: number): Promise<DappEntity> {
     return this.provider.get().findOne(DappEntity, id);
+  }
+
+  @Transaction()
+  async findOneOrFail(id: number): Promise<DappEntity> {
+    return this.provider.get().findOneOrFail(DappEntity, id);
   }
 
   @Transaction()
@@ -41,5 +50,30 @@ export class DappService {
     await this.provider.get().save(dappUser)
 
     return dapp
+  }
+
+  @Transaction()
+  async update(dappDto: DappDto) {
+    const dapp = await this.findOneOrFail(dappDto.id)
+
+    dapp.name = dappDto.name
+
+    await this.provider.get().save(dapp)
+
+    return dapp
+  }
+
+  @Transaction()
+  async destroy(dappId: number) {
+    const dapp = await this.findOneOrFail(dappId)
+    await Promise.all(dapp.dappUsers.map((dappUser) => {
+      return this.dappUserService.destroy(dappUser)
+    }))
+
+    await Promise.all(dapp.eventTypes.map((eventType => {
+      return this.eventTypeService.destroy(eventType)
+    })))
+
+    await this.provider.get().delete(DappEntity, dapp.id)
   }
 }

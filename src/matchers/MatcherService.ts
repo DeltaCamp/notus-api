@@ -5,6 +5,9 @@ import {
   VariableEntity
 } from '../entities'
 import {
+  MatcherDto
+} from './MatcherDto'
+import {
   VariableService
 } from '../variables/VariableService'
 import {
@@ -24,7 +27,21 @@ export class MatcherService {
   async createMatcher(matcherDto): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 
-    matcher.variable = await this.variableService.findOne(matcherDto.variableId)
+    matcher.variable = await this.variableService.findOneOrFail(matcherDto.variableId)
+    matcher.type = matcherDto.type
+    matcher.operand = matcherDto.operand
+
+    await this.provider.get().save(matcher)
+
+    return matcher
+  }
+
+  @Transaction()
+  async update(matcherDto: MatcherDto): Promise<MatcherEntity> {
+    const matcher = await this.findOneOrFail(matcherDto.id)
+    if (matcher.variableId !== matcherDto.variableId) {
+      matcher.variable = await this.variableService.findOneOrFail(matcherDto.variableId)
+    }
     matcher.type = matcherDto.type
     matcher.operand = matcherDto.operand
 
@@ -39,8 +56,13 @@ export class MatcherService {
   }
 
   @Transaction()
+  async findOneOrFail(matcherId): Promise<MatcherEntity> {
+    return await this.provider.get().findOneOrFail(MatcherEntity, matcherId)
+  }
+
+  @Transaction()
   async getVariable(matcher: MatcherEntity): Promise<VariableEntity> {
-    return await this.variableService.findOne(matcher.variableId)
+    return await this.variableService.findOneOrFail(matcher.variableId)
   }
 
   @Transaction()

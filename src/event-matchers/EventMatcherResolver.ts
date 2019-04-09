@@ -6,7 +6,8 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   UserEntity,
   EventMatcherEntity,
-  MatcherEntity
+  MatcherEntity,
+  EventEntity
 } from '../entities'
 import { EventMatcherDto } from './EventMatcherDto'
 import { EventMatcherService } from './EventMatcherService'
@@ -33,12 +34,18 @@ export class EventMatcherResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('eventMatcher') eventMatcherDto: EventMatcherDto
   ): Promise<EventMatcherEntity> {
-    const event = await this.eventService.findOneOrFail(eventMatcherDto.eventId)
-    const isEventOwner = event.userId === user.id
-    if (!isEventOwner) {
-      throw new UnauthorizedException()
-    }
+    const event = await this.getEvent(user, eventMatcherDto.eventId)
     return await this.eventMatcherService.createEventMatcher(event, eventMatcherDto.matcher)
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => EventMatcherEntity)
+  async updateEventMatcher(
+    @GqlAuthUser() user: UserEntity,
+    @Args('eventMatcher') eventMatcherDto: EventMatcherDto
+  ): Promise<EventMatcherEntity> {
+    const event = await this.getEvent(user, eventMatcherDto.eventId)
+    return await this.eventMatcherService.update(eventMatcherDto)
   }
 
   @UseGuards(GqlAuthGuard)
@@ -48,12 +55,17 @@ export class EventMatcherResolver {
     @Args('eventMatcherId') eventMatcherId: number
   ): Promise<Boolean> {
     const eventMatcher = await this.eventMatcherService.findOneOrFail(eventMatcherId)
-    const event = await this.eventService.findOneOrFail(eventMatcher.eventId)
+    const event = await this.getEvent(user, eventMatcher.eventId)
+    await this.eventMatcherService.destroyEventMatcher(eventMatcher)
+    return true
+  }
+
+  async getEvent(user: UserEntity, eventId: number): Promise<EventEntity> {
+    const event = await this.eventService.findOneOrFail(eventId)
     const isEventOwner = event.userId === user.id
     if (!isEventOwner) {
       throw new UnauthorizedException()
     }
-    await this.eventMatcherService.destroyEventMatcher(eventMatcher)
-    return true
+    return event
   }
 }

@@ -26,6 +26,11 @@ export class EventTypeResolver {
     return await this.eventTypeService.findOne(id);
   }
 
+  @Query(returns => [EventTypeEntity])
+  async eventTypes(): Promise<EventTypeEntity[]> {
+    return await this.eventTypeService.find();
+  }
+
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventTypeEntity)
   async createEventType(@AuthUser() user, @Args('eventType') eventType: EventTypeDto): Promise<EventTypeEntity> {

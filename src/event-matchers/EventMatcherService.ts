@@ -4,6 +4,7 @@ import {
 
 import { EventEntity, EventMatcherEntity, MatcherEntity } from '../entities'
 import { MatcherDto } from '../matchers/MatcherDto'
+import { EventMatcherDto } from './EventMatcherDto'
 import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
@@ -24,6 +25,12 @@ export class EventMatcherService {
     await this.provider.get().save(eventMatcher)
 
     return eventMatcher;
+  }
+
+  @Transaction()
+  async update(eventMatcherDto: EventMatcherDto): Promise<EventMatcherEntity> {
+    await this.matcherService.update(eventMatcherDto.matcher)
+    return await this.findOneOrFail(eventMatcherDto.id)
   }
 
   @Transaction()

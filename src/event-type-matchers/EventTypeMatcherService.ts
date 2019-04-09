@@ -5,6 +5,7 @@ import { MatcherService } from '../matchers/MatcherService'
 import { MatcherDto } from '../matchers/MatcherDto'
 import { Transaction } from '../typeorm/Transaction'
 import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { EventTypeMatcherDto } from './EventTypeMatcherDto'
 
 @Injectable()
 export class EventTypeMatcherService {
@@ -22,6 +23,17 @@ export class EventTypeMatcherService {
     this.provider.get().save(eventTypeMatcher)
 
     return eventTypeMatcher
+  }
+
+  @Transaction()
+  async update(eventTypeMatcherDto: EventTypeMatcherDto): Promise<EventTypeMatcherEntity> {
+    await this.matcherService.update(eventTypeMatcherDto.matcher)
+    return await this.findOneOrFail(eventTypeMatcherDto.id)
+  }
+
+  @Transaction()
+  async findOneOrFail(eventTypeMatcherId: number): Promise<EventTypeMatcherEntity> {
+    return await this.provider.get().findOneOrFail(EventTypeMatcherEntity, eventTypeMatcherId)
   }
 
   @Transaction()

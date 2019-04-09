@@ -25,4 +25,9 @@ export class DappUserService {
       .getOne()
     return !!dappUser;
   }
+
+  @Transaction()
+  async destroy(dappUser: DappUserEntity) {
+    await this.provider.get().delete(DappUserEntity, dappUser.id)
+  }
 }

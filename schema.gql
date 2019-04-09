@@ -75,6 +75,7 @@ type EventTypeMatcherEntity {
 }
 
 input MatcherDto {
+  id: ID
   variableId: Float!
   type: Float!
   operand: String = ""
@@ -91,14 +92,20 @@ type MatcherEntity {
 
 type Mutation {
   createDapp(dapp: DappDto!): DappEntity!
+  updateDapp(dapp: DappDto!): DappEntity!
+  destroyDapp(dappId: Float!): DappEntity!
   createEvent(event: EventDto!): EventEntity!
-  destroy(eventId: Float!): EventEntity!
+  destroyEvent(eventId: Float!): EventEntity!
   createEventMatcher(eventMatcher: EventMatcherDto!): EventMatcherEntity!
+  updateEventMatcher(eventMatcher: EventMatcherDto!): EventMatcherEntity!
   destroyEventMatcher(eventMatcherId: Float!): Boolean!
   createEventTypeMatcher(eventTypeMatcher: EventTypeMatcherDto!): EventTypeMatcherEntity!
+  updateEventTypeMatcher(eventTypeMatcher: EventTypeMatcherDto!): EventTypeMatcherEntity!
+  destroyEventTypeMatcher(eventTypeMatcherId: Float!): EventTypeMatcherEntity!
   createEventType(eventType: EventTypeDto!): EventTypeEntity!
   destroyEventType(eventTypeId: Float!): Boolean!
   createVariable(variable: VariableDto!): VariableEntity!
+  updateVariable(variable: VariableDto!): VariableEntity!
 }
 
 type Query {
@@ -108,6 +115,7 @@ type Query {
   event(id: String!): EventEntity
   events: [EventEntity!]!
   eventType(id: String!): EventTypeEntity!
+  eventTypes: [EventTypeEntity!]!
 }
 
 input VariableDto {

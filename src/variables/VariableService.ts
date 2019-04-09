@@ -17,7 +17,7 @@ export class VariableService {
   ) {}
 
   @Transaction()
-  async findOne(id): Promise<VariableEntity> {
+  async findOneOrFail(id): Promise<VariableEntity> {
     return this.provider.get().findOneOrFail(VariableEntity, id)
   }
 
@@ -26,6 +26,19 @@ export class VariableService {
     const variable = new VariableEntity();
 
     variable.eventType = eventType;
+    variable.source = variableDto.source;
+    variable.sourceDataType = variableDto.sourceDataType;
+    variable.description = variableDto.description;
+    variable.isPublic = variableDto.isPublic;
+
+    await this.provider.get().save(variable)
+
+    return variable
+  }
+
+  @Transaction()
+  async updateVariable(variableDto: VariableDto): Promise<VariableEntity> {
+    const variable = await this.findOneOrFail(variableDto.id)
     variable.source = variableDto.source;
     variable.sourceDataType = variableDto.sourceDataType;
     variable.description = variableDto.description;

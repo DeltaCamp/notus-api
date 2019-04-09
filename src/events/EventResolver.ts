@@ -52,7 +52,7 @@ export class EventResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventEntity)
-  async destroy(
+  async destroyEvent(
     @GqlAuthUser() user: UserEntity,
     @Args('eventId') eventId: number
   ): Promise<boolean> {

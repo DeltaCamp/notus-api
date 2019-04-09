@@ -29,6 +29,11 @@ export class EventTypeService {
   }
 
   @Transaction()
+  async find(): Promise<EventTypeEntity[]> {
+    return this.provider.get().find(EventTypeEntity)
+  }
+
+  @Transaction()
   async findOneOrFail(id): Promise<EventTypeEntity> {
     return this.provider.get().findOneOrFail(EventTypeEntity, id)
   }
