@@ -7,8 +7,8 @@ import {
   OneToMany
 } from 'typeorm';
 
-import { DappUserEntity } from "../dapp-users/DappUserEntity";
-import { EventEntity } from '../events/EventEntity';
+import { DappUserEntity, EventEntity } from '../entities'
+
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
 import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'

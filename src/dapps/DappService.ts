@@ -1,8 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
-import { DappEntity } from './DappEntity';
-import { UserEntity } from '../users/UserEntity';
-import { DappUserEntity } from '../dapp-users/DappUserEntity'
+import { DappEntity, UserEntity, DappUserEntity } from '../entities';
 import { DappDto } from './DappDto';
 import { rollbar } from '../rollbar'
 import { Transaction } from '../typeorm/Transaction'

@@ -3,11 +3,14 @@ import { Mutation, Resolver, Query, Args, Parent, ResolveProperty } from '@nestj
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 import { AuthUser } from '../decorators/AuthUser'
-import { EventTypeEntity } from './EventTypeEntity'
+import {
+  DappEntity,
+  VariableEntity,
+  EventTypeEntity,
+  EventTypeMatcherEntity
+} from '../entities'
 import { EventTypeService } from './EventTypeService'
 import { EventTypeDto } from './EventTypeDto'
-import { DappEntity } from '../dapps'
-import { VariableEntity } from '../variables'
 
 @Resolver(of => EventTypeEntity)
 export class EventTypeResolver {
@@ -23,6 +26,11 @@ export class EventTypeResolver {
   @Mutation(returns => EventTypeEntity)
   async createEventType(@AuthUser() user, @Args('eventType') eventType: EventTypeDto): Promise<EventTypeEntity> {
     return await this.eventTypeService.createEventType(eventType)
+  }
+
+  @ResolveProperty('eventTypeMatchers')
+  async eventTypeMatchers(@Parent() eventType: EventTypeEntity): Promise<EventTypeMatcherEntity[]> {
+    return await this.eventTypeService.getEventTypeMatchers(eventType)
   }
 
   @ResolveProperty('dapp')

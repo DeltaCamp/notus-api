@@ -1,6 +1,6 @@
 import { EventTypeResolver } from '../EventTypeResolver'
 
-import { UserEntity } from '../../users/UserEntity'
+import { UserEntity } from '../../entities'
 import { EventTypeDto } from '../EventTypeDto'
 
 describe('EventTypeResolver', () => {

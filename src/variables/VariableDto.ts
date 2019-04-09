@@ -18,4 +18,7 @@ export class VariableDto {
 
   @Field()
   isPublic: boolean = false;
+
+  @Field({ nullable: true })
+  eventTypeId?: number
 }

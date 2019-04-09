@@ -5,8 +5,11 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import { DappEntity } from './dapps'
-import { UserEntity, UserService } from './users'
+import {
+  DappEntity,
+  UserEntity
+} from './entities'
+import { UserService } from './users'
 import { EventMatcherModule } from './event-matchers'
 import { EventTypeMatcherModule } from './event-type-matchers'
 import { EventTypeModule } from './event-types'

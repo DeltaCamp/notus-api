@@ -2,8 +2,7 @@ import {
   Injectable
 } from '@nestjs/common'
 
-import { EventEntity } from '../events/EventEntity'
-import { EventMatcherEntity } from './EventMatcherEntity'
+import { EventEntity, EventMatcherEntity } from '../entities'
 import { MatcherEntity, MatcherDto, MatcherService } from '../matchers'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
@@ -28,12 +27,6 @@ export class EventMatcherService {
 
   @Transaction()
   async getMatcher(eventMatcher: EventMatcherEntity): Promise<MatcherEntity> {
-    // return this.provider.get()
-    //   .createQueryBuilder(MatcherEntity, 'matcher')
-    //   .innerJoin('event_matchers.matcher', 'matchers')
-    //   .where('event_matchers.id = :id', { id: eventMatcher.id })
-    //   .printSql()
-    //   .getOne()
-    return null
+    return await this.matcherService.findOne(eventMatcher.matcherId)
   }
 }

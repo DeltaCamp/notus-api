@@ -3,11 +3,13 @@ import { Mutation, Resolver, Query, Args, ResolveProperty, Parent } from '@nestj
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
-import { UserEntity } from '../users/UserEntity'
-import { EventEntity } from './EventEntity'
+import {
+  UserEntity,
+  EventEntity,
+  EventTypeEntity,
+  EventMatcherEntity
+} from '../entities'
 import { EventService } from './EventService'
-import { EventTypeEntity } from '../event-types'
-import { EventMatcherEntity } from '../event-matchers'
 import { EventDto } from './EventDto'
 
 @Resolver(of => EventEntity)

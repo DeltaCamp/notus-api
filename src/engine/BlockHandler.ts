@@ -4,7 +4,7 @@ import { Block, Log } from 'ethers/providers'
 import { Matcher } from './Matcher'
 import { MatchContext } from './MatchContext'
 import { Transaction } from './Transaction'
-import { EventEntity } from '../events'
+import { EventEntity } from '../entities'
 import { MatchHandler } from './MatchHandler'
 
 const debug = require('debug')('notus:BlockHandler')

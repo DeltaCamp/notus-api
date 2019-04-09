@@ -42,6 +42,9 @@ describe('BlockListener', () => {
     it('should work', async () => {
       await blockListener.onBlockNumber('1')
 
+      expect(eventService.findAllForMatch).toHaveBeenCalledTimes(1)
+
+      expect(provider.getBlock).toHaveBeenCalledWith(1)
       expect(provider.getTransaction).toHaveBeenCalledWith('0x1234')
       expect(provider.getTransactionReceipt).toHaveBeenCalledWith('0x1234')
 

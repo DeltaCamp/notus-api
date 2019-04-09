@@ -1,14 +1,16 @@
 import { Injectable } from '@nestjs/common';
 
-import { EventTypeEntity } from './EventTypeEntity'
-import { EventTypeMatcherService } from '../event-type-matchers/EventTypeMatcherService'
+import {
+  DappEntity,
+  EventTypeEntity,
+  UserEntity,
+  VariableEntity,
+  EventTypeMatcherEntity
+} from '../entities'
+import { EventTypeMatcherService } from '../event-type-matchers'
 import { EventTypeDto } from './EventTypeDto'
-import { DappEntity } from '../dapps/DappEntity'
-import { UserEntity } from '../users/UserEntity'
-import { VariableService } from '../variables/VariableService'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
-import { VariableEntity } from '../variables'
+import { VariableService } from '../variables'
+import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
 export class EventTypeService {
@@ -47,6 +49,16 @@ export class EventTypeService {
     )))
 
     return eventType
+  }
+
+  @Transaction()
+  async getEventTypeMatchers(eventType: EventTypeEntity): Promise<EventTypeMatcherEntity[]> {
+    return this.provider.get().createQueryBuilder()
+      .select('event_type_matchers')
+      .from(EventTypeMatcherEntity, 'event_type_matchers')
+      .innerJoin('event_type_matchers.eventType', 'event_types')
+      .where('event_types.id = :id', { id: eventType.id })
+      .getMany()
   }
 
   @Transaction()

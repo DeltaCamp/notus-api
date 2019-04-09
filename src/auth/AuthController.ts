@@ -6,7 +6,7 @@ import {
   UnauthorizedException
 } from '@nestjs/common'
 
-import { UserEntity } from '../users/UserEntity'
+import { UserEntity } from '../entities'
 import { UserService } from '../users/UserService'
 import { AuthJwtService } from './AuthJwtService'
 

@@ -3,8 +3,7 @@ import { Mutation, Resolver, Query, Args } from '@nestjs/graphql'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
-import { UserEntity } from '../users/UserEntity'
-import { DappEntity } from './DappEntity'
+import { UserEntity, DappEntity } from '../entities'
 import { DappService } from './DappService'
 import { DappDto } from './DappDto'
 

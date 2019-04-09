@@ -5,8 +5,10 @@ import {
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { EventTypeEntity } from '../event-types/EventTypeEntity'
-import { MatcherEntity } from '../matchers/MatcherEntity'
+import {
+  MatcherEntity,
+  EventTypeEntity
+} from '../entities'
 
 @ObjectType()
 @Entity({ name: 'event_type_matchers' })

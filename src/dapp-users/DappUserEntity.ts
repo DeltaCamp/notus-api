@@ -4,11 +4,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  ManyToOne
+  ManyToOne,
+  RelationId
 } from 'typeorm';
 
-import { UserEntity } from "../users/UserEntity";
-import { DappEntity } from "../dapps/DappEntity";
+import { UserEntity, DappEntity } from "../entities";
 
 @Entity({ name: 'dapp_users' })
 export class DappUserEntity {
@@ -21,10 +21,16 @@ export class DappUserEntity {
   })
   user: UserEntity;
 
+  @RelationId((dappUser: DappUserEntity) => dappUser.user)
+  userId: number;
+
   @ManyToOne(type => DappEntity, dapp => dapp.dappUsers, {
     nullable: false
   })
   dapp: DappEntity;
+
+  @RelationId((dappUser: DappUserEntity) => dappUser.dapp)
+  dappId: number;
 
   @Column()
   owner: boolean = false;

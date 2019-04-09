@@ -50,6 +50,7 @@ type EventTypeEntity {
   id: ID!
   dapp: DappEntity!
   name: String!
+  eventTypeMatchers: [EventTypeMatcherEntity!]!
   variables: [VariableEntity!]!
   createdAt: Date!
   updatedAt: Date!
@@ -84,6 +85,7 @@ type Mutation {
 }
 
 type Query {
+  jwt(password: String!, email: String!): String!
   findDapp(id: Float!): DappEntity
   findEventType(id: String!): EventTypeEntity!
   event(id: String!): EventEntity
@@ -96,6 +98,7 @@ input VariableDto {
   sourceDataType: String!
   description: String = ""
   isPublic: Boolean = false
+  eventTypeId: Float
 }
 
 type VariableEntity {

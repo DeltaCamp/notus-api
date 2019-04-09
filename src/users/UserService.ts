@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nest-modules/mailer';
-import { UserEntity } from './UserEntity';
 
+import { UserEntity } from '../entities';
 import { rollbar } from '../rollbar'
 import { generateRandomBytes } from '../utils/generateRandomBytes';
 import { keyHashHex } from '../utils/keyHashHex'

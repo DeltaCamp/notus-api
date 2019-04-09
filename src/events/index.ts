@@ -1,5 +1,4 @@
 export * from './EventDto'
-export * from './EventEntity'
 export * from './EventModule'
 export * from './EventResolver'
 export * from './EventService'

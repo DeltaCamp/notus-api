@@ -11,7 +11,7 @@ import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import { VariableType } from './VariableType'
 import { SourceDataType } from './SourceDataType'
-import { EventTypeEntity } from '../event-types/EventTypeEntity'
+import { EventTypeEntity } from '../entities'
 
 @Entity({ name: 'variables' })
 @ObjectType()

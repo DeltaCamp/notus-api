@@ -1,10 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { UserEntity } from '../users'
-import { EventEntity } from './EventEntity'
-import { EventTypeEntity, EventTypeService } from '../event-types'
+import {
+  EventTypeEntity,
+  UserEntity,
+  EventEntity,
+  EventMatcherEntity
+} from '../entities'
+import { EventTypeService } from '../event-types'
 import { EventDto } from './EventDto'
-import { EventMatcherEntity, EventMatcherService } from '../event-matchers'
+import { EventMatcherService } from '../event-matchers'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()

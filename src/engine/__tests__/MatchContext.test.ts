@@ -3,8 +3,14 @@ import { Block, Log } from 'ethers/providers'
 
 import { Transaction } from '../Transaction'
 import { MatchContext } from '../MatchContext'
-import { MatcherEntity, MatcherType } from '../../matchers'
-import { VariableEntity, VariableType } from '../../variables'
+import {
+  MatcherType
+} from '../../matchers'
+import {
+  MatcherEntity,
+  VariableEntity
+} from '../../entities'
+import { VariableType } from '../../variables'
 
 describe('MatchContext', () => {
 

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MailerService } from '@nest-modules/mailer';
 
 import { MatchContext } from './MatchContext'
-import { EventEntity } from '../events'
+import { EventEntity } from '../entities'
 import { rollbar } from '../rollbar'
 
 const debug = require('debug')('notus:MatchHandler')

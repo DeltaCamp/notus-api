@@ -1,6 +1,6 @@
 import { createParamDecorator } from '@nestjs/common';
 
-import { UserEntity } from '../users/UserEntity'
+import { UserEntity } from '../entities'
 
 export const GqlAuthUser = createParamDecorator((data, [_1, _2, { req }]): UserEntity => {
   let response = null

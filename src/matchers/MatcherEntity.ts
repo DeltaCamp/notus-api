@@ -6,14 +6,15 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  RelationId
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import { MatcherType } from './MatcherType'
-import { VariableEntity } from '../variables'
-import { EventMatcherEntity } from '../event-matchers'
-import { EventTypeMatcherEntity } from '../event-type-matchers'
+import {
+  VariableEntity
+} from '../entities'
 
 @Entity({ name: 'matchers' })
 @ObjectType()
@@ -28,13 +29,8 @@ export class MatcherEntity {
   })
   variable: VariableEntity;
 
-  // @Field()
-  // @OneToMany(type => EventMatcherEntity, eventMatcher => eventMatcher.matcher)
-  // eventMatchers: EventMatcherEntity[];
-
-  // @Field()
-  // @OneToMany(type => EventTypeMatcherEntity, eventTypeMatcher => eventTypeMatcher.matcher)
-  // eventTypeMatchers: EventTypeMatcherEntity[];
+  @RelationId((matcher: MatcherEntity) => matcher.variable)
+  variableId: number;
 
   @Column({ type: 'enum', enum: MatcherType, nullable: false })
   @Field()

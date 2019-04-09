@@ -6,14 +6,17 @@ import {
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
-  JoinColumn
+  JoinColumn,
+  RelationId
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { VariableEntity } from '../variables/VariableEntity';
-import { EventTypeMatcherEntity } from '../event-type-matchers/EventTypeMatcherEntity';
-import { DappEntity } from "../dapps/DappEntity";
-import { EventEntity } from '../events/EventEntity';
+import {
+  VariableEntity,
+  EventTypeMatcherEntity,
+  DappEntity,
+  EventEntity
+} from '../entities';
 
 @ObjectType()
 @Entity({ name: 'event_types' })
@@ -28,10 +31,14 @@ export class EventTypeEntity {
   })
   dapp: DappEntity;
 
+  @RelationId((eventType: EventTypeEntity) => eventType.dapp)
+  dappId: number;
+
   @Field()
   @Column({ type: 'text' })
   name: string = '';
 
+  @Field(type => [EventTypeMatcherEntity])
   @OneToMany(type => EventTypeMatcherEntity, eventTypeMatcher => eventTypeMatcher.eventType)
   eventTypeMatchers: EventTypeMatcherEntity[];
 

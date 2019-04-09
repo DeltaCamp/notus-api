@@ -1,10 +1,8 @@
 import { UseGuards, UnauthorizedException } from '@nestjs/common'
 import { Resolver, ResolveProperty, Parent } from '@nestjs/graphql'
 
-import { UserEntity } from '../users'
-import { EventMatcherEntity } from './EventMatcherEntity'
+import { UserEntity, EventMatcherEntity, MatcherEntity } from '../entities'
 import { EventMatcherService } from './EventMatcherService'
-import { MatcherEntity } from '../matchers'
 
 const debug = require('debug')('notus:EventMatcherResolver')
 
@@ -17,7 +15,6 @@ export class EventMatcherResolver {
 
   @ResolveProperty('matcher')
   async matcher(@Parent() event: EventMatcherEntity): Promise<MatcherEntity> {
-    debug('!!!!!!!!!!!!! Resolving...')
     return await this.eventMatcherService.getMatcher(event)
   }
 }

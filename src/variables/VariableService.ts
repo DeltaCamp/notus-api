@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 
-import { VariableEntity } from './VariableEntity'
+import {
+  VariableEntity,
+  EventTypeEntity,
+  UserEntity
+} from '../entities'
 import { VariableDto } from './VariableDto'
-import { EventTypeEntity } from '../event-types/EventTypeEntity'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { Transaction, EntityManagerProvider } from '../typeorm'
 import { VariableType } from './VariableType'
 
 @Injectable()

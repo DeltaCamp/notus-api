@@ -4,7 +4,8 @@ import { Block, Log, TransactionResponse, TransactionReceipt } from 'ethers/prov
 import { BlockHandler } from './BlockHandler'
 import { createTransaction } from './createTransaction'
 import { Transaction } from './Transaction'
-import { EventService, EventEntity } from '../events'
+import { EventEntity } from '../entities'
+import { EventService } from '../events'
 import { range } from 'lodash'
 import { transactionContextRunner } from '../typeorm'
 
@@ -27,9 +28,9 @@ export class BlockListener {
     this.provider.removeListener('block', this.onBlockNumber)
   }
 
-  onBlockNumber = (blockNumber) => {
+  onBlockNumber = (blockNumber): Promise<any> => {
     debug(`Received block number ${blockNumber}`)
-    transactionContextRunner(async () => {
+    return transactionContextRunner(async () => {
       const events = await this.eventService.findAllForMatch()
       await this.checkBlockNumber(events, blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL))
     })
@@ -49,7 +50,6 @@ export class BlockListener {
     if (transactionReceipt) {
       const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
       if (transactionReceipt.logs && transactionReceipt.logs.length) {
-        debug(`handling logs`)
         await Promise.all(transactionReceipt.logs.map(log => (
           this.handleLog(events, block, transaction, log)
         )))

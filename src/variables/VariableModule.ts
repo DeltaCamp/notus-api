@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { VariableEntity } from './VariableEntity'
+import { VariableEntity } from '../entities'
 import { VariableService } from './VariableService'
 
 @Module({

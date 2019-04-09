@@ -1,6 +1,6 @@
 import { createParamDecorator } from '@nestjs/common';
 
-import { UserEntity } from '../users/UserEntity'
+import { UserEntity } from '../entities'
 
 export const AuthUser = createParamDecorator((data, req): UserEntity => {
   let response = null

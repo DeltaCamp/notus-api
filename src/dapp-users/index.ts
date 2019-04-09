@@ -1,2 +1,2 @@
-export * from './DappUserEntity'
 export * from './DappUserModule'
+export * from './DappUserService'

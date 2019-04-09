@@ -11,9 +11,11 @@ import {
 import { IsIn } from 'class-validator'
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { UserEntity } from '../users/UserEntity'
-import { EventTypeEntity } from '../event-types/EventTypeEntity'
-import { EventMatcherEntity } from '../event-matchers/EventMatcherEntity'
+import {
+  UserEntity,
+  EventTypeEntity,
+  EventMatcherEntity
+} from '../entities'
 
 @Entity({ name: 'events' })
 @ObjectType()

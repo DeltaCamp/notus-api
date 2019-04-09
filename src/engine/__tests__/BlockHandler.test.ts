@@ -1,10 +1,12 @@
 import { BlockHandler } from '../BlockHandler'
 
-import { EventEntity } from '../../events'
-import { EventTypeEntity } from '../../event-types'
-import { EventTypeMatcherEntity } from '../../event-type-matchers'
-import { EventMatcherEntity } from '../../event-matchers'
-import { MatcherEntity } from '../../matchers'
+import {
+  EventEntity,
+  EventTypeEntity,
+  EventTypeMatcherEntity,
+  EventMatcherEntity,
+  MatcherEntity
+} from '../../entities'
 
 describe('BlockHandler', () => {
   let blockHandler

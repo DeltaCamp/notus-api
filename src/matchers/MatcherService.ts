@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common'
 
-import { MatcherEntity } from './MatcherEntity'
-import { VariableService } from '../variables/VariableService'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import {
+  MatcherEntity,
+  VariableEntity
+} from '../entities'
+import {
+  VariableService
+} from '../variables'
+import {
+  Transaction,
+  EntityManagerProvider
+ } from '../typeorm'
 
 @Injectable()
 export class MatcherService {
@@ -24,5 +31,15 @@ export class MatcherService {
     await this.provider.get().save(matcher)
 
     return matcher
+  }
+
+  @Transaction()
+  async findOne(matcherId): Promise<MatcherEntity> {
+    return await this.provider.get().findOne(MatcherEntity, matcherId)
+  }
+
+  @Transaction()
+  async getVariable(matcher: MatcherEntity): Promise<VariableEntity> {
+    return await this.variableService.findOne(matcher.variableId)
   }
 }

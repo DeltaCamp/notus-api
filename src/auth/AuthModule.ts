@@ -6,6 +6,7 @@ import { AuthJwtService } from './AuthJwtService';
 import { AuthJwtStrategy } from './AuthJwtStrategy';
 import { AuthController } from './AuthController'
 import { AuthOneTimeKeyStrategy } from './AuthOneTimeKeyStrategy';
+import { AuthResolver } from './AuthResolver'
 
 @Module({
   imports: [
@@ -13,12 +14,12 @@ import { AuthOneTimeKeyStrategy } from './AuthOneTimeKeyStrategy';
     JwtModule.register({
       secretOrPrivateKey: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: parseInt(process.env.JWT_EXPIRES_IN),
+        expiresIn: process.env.JWT_EXPIRES_IN
       },
     }),
   ],
   providers: [
-    AuthJwtService, AuthJwtStrategy, AuthOneTimeKeyStrategy
+    AuthJwtService, AuthJwtStrategy, AuthOneTimeKeyStrategy, AuthResolver
   ],
   controllers: [
     AuthController

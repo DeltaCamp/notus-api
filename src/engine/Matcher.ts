@@ -1,7 +1,10 @@
 import { BigNumber, bigNumberify, getAddress } from 'ethers/utils';
 
 import { MatchContext } from './MatchContext'
-import { MatcherEntity, MatcherType } from '../matchers'
+import {
+  MatcherEntity
+} from '../entities'
+import { MatcherType } from '../matchers'
 import { SourceDataType } from '../variables'
 
 const debug = require('debug')('notus:Matcher')

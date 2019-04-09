@@ -1,13 +1,9 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { MatcherEntity } from './MatcherEntity'
+import { MatcherEntity } from '../entities'
 import { MatcherService } from './MatcherService'
-import { EventTypeMatcherEntity } from '../event-type-matchers'
-import { EventMatcherEntity } from '../event-matchers'
-
-
-console.log('!!!!! MATCHER MODULE: ', TypeOrmModule)
+import { MatcherResolver } from './MatcherResolver'
 
 @Module({
   imports: [
@@ -17,7 +13,8 @@ console.log('!!!!! MATCHER MODULE: ', TypeOrmModule)
   ],
 
   providers: [
-    MatcherService
+    MatcherService,
+    MatcherResolver
   ],
 
   exports: [

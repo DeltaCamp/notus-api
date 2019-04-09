@@ -6,6 +6,6 @@ import { transactionContextRunner } from './transactionContextRunner'
 @Injectable()
 export class TransactionMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: Function) {
-    transactionContextRunner(next);
+    return transactionContextRunner(next);
   }
 }

@@ -8,8 +8,7 @@ import {
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { DappUserEntity } from "../dapp-users/DappUserEntity";
-import { EventTypeEntity } from '../event-types/EventTypeEntity';
+import { DappUserEntity, EventTypeEntity } from "../entities";
 
 @ObjectType()
 @Entity({ name: 'dapps' })
@@ -25,9 +24,6 @@ export class DappEntity {
 
   @OneToMany(type => EventTypeEntity, contract => contract.dapp)
   eventTypes: EventTypeEntity[];
-
-  // @OneToMany(type => UserEntity, user => user.dapp)
-  // owner: DappUserEntity.find({ owner: true });
 
   @Field()
   @Column({ length: 120 })

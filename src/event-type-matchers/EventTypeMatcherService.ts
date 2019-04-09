@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common'
 
-import { EventTypeEntity } from '../event-types/EventTypeEntity'
-import { EventTypeMatcherEntity } from './EventTypeMatcherEntity'
+import { EventTypeEntity, EventTypeMatcherEntity } from '../entities'
 import { MatcherService } from '../matchers/MatcherService'
 import { MatcherDto } from '../matchers/MatcherDto'
 import { Transaction } from '../typeorm/Transaction'

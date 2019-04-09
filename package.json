@@ -7,6 +7,7 @@
   "scripts": {
     "typeorm": "$(yarn bin)/ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "fixture": "$(yarn bin)/ts-node -r tsconfig-paths/register ./node_modules/typeorm-fixtures-cli/dist/cli.js",
+    "console": "$(yarn bin)/ts-node -r tsconfig-paths/register",
     "graphql:generate": "$(yarn bin)/ts-node scripts/generate-typings",
     "migration:generate": "yarn typeorm migration:generate -n Migration",
     "migration:migrate": "yarn typeorm migration:run",

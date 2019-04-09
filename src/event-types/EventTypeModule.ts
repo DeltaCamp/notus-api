@@ -3,7 +3,7 @@ import {
 } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EventTypeEntity } from './EventTypeEntity'
+import { EventTypeEntity } from '../entities'
 import { EventTypeResolver } from './EventTypeResolver'
 import { EventTypeService } from './EventTypeService'
 
