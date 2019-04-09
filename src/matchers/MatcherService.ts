@@ -6,7 +6,7 @@ import {
 } from '../entities'
 import {
   VariableService
-} from '../variables'
+} from '../variables/VariableService'
 import {
   Transaction,
   EntityManagerProvider
@@ -41,5 +41,10 @@ export class MatcherService {
   @Transaction()
   async getVariable(matcher: MatcherEntity): Promise<VariableEntity> {
     return await this.variableService.findOne(matcher.variableId)
+  }
+
+  @Transaction()
+  async destroy(matcherId: number) {
+    await this.provider.get().delete(MatcherEntity, matcherId);
   }
 }

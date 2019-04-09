@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, Inject, forwardRef } from '@nestjs/common'
 import { Mutation, Resolver, Query, Args, Parent, ResolveProperty } from '@nestjs/graphql'
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
@@ -11,21 +11,41 @@ import {
 } from '../entities'
 import { EventTypeService } from './EventTypeService'
 import { EventTypeDto } from './EventTypeDto'
+import { DappUserService } from '../dapp-users/DappUserService'
 
 @Resolver(of => EventTypeEntity)
 export class EventTypeResolver {
 
-  constructor(private readonly eventTypeService: EventTypeService) {}
+  constructor(
+    private readonly eventTypeService: EventTypeService,
+    private readonly dappUserService: DappUserService
+  ) {}
 
   @Query(returns => EventTypeEntity)
-  async findEventType(@Args('id') id: string): Promise<EventTypeEntity> {
+  async eventType(@Args('id') id: string): Promise<EventTypeEntity> {
     return await this.eventTypeService.findOne(id);
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventTypeEntity)
   async createEventType(@AuthUser() user, @Args('eventType') eventType: EventTypeDto): Promise<EventTypeEntity> {
+    const isDappOwner = await this.dappUserService.isOwner(eventType.dappId, user.id)
+    if (!isDappOwner) {
+      throw new UnauthorizedException()
+    }
     return await this.eventTypeService.createEventType(eventType)
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => Boolean)
+  async destroyEventType(@AuthUser() user, @Args('eventTypeId') eventTypeId: number): Promise<Boolean> {
+    const eventType = await this.eventTypeService.findOneOrFail(eventTypeId)
+    const isDappOwner = await this.dappUserService.isOwner(eventType.dappId, user.id)
+    if (!isDappOwner) {
+      throw new UnauthorizedException()
+    }
+    await this.eventTypeService.destroy(eventType)
+    return true
   }
 
   @ResolveProperty('eventTypeMatchers')

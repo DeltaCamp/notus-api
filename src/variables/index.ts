@@ -1,5 +1,4 @@
 export * from './VariableDto'
 export * from './VariableModule'
-export * from './VariableService'
 export * from './VariableType'
 export * from './SourceDataType'

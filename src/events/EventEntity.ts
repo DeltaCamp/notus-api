@@ -6,7 +6,8 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  RelationId
 } from 'typeorm';
 import { IsIn } from 'class-validator'
 import { Field, Int, ObjectType, ID } from 'type-graphql';
@@ -28,6 +29,9 @@ export class EventEntity {
     nullable: false
   })
   user: UserEntity;
+
+  @RelationId((event: EventEntity) => event.user)
+  userId: number;
 
   @Field(type => EventTypeEntity)
   @ManyToOne(type => EventTypeEntity, eventType => eventType.events, {

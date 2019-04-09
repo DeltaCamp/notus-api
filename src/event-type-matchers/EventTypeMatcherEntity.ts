@@ -1,7 +1,8 @@
 import {
   Entity,
   PrimaryGeneratedColumn,
-  ManyToOne
+  ManyToOne,
+  RelationId
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
@@ -23,9 +24,15 @@ export class EventTypeMatcherEntity {
   })
   eventType: EventTypeEntity;
 
+  @RelationId((eventTypeMatcher: EventTypeMatcherEntity) => eventTypeMatcher.eventType)
+  eventTypeId: number;
+
   @Field(type => MatcherEntity)
   @ManyToOne(type => MatcherEntity, {
     nullable: false
   })
   matcher: MatcherEntity;
+
+  @RelationId((eventTypeMatcher: EventTypeMatcherEntity) => eventTypeMatcher.matcher)
+  matcherId: number;
 }

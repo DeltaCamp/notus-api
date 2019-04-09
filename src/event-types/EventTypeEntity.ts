@@ -49,11 +49,11 @@ export class EventTypeEntity {
   @OneToMany(type => VariableEntity, variable => variable.eventType)
   variables: VariableEntity[];
 
-  @Field()
+  @Field(type => Date)
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
-  @Field()
+  @Field(type => Date)
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 }

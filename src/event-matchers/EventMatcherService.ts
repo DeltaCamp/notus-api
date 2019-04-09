@@ -3,7 +3,8 @@ import {
 } from '@nestjs/common'
 
 import { EventEntity, EventMatcherEntity, MatcherEntity } from '../entities'
-import { MatcherDto, MatcherService } from '../matchers'
+import { MatcherDto } from '../matchers/MatcherDto'
+import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
@@ -23,6 +24,17 @@ export class EventMatcherService {
     await this.provider.get().save(eventMatcher)
 
     return eventMatcher;
+  }
+
+  @Transaction()
+  async destroyEventMatcher(eventMatcher: EventMatcherEntity) {
+    await this.matcherService.destroy(eventMatcher.matcherId)
+    await this.provider.get().delete(EventMatcherEntity, eventMatcher.id)
+  }
+
+  @Transaction()
+  async findOneOrFail(eventMatcherId: number) {
+    return await this.provider.get().findOneOrFail(EventMatcherEntity, eventMatcherId)
   }
 
   @Transaction()

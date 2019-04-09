@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 
 import {
   DappEntity,
@@ -7,9 +7,10 @@ import {
   VariableEntity,
   EventTypeMatcherEntity
 } from '../entities'
-import { EventTypeMatcherService } from '../event-type-matchers'
+import { EventTypeMatcherService } from '../event-type-matchers/EventTypeMatcherService'
 import { EventTypeDto } from './EventTypeDto'
-import { VariableService } from '../variables'
+import { VariableService } from '../variables/VariableService'
+import { EventService } from '../events/EventService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
@@ -18,7 +19,8 @@ export class EventTypeService {
   constructor (
     private readonly provider: EntityManagerProvider,
     private readonly variableService: VariableService,
-    private readonly eventTypeMatcherService: EventTypeMatcherService
+    private readonly eventTypeMatcherService: EventTypeMatcherService,
+    private readonly eventService: EventService
   ) {}
 
   @Transaction()
@@ -49,6 +51,23 @@ export class EventTypeService {
     )))
 
     return eventType
+  }
+
+  @Transaction()
+  async destroy(eventType: EventTypeEntity) {
+    await Promise.all(eventType.variables.map((variable) => {
+      return this.variableService.destroy(variable)
+    }))
+
+    await Promise.all(eventType.eventTypeMatchers.map((eventTypeMatcher) => {
+      return this.eventTypeMatcherService.destroy(eventTypeMatcher)
+    }))
+
+    await Promise.all(eventType.events.map((event) => {
+      return this.eventService.destroy(event)
+    }))
+
+    await this.provider.get().delete(EventTypeEntity, eventType.id)
   }
 
   @Transaction()

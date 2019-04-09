@@ -54,8 +54,12 @@ export class EventResolver {
   @Mutation(returns => EventEntity)
   async destroy(
     @GqlAuthUser() user: UserEntity,
-    @Args('event') eventDto: EventDto
+    @Args('eventId') eventId: number
   ): Promise<boolean> {
-    return await this.eventService.destroyEvent(user, eventDto)
+    const event = await this.eventService.findOneOrFail(eventId);
+    if (event.userId !== user.id) {
+      throw new UnauthorizedException()
+    }
+    return await this.eventService.destroy(event)
   }
 }

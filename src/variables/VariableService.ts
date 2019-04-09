@@ -35,4 +35,9 @@ export class VariableService {
 
     return variable
   }
+
+  @Transaction()
+  async destroy(variable: VariableEntity) {
+    await this.provider.get().delete(VariableEntity, variable.id)
+  }
 }

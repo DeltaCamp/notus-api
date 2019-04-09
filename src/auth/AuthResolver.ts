@@ -3,7 +3,7 @@ import { Mutation, Resolver, Query, Args, ResolveProperty, Parent } from '@nestj
 
 import { GqlAuthGuard } from './GqlAuthGuard'
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
-import { UserService } from '../users'
+import { UserService } from '../users/UserService'
 import { AuthJwtService } from './AuthJwtService'
 
 @Resolver()

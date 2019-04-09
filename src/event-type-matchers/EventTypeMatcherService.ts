@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject, forwardRef } from '@nestjs/common'
 
 import { EventTypeEntity, EventTypeMatcherEntity } from '../entities'
 import { MatcherService } from '../matchers/MatcherService'
@@ -22,5 +22,11 @@ export class EventTypeMatcherService {
     this.provider.get().save(eventTypeMatcher)
 
     return eventTypeMatcher
+  }
+
+  @Transaction()
+  async destroy(eventTypeMatcher: EventTypeMatcherEntity) {
+    await this.matcherService.destroy(eventTypeMatcher.matcherId)
+    await this.provider.get().delete(EventTypeMatcherEntity, eventTypeMatcher.id)
   }
 }

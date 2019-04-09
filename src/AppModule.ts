@@ -17,7 +17,7 @@ import { EventTypeMatcherModule } from './event-type-matchers';
 import { EventTypeModule } from './event-types';
 import { mailModule } from './mailModule'
 import { MatcherModule } from './matchers';
-import { TransactionMiddleware, EntityManagerProvider } from './typeorm';
+import { TransactionMiddleware, TransactionModule } from './typeorm';
 import { UserModule } from './users';
 import { VariableModule } from './variables';
 
@@ -33,7 +33,10 @@ if (isProduction) {
     AuthModule,
     CommonModule,
     DappModule,
+    UserModule,
     DappUserModule,
+    MatcherModule,
+    VariableModule,
     EventModule,
     EventMatcherModule,
     EventTypeMatcherModule,
@@ -46,19 +49,17 @@ if (isProduction) {
       context: ({ req }) => ({ req })
     }),
     mailModule,
-    MatcherModule,
-    TypeOrmModule.forRoot(),
-    UserModule,
-    VariableModule
+    TransactionModule,
+    TypeOrmModule.forRoot()
   ],
   controllers: [
     AppController
   ],
   providers: [
-    AppService, EntityManagerProvider
+    AppService
   ],
   exports: [
-    mailModule, EntityManagerProvider
+    mailModule
   ]
 })
 

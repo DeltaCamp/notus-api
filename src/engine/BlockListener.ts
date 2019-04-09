@@ -5,7 +5,7 @@ import { BlockHandler } from './BlockHandler'
 import { createTransaction } from './createTransaction'
 import { Transaction } from './Transaction'
 import { EventEntity } from '../entities'
-import { EventService } from '../events'
+import { EventService } from '../events/EventService'
 import { range } from 'lodash'
 import { transactionContextRunner } from '../typeorm'
 

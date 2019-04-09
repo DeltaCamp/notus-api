@@ -15,8 +15,13 @@ export class DappResolver {
   ) {}
 
   @Query(returns => DappEntity, { nullable: true })
-  async findDapp(@Args('id') id: number): Promise<DappEntity> {
+  async dapp(@Args('id') id: number): Promise<DappEntity> {
     return await this.dappService.findOne(id);
+  }
+
+  @Query(returns => [DappEntity], { nullable: false })
+  async dapps() {
+    return await this.dappService.findAll();
   }
 
   @UseGuards(GqlAuthGuard)

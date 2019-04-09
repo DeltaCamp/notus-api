@@ -6,9 +6,8 @@ import {
   EventEntity,
   EventMatcherEntity
 } from '../entities'
-import { EventTypeService } from '../event-types'
 import { EventDto } from './EventDto'
-import { EventMatcherService } from '../event-matchers'
+import { EventMatcherService } from '../event-matchers/EventMatcherService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
@@ -16,13 +15,17 @@ export class EventService {
 
   constructor (
     private readonly provider: EntityManagerProvider,
-    private readonly eventTypeService: EventTypeService,
     private readonly eventMatcherService: EventMatcherService
   ) {}
 
   @Transaction()
   async findOne(id): Promise<EventEntity> {
     return this.provider.get().findOne(EventEntity, id)
+  }
+
+  @Transaction()
+  async findOneOrFail(id): Promise<EventEntity> {
+    return this.provider.get().findOneOrFail(EventEntity, id)
   }
 
   @Transaction()
@@ -95,9 +98,8 @@ export class EventService {
   }
 
   @Transaction()
-  async destroyEvent(user: UserEntity, eventDto: EventDto): Promise<boolean> {
-    const em = this.provider.get()
-    await em.delete(EventEntity, eventDto.id)
+  async destroy(event: EventEntity): Promise<boolean> {
+    await this.provider.get().delete(EventEntity, event.id)
     return true
   }
 }

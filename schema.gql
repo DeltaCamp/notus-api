@@ -30,6 +30,12 @@ type EventEntity {
   updatedAt: Date!
 }
 
+input EventMatcherDto {
+  id: ID
+  eventId: Float
+  matcher: MatcherDto!
+}
+
 type EventMatcherEntity {
   id: ID!
   event: EventEntity!
@@ -56,6 +62,12 @@ type EventTypeEntity {
   updatedAt: Date!
 }
 
+input EventTypeMatcherDto {
+  id: ID
+  eventTypeId: Float
+  matcher: MatcherDto!
+}
+
 type EventTypeMatcherEntity {
   id: ID!
   eventType: EventTypeEntity!
@@ -79,17 +91,23 @@ type MatcherEntity {
 
 type Mutation {
   createDapp(dapp: DappDto!): DappEntity!
-  createEventType(eventType: EventTypeDto!): EventTypeEntity!
   createEvent(event: EventDto!): EventEntity!
-  destroy(event: EventDto!): EventEntity!
+  destroy(eventId: Float!): EventEntity!
+  createEventMatcher(eventMatcher: EventMatcherDto!): EventMatcherEntity!
+  destroyEventMatcher(eventMatcherId: Float!): Boolean!
+  createEventTypeMatcher(eventTypeMatcher: EventTypeMatcherDto!): EventTypeMatcherEntity!
+  createEventType(eventType: EventTypeDto!): EventTypeEntity!
+  destroyEventType(eventTypeId: Float!): Boolean!
+  createVariable(variable: VariableDto!): VariableEntity!
 }
 
 type Query {
   jwt(password: String!, email: String!): String!
-  findDapp(id: Float!): DappEntity
-  findEventType(id: String!): EventTypeEntity!
+  dapp(id: Float!): DappEntity
+  dapps: [DappEntity!]!
   event(id: String!): EventEntity
   events: [EventEntity!]!
+  eventType(id: String!): EventTypeEntity!
 }
 
 input VariableDto {

@@ -9,7 +9,6 @@ import {
   DappEntity,
   UserEntity
 } from './entities'
-import { UserService } from './users'
 import { EventMatcherModule } from './event-matchers'
 import { EventTypeMatcherModule } from './event-type-matchers'
 import { EventTypeModule } from './event-types'

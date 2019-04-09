@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { VariableEntity } from '../entities'
 import { VariableService } from './VariableService'
+import { VariableResolver } from './VariableResolver'
 
 @Module({
   imports: [
@@ -12,7 +13,7 @@ import { VariableService } from './VariableService'
   ],
 
   providers: [
-    VariableService
+    VariableService, VariableResolver
   ],
 
   exports: [

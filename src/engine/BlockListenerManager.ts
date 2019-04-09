@@ -3,7 +3,7 @@ import { ethers } from 'ethers'
 
 import { BlockHandler } from './BlockHandler'
 import { BlockListener } from './BlockListener'
-import { EventService } from '../events'
+import { EventService } from '../events/EventService'
 
 const debug = require('debug')('notus:BlockListenerManager')
 

@@ -1,5 +1,5 @@
 import { UseGuards, UnauthorizedException } from '@nestjs/common'
-import { Resolver, ResolveProperty, Parent } from '@nestjs/graphql'
+import { Resolver, ResolveProperty, Parent, Mutation } from '@nestjs/graphql'
 
 import {
   VariableEntity,

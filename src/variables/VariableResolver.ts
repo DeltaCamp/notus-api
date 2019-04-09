@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, Inject, forwardRef } from '@nestjs/common'
 import { Mutation, Resolver, Query, Args, ResolveProperty, Parent } from '@nestjs/graphql'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 
@@ -9,7 +9,7 @@ import {
 } from '../entities'
 import { VariableService } from './VariableService'
 import { VariableDto } from './VariableDto'
-import { EventTypeService } from '../event-types'
+import { EventTypeService } from '../event-types/EventTypeService'
 import { DappUserService } from '../dapp-users/DappUserService'
 
 @Resolver(of => VariableEntity)
@@ -17,8 +17,9 @@ export class VariableResolver {
 
   constructor(
     private readonly variableService: VariableService,
-    private readonly eventTypeService: EventTypeService,
-    private readonly dappUserService: DappUserService
+    private readonly dappUserService: DappUserService,
+    @Inject(forwardRef(() => EventTypeService))
+    private readonly eventTypeService: EventTypeService
   ) {}
 
   @UseGuards(GqlAuthGuard)
