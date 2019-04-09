@@ -1,5 +1,7 @@
 entity: dapps
 items:
   dapp0:
-    name: 'Ethereum Tx Dapp'
+    name: 'Ethereum Transaction'
+  dapp1:
+    name: 'Token (ERC20)'
 

@@ -38,6 +38,7 @@ export class EventTypeEntity {
   @Column({ type: 'text' })
   name: string = '';
 
+  // Fixed default variables: ie. a contractAddress at 0x1234 that gets set for every event
   @Field(type => [EventTypeMatcherEntity])
   @OneToMany(type => EventTypeMatcherEntity, eventTypeMatcher => eventTypeMatcher.eventType)
   eventTypeMatchers: EventTypeMatcherEntity[];

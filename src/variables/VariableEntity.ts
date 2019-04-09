@@ -41,6 +41,8 @@ export class VariableEntity {
   @Field()
   description: string = '';
 
+  // If an eventTypeMatcher is referencing this variable, isPublic would be false
+  // (ie the user cannot override what it is set to)
   @Column({ type: 'boolean', nullable: false })
   @Field()
   isPublic: boolean = false;
