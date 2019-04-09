@@ -2,5 +2,5 @@ entity: matchers
 items:
   matcher0:
     variable: '@variable0'
-    type: '1'
-    operand: '100000000000000'
+    type: '2'
+    operand: '1000'
