@@ -46,8 +46,6 @@ input EventTypeDto {
   id: ID
   dappId: Float!
   name: String = ""
-  subject: String = ""
-  body: String = ""
   matchers: [MatcherDto!]!
   variables: [VariableDto!]!
 }
@@ -103,9 +101,11 @@ type Mutation {
   updateEventTypeMatcher(eventTypeMatcher: EventTypeMatcherDto!): EventTypeMatcherEntity!
   destroyEventTypeMatcher(eventTypeMatcherId: Float!): EventTypeMatcherEntity!
   createEventType(eventType: EventTypeDto!): EventTypeEntity!
+  updateEventType(eventType: EventTypeDto!): EventTypeEntity!
   destroyEventType(eventTypeId: Float!): Boolean!
   createVariable(variable: VariableDto!): VariableEntity!
   updateVariable(variable: VariableDto!): VariableEntity!
+  destroyVariable(variableId: Float!): Boolean!
 }
 
 type Query {

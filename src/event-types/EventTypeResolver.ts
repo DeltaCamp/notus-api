@@ -33,22 +33,24 @@ export class EventTypeResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventTypeEntity)
-  async createEventType(@AuthUser() user, @Args('eventType') eventType: EventTypeDto): Promise<EventTypeEntity> {
-    const isDappOwner = await this.dappUserService.isOwner(eventType.dappId, user.id)
-    if (!isDappOwner) {
-      throw new UnauthorizedException()
-    }
-    return await this.eventTypeService.createEventType(eventType)
+  async createEventType(@AuthUser() user, @Args('eventType') eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
+    await this.checkIsDappOwner(eventTypeDto.dappId, user.id)
+    return await this.eventTypeService.createEventType(eventTypeDto)
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => EventTypeEntity)
+  async updateEventType(@AuthUser() user, @Args('eventType') eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
+    const eventType = await this.eventTypeService.findOneOrFail(eventTypeDto.id)
+    await this.checkIsDappOwner(eventType.dappId, user.id)
+    return await this.eventTypeService.update(eventType, eventTypeDto)
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Boolean)
   async destroyEventType(@AuthUser() user, @Args('eventTypeId') eventTypeId: number): Promise<Boolean> {
     const eventType = await this.eventTypeService.findOneOrFail(eventTypeId)
-    const isDappOwner = await this.dappUserService.isOwner(eventType.dappId, user.id)
-    if (!isDappOwner) {
-      throw new UnauthorizedException()
-    }
+    await this.checkIsDappOwner(eventType.dappId, user.id)
     await this.eventTypeService.destroy(eventType)
     return true
   }
@@ -66,5 +68,12 @@ export class EventTypeResolver {
   @ResolveProperty('variables')
   async variables(@Parent() eventType: EventTypeEntity): Promise<VariableEntity[]> {
     return await this.eventTypeService.getVariables(eventType)
+  }
+
+  async checkIsDappOwner(dappId: number, userId: number) {
+    const isDappOwner = await this.dappUserService.isOwner(dappId, userId)
+    if (!isDappOwner) {
+      throw new UnauthorizedException()
+    }
   }
 }

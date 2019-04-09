@@ -14,12 +14,6 @@ export class EventTypeDto {
   @Field()
   name: string = '';
 
-  @Field()
-  subject: string = '';
-
-  @Field()
-  body: string = '';
-
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];
 

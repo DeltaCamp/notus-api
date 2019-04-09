@@ -34,7 +34,7 @@ export class EventMatcherService {
   }
 
   @Transaction()
-  async destroyEventMatcher(eventMatcher: EventMatcherEntity) {
+  async destroy(eventMatcher: EventMatcherEntity) {
     await this.matcherService.destroy(eventMatcher.matcherId)
     await this.provider.get().delete(EventMatcherEntity, eventMatcher.id)
   }

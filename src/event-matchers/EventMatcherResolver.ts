@@ -56,7 +56,7 @@ export class EventMatcherResolver {
   ): Promise<Boolean> {
     const eventMatcher = await this.eventMatcherService.findOneOrFail(eventMatcherId)
     const event = await this.getEvent(user, eventMatcher.eventId)
-    await this.eventMatcherService.destroyEventMatcher(eventMatcher)
+    await this.eventMatcherService.destroy(eventMatcher)
     return true
   }
 

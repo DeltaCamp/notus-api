@@ -99,6 +99,10 @@ export class EventService {
 
   @Transaction()
   async destroy(event: EventEntity): Promise<boolean> {
+    await Promise.all(event.eventMatchers.map(eventMatcher => {
+      return this.eventMatcherService.destroy(eventMatcher)
+    }))
+    
     await this.provider.get().delete(EventEntity, event.id)
     return true
   }

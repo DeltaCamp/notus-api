@@ -59,6 +59,13 @@ export class EventTypeService {
   }
 
   @Transaction()
+  async update(eventType: EventTypeEntity, eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
+    eventType.name = eventTypeDto.name
+    await this.provider.get().save(eventType)
+    return eventType
+  }
+
+  @Transaction()
   async destroy(eventType: EventTypeEntity) {
     await Promise.all(eventType.variables.map((variable) => {
       return this.variableService.destroy(variable)

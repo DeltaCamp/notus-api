@@ -4,7 +4,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  ManyToOne
+  ManyToOne,
+  RelationId
 } from 'typeorm';
 import { IsIn } from 'class-validator'
 import { Field, Int, ObjectType, ID } from 'type-graphql';
@@ -24,6 +25,9 @@ export class VariableEntity {
     nullable: false
   })
   eventType: EventTypeEntity;
+
+  @RelationId((variable: VariableEntity) => variable.eventType)
+  eventTypeId: number;
 
   @Column({ type: 'enum', enum: VariableType, nullable: false })
   @Field()

@@ -29,7 +29,7 @@ export class VariableResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('variable') variableDto: VariableDto
   ): Promise<VariableEntity> {
-    const eventType = await this.getEventType(user, variableDto.eventTypeId)
+    const eventType = await this.getEventTypeAndAuth(user, variableDto.eventTypeId)
     return await this.variableService.createVariable(eventType, variableDto)
   }
 
@@ -39,11 +39,23 @@ export class VariableResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('variable') variableDto: VariableDto
   ): Promise<VariableEntity> {
-    const eventType = await this.getEventType(user, variableDto.eventTypeId)
+    const eventType = await this.getEventTypeAndAuth(user, variableDto.eventTypeId)
     return await this.variableService.updateVariable(variableDto)
   }
 
-  async getEventType(user: UserEntity, eventTypeId: number): Promise<EventTypeEntity> {
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => Boolean)
+  async destroyVariable(
+    @GqlAuthUser() user: UserEntity,
+    @Args('variableId') variableId: number
+  ): Promise<Boolean> {
+    const variable = await this.variableService.findOneOrFail(variableId)
+    const eventType = await this.getEventTypeAndAuth(user, variable.eventTypeId)
+    await this.variableService.destroy(variable)
+    return true
+  }
+
+  async getEventTypeAndAuth(user: UserEntity, eventTypeId: number): Promise<EventTypeEntity> {
     const eventType = await this.eventTypeService.findOneOrFail(eventTypeId)
     const isDappOwner = await this.dappUserService.isOwner(eventType.dappId, user.id)
     if (!isDappOwner) {
