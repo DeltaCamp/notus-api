@@ -3,5 +3,3 @@ items:
   event0:
     eventType: '@eventType0'
     user: '@user0'
-    matchers:
-      - '@matcher0'

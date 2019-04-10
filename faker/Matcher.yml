@@ -4,4 +4,7 @@ items:
     variable: '@variable0'
     type: '2'
     operand: '1000'
-  
+  matcher1:
+    variable: '@variable0'
+    type: '1'
+    operand: '2000'

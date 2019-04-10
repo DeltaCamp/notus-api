@@ -7,6 +7,7 @@ import {
   DappEntity
 } from '../entities'
 import { DappUserService } from './DappUserService'
+import { DappUserResolver } from './DappUserResolver'
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { DappUserService } from './DappUserService'
   ],
 
   providers: [
-    DappUserService
+    DappUserService, DappUserResolver
   ],
 
   exports: [

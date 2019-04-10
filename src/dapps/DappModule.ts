@@ -13,6 +13,10 @@ import { DappService } from './DappService';
   ],
   providers: [
     DappService, DappResolver
+  ],
+
+  exports: [
+    DappService
   ]
 })
 export class DappModule {}

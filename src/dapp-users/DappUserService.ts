@@ -8,6 +8,8 @@ import {
 
 import { DappUserEntity } from '../entities'
 
+const debug = require('debug')('notus:DappUserService')
+
 @Injectable()
 export class DappUserService {
 
@@ -29,5 +31,10 @@ export class DappUserService {
   @Transaction()
   async destroy(dappUser: DappUserEntity) {
     await this.provider.get().delete(DappUserEntity, dappUser.id)
+  }
+
+  @Transaction()
+  async findAll(parameters): Promise<DappUserEntity[]> {
+    return await this.provider.get().find(DappUserEntity, parameters)
   }
 }

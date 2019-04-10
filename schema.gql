@@ -13,6 +13,14 @@ type DappEntity {
   name: String!
 }
 
+type DappUserEntity {
+  id: ID!
+  userId: Float!
+  dapp: DappEntity!
+  dappId: Float!
+  owner: Boolean!
+}
+
 """Date custom scalar type"""
 scalar Date
 
@@ -112,6 +120,7 @@ type Query {
   jwt(password: String!, email: String!): String!
   dapp(id: Float!): DappEntity
   dapps: [DappEntity!]!
+  dappUsers(owner: Boolean, userId: Float): [DappUserEntity!]!
   event(id: String!): EventEntity
   events: [EventEntity!]!
   eventType(id: String!): EventTypeEntity!
