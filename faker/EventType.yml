@@ -3,16 +3,8 @@ processor: ./EventTypeProcessor
 items:
   eventType0:
     name: 'Ethereum Transaction'
-    subject: 'This is subject'
-    body: 'This is the body'
     dapp: '@dapp0'
   eventType1:
     name: 'Transfer'
-    subject: 'Subject'
-    body: 'Body'
     dapp: '@dapp1'
-    variables:
-      - '@variable1'
-      - '@variable2'
-      - '@variable3'
-      - '@variable4'
+    
