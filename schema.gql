@@ -82,7 +82,7 @@ type EventTypeMatcherEntity {
 
 input MatcherDto {
   id: ID
-  variableId: Float!
+  variable: VariableDto!
   type: Float!
   operand: String = ""
 }
@@ -125,6 +125,7 @@ type Query {
   events: [EventEntity!]!
   eventType(id: String!): EventTypeEntity!
   eventTypes: [EventTypeEntity!]!
+  variableTypes: [VariableTypeEntity!]!
 }
 
 input VariableDto {
@@ -144,4 +145,10 @@ type VariableEntity {
   isPublic: Boolean!
   createdAt: Date!
   updatedAt: Date!
+}
+
+type VariableTypeEntity {
+  id: ID!
+  title: String!
+  type: String!
 }

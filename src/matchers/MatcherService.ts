@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common'
 
 import {
   MatcherEntity,
-  VariableEntity
+  VariableEntity,
+  EventTypeEntity
 } from '../entities'
 import {
   MatcherDto
@@ -24,10 +25,27 @@ export class MatcherService {
   ) {}
 
   @Transaction()
-  async createMatcher(matcherDto): Promise<MatcherEntity> {
+  async createMatcher(matcherDto: MatcherDto): Promise<MatcherEntity> {
+    const variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
+    return this._createMatcher(matcherDto, variable)
+  }
+
+  @Transaction()
+  async createMatcherWithVariable(eventType: EventTypeEntity, matcherDto): Promise<MatcherEntity> {
+    let variable
+    if (matcherDto.variable.id) {
+      variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
+    } else {
+      variable = await this.variableService.createVariable(eventType, matcherDto.variable)
+    }
+    return this._createMatcher(matcherDto, variable)
+  }
+
+  @Transaction()
+  async _createMatcher(matcherDto, variable: VariableEntity): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 
-    matcher.variable = await this.variableService.findOneOrFail(matcherDto.variableId)
+    matcher.variable = variable
     matcher.type = matcherDto.type
     matcher.operand = matcherDto.operand
 
@@ -39,8 +57,8 @@ export class MatcherService {
   @Transaction()
   async update(matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = await this.findOneOrFail(matcherDto.id)
-    if (matcher.variableId !== matcherDto.variableId) {
-      matcher.variable = await this.variableService.findOneOrFail(matcherDto.variableId)
+    if (matcher.variableId !== matcherDto.variable.id) {
+      matcher.variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
     }
     matcher.type = matcherDto.type
     matcher.operand = matcherDto.operand

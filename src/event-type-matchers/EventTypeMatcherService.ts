@@ -19,7 +19,7 @@ export class EventTypeMatcherService {
   async createEventTypeMatcher(eventType: EventTypeEntity, matcherDto: MatcherDto): Promise<EventTypeMatcherEntity> {
     const eventTypeMatcher = new EventTypeMatcherEntity()
     eventTypeMatcher.eventType = eventType
-    eventTypeMatcher.matcher = await this.matcherService.createMatcher(matcherDto)
+    eventTypeMatcher.matcher = await this.matcherService.createMatcherWithVariable(eventType, matcherDto)
     this.provider.get().save(eventTypeMatcher)
 
     return eventTypeMatcher

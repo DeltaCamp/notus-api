@@ -12,6 +12,10 @@ import { VariableService } from './VariableService'
 import { VariableDto } from './VariableDto'
 import { EventTypeService } from '../event-types/EventTypeService'
 import { DappUserService } from '../dapp-users/DappUserService'
+import { VariableTypeEntity } from './VariableTypeEntity'
+import { VariableType } from './VariableType'
+import { VariableTypeTitle } from './VariableTypeTitle'
+import { VariableTypeType } from './VariableTypeType'
 
 @Resolver(of => VariableEntity)
 export class VariableResolver {
@@ -22,6 +26,17 @@ export class VariableResolver {
     @Inject(forwardRef(() => EventTypeService))
     private readonly eventTypeService: EventTypeService
   ) {}
+
+  @Query(returns => [VariableTypeEntity])
+  variableTypes(): VariableTypeEntity[] {
+    return Object.keys(VariableType).map(key => {
+      const variableType = new VariableTypeEntity()
+      variableType.id = VariableType[key];
+      variableType.title = VariableTypeTitle[key];
+      variableType.type = VariableTypeType[key];
+      return variableType
+    })
+  }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => VariableEntity)
