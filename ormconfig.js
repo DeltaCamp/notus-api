@@ -2,13 +2,21 @@ let baseDir = 'src'
 if (process.env.NODE_ENV === 'production') {
   baseDir = 'dist'
 }
+//
+// const entitiesMap = require(`./${baseDir}/entities`)
+// const entities = []
+// for (var name in entitiesMap) {
+//   entities.push(entitiesMap[name])
+// }
+//
+// console.log(entities)
 
 module.exports = {
    type: "postgres",
    url: process.env.DATABASE_URL,
    synchronize: false,
    entities: [
-      `./${baseDir}/**/*Entity{.ts,.js}`
+     `./${baseDir}/entities{.ts,.js}`
    ],
    migrations: [
       `./${baseDir}/**/migrations/*{.ts,.js}`

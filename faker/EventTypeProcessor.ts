@@ -1,5 +1,5 @@
 import { IProcessor } from 'typeorm-fixtures-cli'
-import { EventTypeEntity } from '../src/event-types/EventTypeEntity'
+import { EventTypeEntity } from '../src/entities'
 
 export default class EventTypeProcessor implements IProcessor<EventTypeEntity> {
   postProcess(name: string, object: { [key: string]: any }): void {
