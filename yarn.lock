@@ -357,7 +357,7 @@
   resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.14.tgz#37daaf78069e7948520474c87b80092ea912520a"
   integrity sha512-Q5hTcfdudEL2yOmluA1zaSyPbzWPmJ3XfSWeP3RyoYvS9hnje1ZyagrZOuQ6+1nQC1Gw+7gap3pLNL3xL6UBug==
 
-"@types/joi@^14.3.0", "@types/joi@^14.3.2":
+"@types/joi@^14.3.1", "@types/joi@^14.3.2":
   version "14.3.2"
   resolved "https://registry.yarnpkg.com/@types/joi/-/joi-14.3.2.tgz#eff771f0b19698b8e6e7c6fe6b625e07e2618fe9"
   integrity sha512-riJTpNwDOoRgRrrOjfcjwMBYJLVg8rzwMEAAcZ2JBvdmYWCLIsbzTFXHV517terbYzGmdzkwFYeXUem7eXVNoQ==
@@ -7035,12 +7035,11 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typeorm-fixtures-cli@^1.1.1:
+"typeorm-fixtures-cli@ssh://git@github.com:chuckbergeron/typeorm-fixtures.git":
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/typeorm-fixtures-cli/-/typeorm-fixtures-cli-1.1.1.tgz#2c49b7c27e850b0dc488c680b9c6de2b452a7579"
-  integrity sha512-2ABeCvHJj8FpJTKt72tt+1xgsqSFmjThexqlUZzbFE67PX4cft/qDAKyT0Zy+PevBzhTzAsAuNZ2KIvxfSoKgQ==
+  resolved "ssh://git@github.com:chuckbergeron/typeorm-fixtures.git#c703313fa5e38f982ca9bd2fef331ff1a819e4c7"
   dependencies:
-    "@types/joi" "^14.3.0"
+    "@types/joi" "^14.3.1"
     chai "^4.2.0"
     chalk "^2.4.2"
     cli-progress "^2.1.1"
@@ -7053,7 +7052,7 @@ typeorm-fixtures-cli@^1.1.1:
     lodash "^4.17.11"
     reflect-metadata "^0.1.13"
     resolve-from "^4.0.0"
-    yargs-parser "^12.0.0"
+    yargs-parser "^13.0.0"
 
 typeorm@^0.2.15:
   version "0.2.15"
@@ -7502,14 +7501,6 @@ yargs-parser@10.x:
   integrity sha512-VCIyR1wJoEBZUqk5PA+oOBF6ypbwh5aNB3I50guxAL/quggdfs4TtNHQrSazFA3fYZ+tEqfs0zIGlv0c/rgjbQ==
   dependencies:
     camelcase "^4.1.0"
-
-yargs-parser@^12.0.0:
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/yargs-parser/-/yargs-parser-12.0.0.tgz#18aa348854747dfe1002d01bd87d65df10d40a84"
-  integrity sha512-WQM8GrbF5TKiACr7iE3I2ZBNC7qC9taKPMfjJaMD2LkOJQhIctASxKXdFAOPim/m47kgAQBVIaPlFjnRdkol7w==
-  dependencies:
-    camelcase "^5.0.0"
-    decamelize "^1.2.0"
 
 yargs-parser@^13.0.0:
   version "13.0.0"
