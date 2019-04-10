@@ -13,6 +13,7 @@ import { EventMatcherModule } from './event-matchers'
 import { EventTypeMatcherModule } from './event-type-matchers'
 import { EventTypeModule } from './event-types'
 import { EventModule } from './events'
+import { DappUserModule } from './dapp-users'
 import { VariableModule } from './variables'
 import { EngineModule } from './engine/EngineModule'
 import { MatcherModule } from './matchers';
@@ -24,6 +25,7 @@ import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
   imports: [
     TypeOrmModule.forRoot(),
     EngineModule,
+    DappUserModule,
     mailModule,
     EventMatcherModule,
     EventTypeMatcherModule,
