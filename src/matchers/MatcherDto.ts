@@ -1,6 +1,6 @@
 import { Field, InputType, ID } from 'type-graphql';
-import { MatcherType } from './MatcherType'
-
+import { Operator } from './Operator'
+import { OperandDataType } from './OperandDataType'
 import { VariableDto } from '../variables/VariableDto'
 
 @InputType()
@@ -12,7 +12,10 @@ export class MatcherDto {
   variable: VariableDto;
 
   @Field()
-  type: MatcherType;
+  operator: Operator;
+
+  @Field()
+  operandDataType: OperandDataType;
 
   @Field()
   operand: string = '';

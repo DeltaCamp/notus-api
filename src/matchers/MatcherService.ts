@@ -46,7 +46,7 @@ export class MatcherService {
     const matcher = new MatcherEntity()
 
     matcher.variable = variable
-    matcher.type = matcherDto.type
+    matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
     await this.provider.get().save(matcher)
@@ -60,7 +60,7 @@ export class MatcherService {
     if (matcher.variableId !== matcherDto.variable.id) {
       matcher.variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
     }
-    matcher.type = matcherDto.type
+    matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
     await this.provider.get().save(matcher)

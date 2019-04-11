@@ -4,7 +4,7 @@ import { DappEntity } from '../../entities'
 // import { EventTypeMatcherEntity } from '../../event-type-matchers/EventTypeMatcherEntity'
 // import { EventTypeDto } from '../EventTypeDto'
 // import { EventTypeEntity } from '../EventTypeEntity'
-// import { MatcherType } from '../../matchers'
+// import { Operator } from '../../matchers'
 
 describe('EventTypeService', () => {
   let entityManager,
@@ -38,7 +38,7 @@ describe('EventTypeService', () => {
       //
       // const matcherDto = {
       //   variableId: 1,
-      //   type: MatcherType.EQ,
+      //   type: Operator.EQ,
       //   operand: '0x1234'
       // }
       //

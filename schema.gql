@@ -83,15 +83,17 @@ type EventTypeMatcherEntity {
 input MatcherDto {
   id: ID
   variable: VariableDto!
-  type: Float!
+  operator: Float!
+  operandDataType: Float!
   operand: String = ""
 }
 
 type MatcherEntity {
   id: ID!
   variable: VariableEntity!
-  type: Float!
+  operator: Float!
   operand: String!
+  operandDataType: Float!
   createdAt: Date!
   updatedAt: Date!
 }

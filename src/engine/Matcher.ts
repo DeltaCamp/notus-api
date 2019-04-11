@@ -4,7 +4,7 @@ import { MatchContext } from './MatchContext'
 import {
   MatcherEntity
 } from '../entities'
-import { MatcherType } from '../matchers'
+import { Operator } from '../matchers'
 import { SourceDataType } from '../variables'
 
 const debug = require('debug')('notus:Matcher')
@@ -14,24 +14,24 @@ export class Matcher {
   matches(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     var value = matchContext.get(matcher.variable.source)
     var sourceDataType = matcher.variable.sourceDataType
-    switch(matcher.type) {
-      case MatcherType.EQ:
+    switch(matcher.operator) {
+      case Operator.EQ:
         return this.eq(value, sourceDataType, matcher.operand)
         break;
-      case MatcherType.LT:
+      case Operator.LT:
         return this.lt(value, sourceDataType, matcher.operand)
         break;
-      case MatcherType.GT:
+      case Operator.GT:
         return this.gt(value, sourceDataType, matcher.operand)
         break;
-      case MatcherType.LTE:
+      case Operator.LTE:
         return this.lte(value, sourceDataType, matcher.operand)
         break;
-      case MatcherType.GTE:
+      case Operator.GTE:
         return this.gte(value, sourceDataType, matcher.operand)
         break;
       default:
-        debug(`MatchContext: Unknown matcher type ${matcher.type}`)
+        debug(`MatchContext: Unknown matcher type ${matcher.operator}`)
     }
 
     return false

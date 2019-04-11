@@ -11,7 +11,9 @@ import {
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { MatcherType } from './MatcherType'
+import { OperandDataType } from './OperandDataType'
+import { Operator } from './Operator'
+
 import {
   VariableEntity
 } from '../entities'
@@ -32,13 +34,17 @@ export class MatcherEntity {
   @RelationId((matcher: MatcherEntity) => matcher.variable)
   variableId: number;
 
-  @Column({ type: 'enum', enum: MatcherType, nullable: false })
+  @Column({ type: 'enum', enum: Operator, nullable: false })
   @Field()
-  type: MatcherType;
+  operator: Operator;
 
   @Column({ type: 'text', nullable: false })
   @Field()
   operand: string;
+
+  @Column({ type: 'enum', enum: OperandDataType, nullable: false })
+  @Field()
+  operandDataType: OperandDataType;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

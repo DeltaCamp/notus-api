@@ -1,4 +1,4 @@
-export enum MatcherType {
+export enum Operator {
   EQ,
   LT,
   GT,
