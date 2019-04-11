@@ -2,9 +2,11 @@ entity: matchers
 items:
   matcher0:
     variable: '@variable0'
-    type: '2'
+    operator: '2'
+    operandDataType: 1
     operand: '1000'
   matcher1:
     variable: '@variable0'
-    type: '1'
+    operator: '1'
+    operandDataType: 1
     operand: '2000'
