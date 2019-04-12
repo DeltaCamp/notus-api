@@ -19,9 +19,9 @@ export class MatcherDto {
   @Field()
   operator: Operator;
 
-  @Field()
+  @Field({ nullable: true })
   operandDataType: OperandDataType;
 
-  @Field()
+  @Field({ nullable: true })
   operand: string = '';
 }

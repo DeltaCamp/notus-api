@@ -39,7 +39,7 @@ input MatcherDto {
   order: Float!
   source: String!
   operator: Float!
-  operandDataType: Float!
+  operandDataType: Float
   operand: String = ""
 }
 
