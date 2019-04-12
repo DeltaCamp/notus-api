@@ -8,7 +8,7 @@ import {
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
-import { AppService } from 'src/apps/AppService';
+import { AppService } from '../apps/AppService';
 
 @Injectable()
 export class EventService {

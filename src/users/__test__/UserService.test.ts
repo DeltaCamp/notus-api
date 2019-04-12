@@ -1,6 +1,5 @@
 import { UserService } from '../UserService'
-import { UserEntity } from '../UserEntity'
-import { newKeyHex } from '../../utils/newKeyHex'
+import { UserEntity } from '../../entities'
 import { keyHashHex } from '../../utils/keyHashHex'
 
 describe('the test', () => {

@@ -1,7 +1,7 @@
 import * as tk from 'timekeeper'
 import { addSeconds } from 'date-fns'
 
-import { UserEntity } from '../UserEntity'
+import { UserEntity } from '../../entities'
 
 describe('UserEntity', () => {
   let user, now

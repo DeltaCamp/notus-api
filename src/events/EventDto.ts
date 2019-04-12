@@ -1,7 +1,7 @@
 import { Field, InputType, ID } from 'type-graphql';
 
 import { MatcherDto } from '../matchers/MatcherDto';
-import { AppDto } from 'src/apps';
+import { AppDto } from '../apps';
 
 @InputType()
 export class EventDto {

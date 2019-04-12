@@ -12,7 +12,7 @@ import { Field, ObjectType, ID } from 'type-graphql';
 import { OperandDataType } from './OperandDataType'
 import { Operator } from './Operator'
 import * as Source from './Source'
-import { EventEntity } from 'src/events/EventEntity';
+import { EventEntity } from '../entities';
 
 @Entity({ name: 'matchers' })
 @ObjectType()

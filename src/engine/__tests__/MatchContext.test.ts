@@ -1,12 +1,5 @@
-import { ethers } from 'ethers'
-import { Block, Log } from 'ethers/providers'
-
-import { Transaction } from '../Transaction'
 import { MatchContext } from '../MatchContext'
 import * as Source from '../../matchers/Source'
-import {
-  Operator
-} from '../../matchers'
 import {
   MatcherEntity
 } from '../../entities'

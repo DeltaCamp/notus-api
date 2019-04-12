@@ -33,12 +33,6 @@ type EventEntity {
   updatedAt: Date!
 }
 
-type EventMatcherEntity {
-  id: ID!
-  event: EventEntity!
-  matcher: MatcherEntity!
-}
-
 input MatcherDto {
   id: ID
   eventId: Float

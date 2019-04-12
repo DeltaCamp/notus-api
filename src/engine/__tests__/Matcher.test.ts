@@ -1,7 +1,4 @@
 import { ethers } from 'ethers'
-import { Block, Log } from 'ethers/providers'
-
-import { Transaction } from '../Transaction'
 import { Matcher } from '../Matcher'
 import { MatchContext } from '../MatchContext'
 import { Operator } from '../../matchers'

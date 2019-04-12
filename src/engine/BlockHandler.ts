@@ -25,7 +25,7 @@ export class BlockHandler {
   }
 
   async checkEvent(matchContext: MatchContext, event: EventEntity) {
-    let failed = false
+    let i;
     debug(`Checking event`)
 
     let matchers = []
@@ -34,17 +34,21 @@ export class BlockHandler {
       matchers = matchers.concat(event.parent.matchers)
     }
 
-    matchers.concat(event.matchers)
+    matchers = matchers.concat(event.matchers)
 
-    matchers.forEach(matcher => {
+    if (!matchers.length) {
+      debug(`No matchers found for event ${event.id}`)
+      return
+    }
+
+    let matcher
+    for (i = 0; i < matchers.length; i++) {
+      matcher = matchers[i]
       if (!this.matcher.matches(matchContext, matcher)) {
         debug(`Failing on `, matcher)
-        failed = true
         return
       }
-    })
-
-    if (failed) { return }
+    }
 
     this.matchHandler.handle(matchContext, event);
   }
