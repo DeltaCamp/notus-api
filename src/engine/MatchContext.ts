@@ -3,7 +3,6 @@ import { get } from 'lodash';
 import { BigNumber, bigNumberify } from 'ethers/utils';
 
 import { Transaction } from './Transaction'
-import { VariableType } from '../variables'
 
 export class MatchContext {
   constructor (
@@ -12,7 +11,7 @@ export class MatchContext {
     private readonly log: Log
   ) {}
 
-  get(source: VariableType) {
+  get(source: string) {
     return get(this, source)
   }
 }

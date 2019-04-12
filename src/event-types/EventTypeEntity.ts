@@ -12,7 +12,6 @@ import {
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import {
-  VariableEntity,
   EventTypeMatcherEntity,
   DappEntity,
   EventEntity
@@ -45,10 +44,6 @@ export class EventTypeEntity {
 
   @OneToMany(type => EventEntity, event => event.eventType)
   events: EventEntity[];
-
-  @Field(type => [VariableEntity])
-  @OneToMany(type => VariableEntity, variable => variable.eventType)
-  variables: VariableEntity[];
 
   @Field(type => Date)
   @CreateDateColumn({ type: 'timestamp' })

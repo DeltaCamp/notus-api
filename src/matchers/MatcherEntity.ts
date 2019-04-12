@@ -13,10 +13,7 @@ import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import { OperandDataType } from './OperandDataType'
 import { Operator } from './Operator'
-
-import {
-  VariableEntity
-} from '../entities'
+import * as Source from './Source'
 
 @Entity({ name: 'matchers' })
 @ObjectType()
@@ -25,14 +22,9 @@ export class MatcherEntity {
   @Field(type => ID)
   id!: number;
 
-  @Field(type => VariableEntity)
-  @ManyToOne(type => VariableEntity, {
-    nullable: false
-  })
-  variable: VariableEntity;
-
-  @RelationId((matcher: MatcherEntity) => matcher.variable)
-  variableId: number;
+  @Column({ type: 'enum', enum: Source, nullable: false })
+  @Field()
+  source: string;
 
   @Column({ type: 'enum', enum: Operator, nullable: false })
   @Field()

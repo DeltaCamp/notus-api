@@ -2,15 +2,11 @@ import { Injectable } from '@nestjs/common'
 
 import {
   MatcherEntity,
-  VariableEntity,
   EventTypeEntity
 } from '../entities'
 import {
   MatcherDto
 } from './MatcherDto'
-import {
-  VariableService
-} from '../variables/VariableService'
 import {
   Transaction,
   EntityManagerProvider
@@ -20,32 +16,14 @@ import {
 export class MatcherService {
 
   constructor (
-    private readonly provider: EntityManagerProvider,
-    private readonly variableService: VariableService
+    private readonly provider: EntityManagerProvider
   ) {}
 
   @Transaction()
   async createMatcher(matcherDto: MatcherDto): Promise<MatcherEntity> {
-    const variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
-    return this._createMatcher(matcherDto, variable)
-  }
-
-  @Transaction()
-  async createMatcherWithVariable(eventType: EventTypeEntity, matcherDto): Promise<MatcherEntity> {
-    let variable
-    if (matcherDto.variable.id) {
-      variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
-    } else {
-      variable = await this.variableService.createVariable(eventType, matcherDto.variable)
-    }
-    return this._createMatcher(matcherDto, variable)
-  }
-
-  @Transaction()
-  async _createMatcher(matcherDto, variable: VariableEntity): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 
-    matcher.variable = variable
+    matcher.source = matcherDto.source
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
@@ -57,9 +35,7 @@ export class MatcherService {
   @Transaction()
   async update(matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = await this.findOneOrFail(matcherDto.id)
-    if (matcher.variableId !== matcherDto.variable.id) {
-      matcher.variable = await this.variableService.findOneOrFail(matcherDto.variable.id)
-    }
+    matcher.source = matcherDto.source
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
@@ -76,11 +52,6 @@ export class MatcherService {
   @Transaction()
   async findOneOrFail(matcherId): Promise<MatcherEntity> {
     return await this.provider.get().findOneOrFail(MatcherEntity, matcherId)
-  }
-
-  @Transaction()
-  async getVariable(matcher: MatcherEntity): Promise<VariableEntity> {
-    return await this.variableService.findOneOrFail(matcher.variableId)
   }
 
   @Transaction()

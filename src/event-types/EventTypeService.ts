@@ -4,12 +4,10 @@ import {
   DappEntity,
   EventTypeEntity,
   UserEntity,
-  VariableEntity,
   EventTypeMatcherEntity
 } from '../entities'
 import { EventTypeMatcherService } from '../event-type-matchers/EventTypeMatcherService'
 import { EventTypeDto } from './EventTypeDto'
-import { VariableService } from '../variables/VariableService'
 import { EventService } from '../events/EventService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
@@ -18,7 +16,6 @@ export class EventTypeService {
 
   constructor (
     private readonly provider: EntityManagerProvider,
-    private readonly variableService: VariableService,
     private readonly eventTypeMatcherService: EventTypeMatcherService,
     private readonly eventService: EventService
   ) {}
@@ -47,10 +44,6 @@ export class EventTypeService {
 
     await this.provider.get().save(eventType)
 
-    eventType.variables = await Promise.all(eventTypeDto.variables.map((variableDto) => (
-      this.variableService.createVariable(eventType, variableDto)
-    )))
-
     eventType.eventTypeMatchers = await Promise.all(eventTypeDto.matchers.map(matcherDto => (
       this.eventTypeMatcherService.createEventTypeMatcher(eventType, matcherDto)
     )))
@@ -67,10 +60,6 @@ export class EventTypeService {
 
   @Transaction()
   async destroy(eventType: EventTypeEntity) {
-    await Promise.all(eventType.variables.map((variable) => {
-      return this.variableService.destroy(variable)
-    }))
-
     await Promise.all(eventType.eventTypeMatchers.map((eventTypeMatcher) => {
       return this.eventTypeMatcherService.destroy(eventTypeMatcher)
     }))
@@ -101,15 +90,5 @@ export class EventTypeService {
       .where('event_types.id = :id', { id: eventType.id })
       .printSql()
       .getOne()
-  }
-
-  @Transaction()
-  async getVariables(eventType: EventTypeEntity): Promise<VariableEntity[]> {
-    return this.provider.get().createQueryBuilder()
-      .select('variables')
-      .from(VariableEntity, 'variables') .innerJoin('variables.eventType', 'event_types')
-      .where('event_types.id = :id', { id: eventType.id })
-      .printSql()
-      .getMany()
   }
 }

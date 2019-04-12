@@ -5,7 +5,6 @@ import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 import { AuthUser } from '../decorators/AuthUser'
 import {
   DappEntity,
-  VariableEntity,
   EventTypeEntity,
   EventTypeMatcherEntity
 } from '../entities'
@@ -63,11 +62,6 @@ export class EventTypeResolver {
   @ResolveProperty('dapp')
   async dapp(@Parent() eventType: EventTypeEntity): Promise<DappEntity> {
     return await this.eventTypeService.getDapp(eventType)
-  }
-
-  @ResolveProperty('variables')
-  async variables(@Parent() eventType: EventTypeEntity): Promise<VariableEntity[]> {
-    return await this.eventTypeService.getVariables(eventType)
   }
 
   async checkIsDappOwner(dappId: number, userId: number) {

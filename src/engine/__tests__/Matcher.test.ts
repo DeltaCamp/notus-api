@@ -6,18 +6,15 @@ import { Matcher } from '../Matcher'
 import { MatchContext } from '../MatchContext'
 import { Operator } from '../../matchers'
 import {
-  MatcherEntity,
-  VariableEntity
+  MatcherEntity
 } from '../../entities'
-import { VariableType } from '../../variables'
+import * as Source from '../../matchers/Source'
 
 describe('MatchContext', () => {
 
   let matcher
 
   let matcherEntity, matchContext, block, transaction, log
-
-  let variable
 
   beforeEach(() => {
     block = {
@@ -27,9 +24,7 @@ describe('MatchContext', () => {
     transaction = {}
     log = {}
 
-    variable = new VariableEntity()
     matcherEntity = new MatcherEntity()
-    matcherEntity.variable = variable
 
     matchContext = new MatchContext(block, transaction, log)
 
@@ -39,7 +34,7 @@ describe('MatchContext', () => {
   describe('matches()', () => {
     describe('with numbers', () => {
       beforeEach(() => {
-        variable.source = VariableType.BLOCK_TIMESTAMP
+        matcherEntity.source = Source.BLOCK_TIMESTAMP
         block.timestamp = 183765779077962
       })
 
@@ -116,7 +111,7 @@ describe('MatchContext', () => {
 
     describe('with big numbers', () => {
       beforeEach(() => {
-        variable.source = VariableType.TRANSACTION_GAS_LIMIT
+        matcherEntity.source = Source.TRANSACTION_GAS_LIMIT
         transaction.gasLimit = ethers.utils.bigNumberify('42')
       })
 

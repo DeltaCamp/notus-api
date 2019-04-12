@@ -55,7 +55,6 @@ input EventTypeDto {
   dappId: Float!
   name: String = ""
   matchers: [MatcherDto!]!
-  variables: [VariableDto!]!
 }
 
 type EventTypeEntity {
@@ -63,7 +62,6 @@ type EventTypeEntity {
   dapp: DappEntity!
   name: String!
   eventTypeMatchers: [EventTypeMatcherEntity!]!
-  variables: [VariableEntity!]!
   createdAt: Date!
   updatedAt: Date!
 }
@@ -82,7 +80,7 @@ type EventTypeMatcherEntity {
 
 input MatcherDto {
   id: ID
-  variable: VariableDto!
+  source: String!
   operator: Float!
   operandDataType: Float!
   operand: String = ""
@@ -90,7 +88,7 @@ input MatcherDto {
 
 type MatcherEntity {
   id: ID!
-  variable: VariableEntity!
+  source: String!
   operator: Float!
   operand: String!
   operandDataType: Float!
@@ -113,13 +111,11 @@ type Mutation {
   createEventType(eventType: EventTypeDto!): EventTypeEntity!
   updateEventType(eventType: EventTypeDto!): EventTypeEntity!
   destroyEventType(eventTypeId: Float!): Boolean!
-  createVariable(variable: VariableDto!): VariableEntity!
-  updateVariable(variable: VariableDto!): VariableEntity!
-  destroyVariable(variableId: Float!): Boolean!
 }
 
 type Query {
   jwt(password: String!, email: String!): String!
+  sources: [SourceEntity!]!
   dapp(id: Float!): DappEntity
   dapps: [DappEntity!]!
   dappUsers(owner: Boolean, userId: Float): [DappUserEntity!]!
@@ -127,30 +123,10 @@ type Query {
   events: [EventEntity!]!
   eventType(id: String!): EventTypeEntity!
   eventTypes: [EventTypeEntity!]!
-  variableTypes: [VariableTypeEntity!]!
 }
 
-input VariableDto {
-  id: ID
-  source: String!
-  sourceDataType: String!
-  description: String = ""
-  isPublic: Boolean = false
-  eventTypeId: Float
-}
-
-type VariableEntity {
-  id: ID!
-  source: String!
-  sourceDataType: String!
-  description: String!
-  isPublic: Boolean!
-  createdAt: Date!
-  updatedAt: Date!
-}
-
-type VariableTypeEntity {
-  id: ID!
+type SourceEntity {
+  source: ID!
   title: String!
-  type: String!
+  dataType: String!
 }

@@ -1,7 +1,6 @@
 import { Field, InputType, ID } from 'type-graphql';
 
 import { MatcherDto } from '../matchers/MatcherDto'
-import { VariableDto } from '../variables/VariableDto'
 
 @InputType()
 export class EventTypeDto {
@@ -16,7 +15,4 @@ export class EventTypeDto {
 
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];
-
-  @Field(type => [VariableDto])
-  variables: VariableDto[];
 }

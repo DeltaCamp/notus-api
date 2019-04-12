@@ -19,7 +19,6 @@ import { mailModule } from './mailModule'
 import { MatcherModule } from './matchers';
 import { TransactionMiddleware, TransactionModule } from './typeorm';
 import { UserModule } from './users';
-import { VariableModule } from './variables';
 
 const isProduction = process.env.NODE_ENV === 'production'
 let baseDir = 'src'
@@ -36,7 +35,6 @@ if (isProduction) {
     UserModule,
     DappUserModule,
     MatcherModule,
-    VariableModule,
     EventModule,
     EventMatcherModule,
     EventTypeMatcherModule,

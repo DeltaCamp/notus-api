@@ -1,5 +1,4 @@
 export * from './matchers/MatcherEntity'
-export * from './variables/VariableEntity'
 export * from './event-types/EventTypeEntity'
 export * from './event-type-matchers/EventTypeMatcherEntity'
 export * from './event-matchers/EventMatcherEntity'

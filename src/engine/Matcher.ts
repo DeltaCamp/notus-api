@@ -5,30 +5,29 @@ import {
   MatcherEntity
 } from '../entities'
 import { Operator } from '../matchers'
-import { SourceDataType } from '../variables'
+import { SolidityDataType } from '../common/SolidityDataType'
+import { SourceDataType } from '../matchers/SourceDataType'
 
 const debug = require('debug')('notus:Matcher')
 
 export class Matcher {
 
   matches(matchContext: MatchContext, matcher: MatcherEntity): boolean {
-    var value = matchContext.get(matcher.variable.source)
-    var sourceDataType = matcher.variable.sourceDataType
     switch(matcher.operator) {
       case Operator.EQ:
-        return this.eq(value, sourceDataType, matcher.operand)
+        return this.eq(matchContext, matcher)
         break;
       case Operator.LT:
-        return this.lt(value, sourceDataType, matcher.operand)
+        return this.lt(matchContext, matcher)
         break;
       case Operator.GT:
-        return this.gt(value, sourceDataType, matcher.operand)
+        return this.gt(matchContext, matcher)
         break;
       case Operator.LTE:
-        return this.lte(value, sourceDataType, matcher.operand)
+        return this.lte(matchContext, matcher)
         break;
       case Operator.GTE:
-        return this.gte(value, sourceDataType, matcher.operand)
+        return this.gte(matchContext, matcher)
         break;
       default:
         debug(`MatchContext: Unknown matcher type ${matcher.operator}`)
@@ -37,10 +36,13 @@ export class Matcher {
     return false
   }
 
-  eq(value, sourceType: SourceDataType, operand): boolean {
+  eq(matchContext, matcher): boolean {
+    const { source, operand } = matcher
+    var sourceDataType = SourceDataType[source]
+    const value = matchContext.get(source)
     if (BigNumber.isBigNumber(value)) {
       return value.eq(operand)
-    } else if (sourceType === SourceDataType.ADDRESS) {
+    } else if (SourceDataType[source] === SolidityDataType.ADDRESS) {
       return getAddress(value) === getAddress(operand)
     } else if (isNaN(value)) {
       return value === operand
@@ -49,7 +51,9 @@ export class Matcher {
     }
   }
 
-  lt(value, sourceType: SourceDataType, operand): boolean {
+  lt(matchContext, matcher): boolean {
+    const { source, operand } = matcher
+    const value = matchContext.get(source)
     if (BigNumber.isBigNumber(value)) {
       return value.lt(operand)
     } else if (isNaN(value)) {
@@ -59,7 +63,9 @@ export class Matcher {
     }
   }
 
-  gt(value, sourceType: SourceDataType, operand): boolean {
+  gt(matchContext, matcher): boolean {
+    const { source, operand } = matcher
+    const value = matchContext.get(source)
     if (BigNumber.isBigNumber(value)) {
       return value.gt(operand)
     } else if (isNaN(value)) {
@@ -69,7 +75,9 @@ export class Matcher {
     }
   }
 
-  lte(value, sourceType: SourceDataType, operand): boolean {
+  lte(matchContext, matcher): boolean {
+    const { source, operand } = matcher
+    const value = matchContext.get(source)
     if (BigNumber.isBigNumber(value)) {
       return value.lte(operand)
     } else if (isNaN(value)) {
@@ -79,7 +87,9 @@ export class Matcher {
     }
   }
 
-  gte(value, sourceType: SourceDataType, operand): boolean {
+  gte(matchContext, matcher): boolean {
+    const { source, operand } = matcher
+    const value = matchContext.get(source)
     if (BigNumber.isBigNumber(value)) {
       return value.gte(operand)
     } else if (isNaN(value)) {

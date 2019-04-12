@@ -1,4 +1,4 @@
-export enum SourceDataType {
+export enum SolidityDataType {
   UINT = 'uint',
   UINT8 = 'uint8',
   UINT16 = 'uint16',
