@@ -13,7 +13,7 @@
     "db:migrate": "yarn typeorm migration:run",
     "db:revert": "yarn typeorm migration:revert",
     "db:drop": "yarn typeorm schema:drop",
-    "db:rebuild": "yarn migration:drop && yarn migration:migrate && yarn migration:seed",
+    "db:rebuild": "yarn db:drop && yarn db:migrate && yarn db:seed",
     "db:seed": "yarn fixture -d ./faker",
     "ts-build": "$(yarn bin)/tsc -p tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
