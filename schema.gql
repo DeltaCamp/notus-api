@@ -52,7 +52,7 @@ type EventMatcherEntity {
 
 input EventTypeDto {
   id: ID
-  dappId: Float!
+  dapp: DappDto!
   name: String = ""
   matchers: [MatcherDto!]!
 }

@@ -6,6 +6,7 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   UserEntity,
   EventTypeEntity,
+  MatcherEntity,
   EventTypeMatcherEntity
 } from '../entities'
 import { EventTypeMatcherDto } from './EventTypeMatcherDto'
@@ -21,6 +22,11 @@ export class EventTypeMatcherResolver {
     private readonly dappUserService: DappUserService,
     private readonly eventTypeMatcherService: EventTypeMatcherService
   ) {}
+
+  @ResolveProperty('matcher')
+  async matcher(@Parent() event: EventTypeMatcherEntity): Promise<MatcherEntity> {
+    return await this.eventTypeMatcherService.getMatcher(event)
+  }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventTypeMatcherEntity)

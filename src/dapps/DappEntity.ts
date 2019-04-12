@@ -26,8 +26,8 @@ export class DappEntity {
   eventTypes: EventTypeEntity[];
 
   @Field()
-  @Column({ length: 120 })
-  name: string = '';
+  @Column({ type: 'text', nullable: false })
+  name: string;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

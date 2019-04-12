@@ -26,6 +26,7 @@ export class MatcherService {
     matcher.source = matcherDto.source
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
+    matcher.operandDataType = matcherDto.operandDataType
 
     await this.provider.get().save(matcher)
 
@@ -38,6 +39,7 @@ export class MatcherService {
     matcher.source = matcherDto.source
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
+    matcher.operandDataType = matcherDto.operandDataType
 
     await this.provider.get().save(matcher)
 

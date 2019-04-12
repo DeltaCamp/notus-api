@@ -34,7 +34,7 @@ export class EventTypeEntity {
   dappId: number;
 
   @Field()
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: false })
   name: string = '';
 
   // Fixed default variables: ie. a contractAddress at 0x1234 that gets set for every event

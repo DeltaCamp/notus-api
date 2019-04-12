@@ -1,5 +1,6 @@
 import { Field, InputType, ID } from 'type-graphql';
 
+import { DappDto } from '../dapps/DappDto'
 import { MatcherDto } from '../matchers/MatcherDto'
 
 @InputType()
@@ -7,8 +8,8 @@ export class EventTypeDto {
   @Field(type => ID, { nullable: true })
   id?: number;
 
-  @Field()
-  dappId: number;
+  @Field(type => DappDto)
+  dapp: DappDto;
 
   @Field()
   name: string = '';

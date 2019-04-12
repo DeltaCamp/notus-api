@@ -33,6 +33,15 @@ export class DappService {
   }
 
   @Transaction()
+  async findOrCreate(user: UserEntity, dappDto: DappDto): Promise<DappEntity> {
+    if (dappDto.id) {
+      return await this.findOneOrFail(dappDto.id)
+    } else {
+      return this.createDapp(user, dappDto)
+    }
+  }
+
+  @Transaction()
   public async createDapp(
     user: UserEntity,
     dappDto: DappDto
@@ -40,6 +49,8 @@ export class DappService {
     const dapp = new DappEntity()
     dapp.name = dappDto.name
     await this.provider.get().save(dapp)
+
+    console.log('user is: ', user)
 
     const dappUser = new DappUserEntity()
     Object.assign(dappUser, {

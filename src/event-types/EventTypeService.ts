@@ -9,6 +9,7 @@ import {
 import { EventTypeMatcherService } from '../event-type-matchers/EventTypeMatcherService'
 import { EventTypeDto } from './EventTypeDto'
 import { EventService } from '../events/EventService'
+import { DappService } from '../dapps/DappService'
 import { Transaction, EntityManagerProvider } from '../typeorm'
 
 @Injectable()
@@ -17,7 +18,9 @@ export class EventTypeService {
   constructor (
     private readonly provider: EntityManagerProvider,
     private readonly eventTypeMatcherService: EventTypeMatcherService,
-    private readonly eventService: EventService
+    private readonly eventService: EventService,
+    @Inject(forwardRef(() => DappService))
+    private readonly dappService: DappService
   ) {}
 
   @Transaction()
@@ -36,10 +39,10 @@ export class EventTypeService {
   }
 
   @Transaction()
-  async createEventType(eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
+  async createEventType(user: UserEntity, eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
 
     const eventType = new EventTypeEntity()
-    eventType.dapp = await this.provider.get().findOneOrFail(DappEntity, eventTypeDto.dappId)
+    eventType.dapp = await this.dappService.findOrCreate(user, eventTypeDto.dapp)
     eventType.name = eventTypeDto.name
 
     await this.provider.get().save(eventType)

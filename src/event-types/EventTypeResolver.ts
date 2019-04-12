@@ -2,7 +2,7 @@ import { UseGuards, UnauthorizedException, Inject, forwardRef } from '@nestjs/co
 import { Mutation, Resolver, Query, Args, Parent, ResolveProperty } from '@nestjs/graphql'
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
-import { AuthUser } from '../decorators/AuthUser'
+import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   DappEntity,
   EventTypeEntity,
@@ -32,14 +32,16 @@ export class EventTypeResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventTypeEntity)
-  async createEventType(@AuthUser() user, @Args('eventType') eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
-    await this.checkIsDappOwner(eventTypeDto.dappId, user.id)
-    return await this.eventTypeService.createEventType(eventTypeDto)
+  async createEventType(@GqlAuthUser() user, @Args('eventType') eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
+    if (eventTypeDto.dapp.id) {
+      await this.checkIsDappOwner(eventTypeDto.dapp.id, user.id)
+    }
+    return await this.eventTypeService.createEventType(user, eventTypeDto)
   }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventTypeEntity)
-  async updateEventType(@AuthUser() user, @Args('eventType') eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
+  async updateEventType(@GqlAuthUser() user, @Args('eventType') eventTypeDto: EventTypeDto): Promise<EventTypeEntity> {
     const eventType = await this.eventTypeService.findOneOrFail(eventTypeDto.id)
     await this.checkIsDappOwner(eventType.dappId, user.id)
     return await this.eventTypeService.update(eventType, eventTypeDto)
@@ -47,7 +49,7 @@ export class EventTypeResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => Boolean)
-  async destroyEventType(@AuthUser() user, @Args('eventTypeId') eventTypeId: number): Promise<Boolean> {
+  async destroyEventType(@GqlAuthUser() user, @Args('eventTypeId') eventTypeId: number): Promise<Boolean> {
     const eventType = await this.eventTypeService.findOneOrFail(eventTypeId)
     await this.checkIsDappOwner(eventType.dappId, user.id)
     await this.eventTypeService.destroy(eventType)

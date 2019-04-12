@@ -1,6 +1,6 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common'
 
-import { EventTypeEntity, EventTypeMatcherEntity } from '../entities'
+import { MatcherEntity, EventTypeEntity, EventTypeMatcherEntity } from '../entities'
 import { MatcherService } from '../matchers/MatcherService'
 import { MatcherDto } from '../matchers/MatcherDto'
 import { Transaction } from '../typeorm/Transaction'
@@ -19,7 +19,7 @@ export class EventTypeMatcherService {
   async createEventTypeMatcher(eventType: EventTypeEntity, matcherDto: MatcherDto): Promise<EventTypeMatcherEntity> {
     const eventTypeMatcher = new EventTypeMatcherEntity()
     eventTypeMatcher.eventType = eventType
-    eventTypeMatcher.matcher = await this.matcherService.createMatcherWithVariable(eventType, matcherDto)
+    eventTypeMatcher.matcher = await this.matcherService.createMatcher(matcherDto)
     this.provider.get().save(eventTypeMatcher)
 
     return eventTypeMatcher
@@ -40,5 +40,10 @@ export class EventTypeMatcherService {
   async destroy(eventTypeMatcher: EventTypeMatcherEntity) {
     await this.matcherService.destroy(eventTypeMatcher.matcherId)
     await this.provider.get().delete(EventTypeMatcherEntity, eventTypeMatcher.id)
+  }
+
+  @Transaction()
+  async getMatcher(eventTypeMatcher: EventTypeMatcherEntity): Promise<MatcherEntity> {
+    return await this.matcherService.findOne(eventTypeMatcher.matcherId)
   }
 }
