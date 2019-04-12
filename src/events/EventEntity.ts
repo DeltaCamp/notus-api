@@ -6,16 +6,14 @@ import {
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
-  JoinColumn,
   RelationId
 } from 'typeorm';
-import { IsIn } from 'class-validator'
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import {
   UserEntity,
-  RecipeEntity,
-  EventMatcherEntity
+  AppEntity,
+  MatcherEntity
 } from '../entities'
 
 @Entity({ name: 'events' })
@@ -33,15 +31,34 @@ export class EventEntity {
   @RelationId((event: EventEntity) => event.user)
   userId: number;
 
-  @Field(type => RecipeEntity)
-  @ManyToOne(type => RecipeEntity, recipe => recipe.events, {
-    nullable: false
+  @ManyToOne(type => AppEntity, app => app.events, {
+    nullable: true
   })
-  recipe: RecipeEntity;
+  app: AppEntity;
 
-  @Field(type => [EventMatcherEntity])
-  @OneToMany(type => EventMatcherEntity, eventMatcher => eventMatcher.event)
-  eventMatchers: EventMatcherEntity[];
+  @RelationId((event: EventEntity) => event.app)
+  appId: number;
+
+  @Column({ type: 'text', nullable: false })
+  title: string;
+
+  @Column({ type: 'boolean', default: false, nullable: false })
+  isPublic: boolean;
+
+  @Field(type => EventEntity)
+  @ManyToOne(type => EventEntity, event => event.children, {
+    nullable: true
+  })
+  parent: EventEntity;
+
+  @OneToMany(type => EventEntity, child => child.parent, {
+    nullable: true
+  })
+  children: EventEntity[];
+
+  @Field(type => [MatcherEntity])
+  @OneToMany(type => MatcherEntity, matcher => matcher.event)
+  matchers: MatcherEntity[];
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

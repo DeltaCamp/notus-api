@@ -1,11 +1,13 @@
 entity: matchers
 items:
   matcher0:
+    event: '@event0'
     source: 'transaction.value'
     operator: '2'
     operandDataType: 1
     operand: '1000'
   matcher1:
+    event: '@event1'
     source: 'transaction.value'
     operator: '1'
     operandDataType: 1

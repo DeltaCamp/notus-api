@@ -1,9 +1,0 @@
-entity: 'recipes'
-processor: ./RecipeProcessor
-items:
-  recipe0:
-    name: 'Ethereum Transaction'
-    dapp: '@dapp0'
-  recipe1:
-    name: 'ERC20 Token Transfer'
-    dapp: '@dapp1'

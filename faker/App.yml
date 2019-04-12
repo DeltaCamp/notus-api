@@ -1,7 +1,7 @@
-entity: dapps
+entity: apps
 items:
-  dapp0:
+  app0:
     name: 'Ethereum Transaction'
-  dapp1:
+  app1:
     name: 'Token (ERC20)'
 

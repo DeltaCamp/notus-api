@@ -6,8 +6,7 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   UserEntity,
   EventEntity,
-  RecipeEntity,
-  EventMatcherEntity
+  MatcherEntity
 } from '../entities'
 import { EventService } from './EventService'
 import { EventDto } from './EventDto'
@@ -20,7 +19,7 @@ export class EventResolver {
   ) {}
 
   @Query(returns => EventEntity, { nullable: true })
-  async event(@Args('id') id: string): Promise<EventEntity> {
+  async event(@Args('id') id: number): Promise<EventEntity> {
     return await this.eventService.findOne(id);
   }
 
@@ -30,14 +29,9 @@ export class EventResolver {
     return await this.eventService.findForUser(user);
   }
 
-  @ResolveProperty('recipe')
-  async recipe(@Parent() event: EventEntity): Promise<RecipeEntity> {
-    return await this.eventService.getRecipe(event)
-  }
-
-  @ResolveProperty('eventMatchers')
-  async eventMatchers(@Parent() event: EventEntity): Promise<EventMatcherEntity[]> {
-    return await this.eventService.getEventMatchers(event)
+  @ResolveProperty('matchers')
+  async matchers(@Parent() event: EventEntity): Promise<MatcherEntity[]> {
+    return await this.eventService.getMatchers(event)
   }
 
   @UseGuards(GqlAuthGuard)
@@ -47,6 +41,20 @@ export class EventResolver {
     @Args('event') eventDto: EventDto
   ): Promise<EventEntity> {
     const event = await this.eventService.createEvent(user, eventDto)
+    return event
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => EventEntity)
+  async updateEvent(
+    @GqlAuthUser() user: UserEntity,
+    @Args('event') eventDto: EventDto
+  ): Promise<EventEntity> {
+    let event = await this.eventService.findOneOrFail(eventDto.id);
+    if (event.userId !== user.id) {
+      throw new UnauthorizedException()
+    }
+    event = await this.eventService.updateEvent(eventDto)
     return event
   }
 

@@ -4,10 +4,11 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  OneToMany
+  OneToMany,
+  ManyToOne
 } from 'typeorm';
 
-import { DappUserEntity, EventEntity } from '../entities'
+import { AppEntity, EventEntity } from '../entities'
 
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
@@ -18,22 +19,22 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dappUser => dappUser.user)
-  dappUsers: DappUserEntity[];
+  @OneToMany(type => AppEntity, app => app.owner)
+  apps: AppEntity[];
 
   @OneToMany(type => EventEntity, event => event.user)
   events: EventEntity[];
 
-  @Column({ length: 120 })
+  @Column({ type: 'text' })
   name: string = '';
 
-  @Column({ length: 320 })
+  @Column({ type: 'text' })
   email: string = '';
 
   @Column()
   confirmed: boolean = false;
 
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'text', nullable: true })
   one_time_key_hash: string;
 
   @Column({ type: 'timestamptz', nullable: true })

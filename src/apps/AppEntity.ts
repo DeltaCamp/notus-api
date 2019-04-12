@@ -4,26 +4,29 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  OneToMany
+  OneToMany,
+  ManyToOne,
+  RelationId
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { DappUserEntity, RecipeEntity } from "../entities";
+import { UserEntity, EventEntity } from "../entities";
 
 @ObjectType()
-@Entity({ name: 'dapps' })
-export class DappEntity {
+@Entity({ name: 'apps' })
+export class AppEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @OneToMany(type => DappUserEntity, dappUser => dappUser.dapp, {
-    cascade: true
-  })
-  dappUsers: DappUserEntity[];
+  @ManyToOne(type => UserEntity, (user: UserEntity) => user.apps)
+  owner: UserEntity;
 
-  @OneToMany(type => RecipeEntity, contract => contract.dapp)
-  recipes: RecipeEntity[];
+  @RelationId((app: AppEntity) => app.owner)
+  ownerId: number;
+
+  @OneToMany(type => EventEntity, (event: EventEntity) => event.app)
+  events: EventEntity[];
 
   @Field()
   @Column({ type: 'text', nullable: false })

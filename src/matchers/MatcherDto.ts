@@ -7,6 +7,12 @@ export class MatcherDto {
   @Field(type => ID, { nullable: true })
   id: number;
 
+  @Field({ nullable: true })
+  eventId: number;
+
+  @Field()
+  order: number;
+
   @Field()
   source: string;
 

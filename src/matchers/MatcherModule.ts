@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { MatcherEntity } from '../entities'
 import { MatcherService } from './MatcherService'
+import { MatcherResolver } from './MatcherResolver'
 import { SourceResolver } from './SourceResolver'
 
 @Module({
@@ -13,7 +14,7 @@ import { SourceResolver } from './SourceResolver'
   ],
 
   providers: [
-    MatcherService, SourceResolver
+    MatcherService, SourceResolver, MatcherResolver
   ],
 
   exports: [

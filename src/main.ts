@@ -1,11 +1,11 @@
 import { NestFactory, HttpAdapterHost } from '@nestjs/core';
 
-import { AppModule } from './AppModule';
+import { ApplicationModule } from './ApplicationModule';
 import { RollbarExceptionsFilter } from './filters/RollbarExceptionsFilter';
 import { rollbar } from './rollbar';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(ApplicationModule);
 
   app.enableCors({ origin: process.env.CORS_ALLOWED_ORIGINS  });
   const { httpAdapter } = app.get(HttpAdapterHost);

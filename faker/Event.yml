@@ -1,5 +1,10 @@
 entity: events
 items:
   event0:
-    recipe: '@recipe0'
+    title: 'Ethereum Transaction'
+    app: '@app0'
+    user: '@user0'
+  event1:
+    title: 'ERC20 Token Transfer'
+    app: '@app1'
     user: '@user0'

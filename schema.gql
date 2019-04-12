@@ -3,22 +3,14 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-input DappDto {
+input AppDto {
   id: ID
   name: String = ""
 }
 
-type DappEntity {
+type AppEntity {
   id: ID!
   name: String!
-}
-
-type DappUserEntity {
-  id: ID!
-  userId: Float!
-  dapp: DappEntity!
-  dappId: Float!
-  owner: Boolean!
 }
 
 """Date custom scalar type"""
@@ -26,22 +18,19 @@ scalar Date
 
 input EventDto {
   id: ID
-  recipeId: Float!
+  app: AppDto!
+  title: String!
+  isPublic: Boolean!
+  parentId: Float!
   matchers: [MatcherDto!]!
 }
 
 type EventEntity {
   id: ID!
-  recipe: RecipeEntity!
-  eventMatchers: [EventMatcherEntity!]!
+  parent: EventEntity!
+  matchers: [MatcherEntity!]!
   createdAt: Date!
   updatedAt: Date!
-}
-
-input EventMatcherDto {
-  id: ID
-  eventId: Float
-  matcher: MatcherDto!
 }
 
 type EventMatcherEntity {
@@ -52,6 +41,8 @@ type EventMatcherEntity {
 
 input MatcherDto {
   id: ID
+  eventId: Float
+  order: Float!
   source: String!
   operator: Float!
   operandDataType: Float!
@@ -60,6 +51,8 @@ input MatcherDto {
 
 type MatcherEntity {
   id: ID!
+  event: EventEntity!
+  order: Float!
   source: String!
   operator: Float!
   operand: String!
@@ -69,60 +62,24 @@ type MatcherEntity {
 }
 
 type Mutation {
-  createDapp(dapp: DappDto!): DappEntity!
-  updateDapp(dapp: DappDto!): DappEntity!
-  destroyDapp(dappId: Float!): DappEntity!
+  createApp(app: AppDto!): AppEntity!
+  updateApp(app: AppDto!): AppEntity!
+  destroyApp(appId: Float!): AppEntity!
   createEvent(event: EventDto!): EventEntity!
+  updateEvent(event: EventDto!): EventEntity!
   destroyEvent(eventId: Float!): EventEntity!
-  createEventMatcher(eventMatcher: EventMatcherDto!): EventMatcherEntity!
-  updateEventMatcher(eventMatcher: EventMatcherDto!): EventMatcherEntity!
-  destroyEventMatcher(eventMatcherId: Float!): Boolean!
-  createRecipeMatcher(recipeMatcher: RecipeMatcherDto!): RecipeMatcherEntity!
-  updateRecipeMatcher(recipeMatcher: RecipeMatcherDto!): RecipeMatcherEntity!
-  destroyRecipeMatcher(recipeMatcherId: Float!): RecipeMatcherEntity!
-  createRecipe(recipe: RecipeDto!): RecipeEntity!
-  updateRecipe(recipe: RecipeDto!): RecipeEntity!
-  destroyRecipe(recipeId: Float!): Boolean!
+  createMatcher(matcher: MatcherDto!): MatcherEntity!
+  updateMatcher(matcher: MatcherDto!): MatcherEntity!
+  destroyMatcher(matcherId: Float!): Boolean!
 }
 
 type Query {
   jwt(password: String!, email: String!): String!
-  sources: [SourceEntity!]!
-  dapp(id: Float!): DappEntity
-  dapps: [DappEntity!]!
-  dappUsers(owner: Boolean, userId: Float): [DappUserEntity!]!
-  event(id: String!): EventEntity
+  app(id: Float!): AppEntity
+  apps: [AppEntity!]!
+  event(id: Float!): EventEntity
   events: [EventEntity!]!
-  recipe(id: String!): RecipeEntity!
-  recipes: [RecipeEntity!]!
-}
-
-input RecipeDto {
-  id: ID
-  dapp: DappDto!
-  name: String = ""
-  matchers: [MatcherDto!]!
-}
-
-type RecipeEntity {
-  id: ID!
-  dapp: DappEntity!
-  name: String!
-  recipeMatchers: [RecipeMatcherEntity!]!
-  createdAt: Date!
-  updatedAt: Date!
-}
-
-input RecipeMatcherDto {
-  id: ID
-  recipeId: Float
-  matcher: MatcherDto!
-}
-
-type RecipeMatcherEntity {
-  id: ID!
-  recipe: RecipeEntity!
-  matcher: MatcherEntity!
+  sources: [SourceEntity!]!
 }
 
 type SourceEntity {

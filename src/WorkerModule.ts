@@ -5,16 +5,8 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
-import {
-  DappEntity,
-  UserEntity
-} from './entities'
-import { EventMatcherModule } from './event-matchers'
-import { RecipeMatcherModule } from './recipe-matchers'
-import { RecipeModule } from './recipes'
 import { EventModule } from './events'
-import { DappModule } from './dapps'
-import { DappUserModule } from './dapp-users'
+import { AppModule } from './apps'
 import { EngineModule } from './engine/EngineModule'
 import { MatcherModule } from './matchers';
 import { mailModule } from './mailModule'
@@ -25,12 +17,8 @@ import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
   imports: [
     TypeOrmModule.forRoot(),
     EngineModule,
-    DappModule,
-    DappUserModule,
+    AppModule,
     mailModule,
-    EventMatcherModule,
-    RecipeMatcherModule,
-    RecipeModule,
     EventModule,
     MatcherModule
   ],

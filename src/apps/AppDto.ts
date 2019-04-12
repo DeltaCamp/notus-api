@@ -1,7 +1,7 @@
 import { Field, InputType, ID } from 'type-graphql';
 
 @InputType()
-export class DappDto {
+export class AppDto {
   @Field(type => ID, { nullable: true })
   id?: number;
 

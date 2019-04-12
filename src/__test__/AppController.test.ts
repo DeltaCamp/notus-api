@@ -8,7 +8,7 @@ describe('AppController', () => {
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       // imports: [
-      //   TypeOrmModule.forFeature([DappEntity])
+      //   TypeOrmModule.forFeature([AppEntity])
       // ],
       controllers: [AppController],
       providers: [AppService],

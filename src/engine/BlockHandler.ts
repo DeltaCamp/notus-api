@@ -27,19 +27,18 @@ export class BlockHandler {
   async checkEvent(matchContext: MatchContext, event: EventEntity) {
     let failed = false
     debug(`Checking event`)
-    event.recipe.recipeMatchers.forEach(recipeMatcher => {
-      if (!this.matcher.matches(matchContext, recipeMatcher.matcher)) {
-        debug(`Failing on `, recipeMatcher)
-        failed = true
-        return
-      }
-    })
 
-    if (failed) { return }
+    let matchers = []
 
-    event.eventMatchers.forEach(eventMatcher => {
-      if (!this.matcher.matches(matchContext, eventMatcher.matcher)) {
-        debug(`Failing on `, eventMatcher)
+    if (event.parent) {
+      matchers = matchers.concat(event.parent.matchers)
+    }
+
+    matchers.concat(event.matchers)
+
+    matchers.forEach(matcher => {
+      if (!this.matcher.matches(matchContext, matcher)) {
+        debug(`Failing on `, matcher)
         failed = true
         return
       }

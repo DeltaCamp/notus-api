@@ -1,5 +1,0 @@
-entity: event_matchers
-items:
-  eventMatcher0:
-    event: '@event0'
-    matcher: '@matcher1'

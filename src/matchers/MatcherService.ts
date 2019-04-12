@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import {
   MatcherEntity,
-  RecipeEntity
+  EventEntity
 } from '../entities'
 import {
   MatcherDto
@@ -20,9 +20,11 @@ export class MatcherService {
   ) {}
 
   @Transaction()
-  async createMatcher(matcherDto: MatcherDto): Promise<MatcherEntity> {
+  async createMatcher(event: EventEntity, matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 
+    matcher.event = event
+    matcher.order = matcherDto.order
     matcher.source = matcherDto.source
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
@@ -36,6 +38,7 @@ export class MatcherService {
   @Transaction()
   async update(matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = await this.findOneOrFail(matcherDto.id)
+    matcher.order = matcherDto.order
     matcher.source = matcherDto.source
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
@@ -47,12 +50,12 @@ export class MatcherService {
   }
 
   @Transaction()
-  async findOne(matcherId): Promise<MatcherEntity> {
+  async findOne(matcherId: number): Promise<MatcherEntity> {
     return await this.provider.get().findOne(MatcherEntity, matcherId)
   }
 
   @Transaction()
-  async findOneOrFail(matcherId): Promise<MatcherEntity> {
+  async findOneOrFail(matcherId: number): Promise<MatcherEntity> {
     return await this.provider.get().findOneOrFail(MatcherEntity, matcherId)
   }
 

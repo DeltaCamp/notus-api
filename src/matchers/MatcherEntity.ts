@@ -4,16 +4,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  OneToMany,
   ManyToOne,
-  JoinColumn,
   RelationId
 } from 'typeorm';
-import { Field, Int, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID } from 'type-graphql';
 
 import { OperandDataType } from './OperandDataType'
 import { Operator } from './Operator'
 import * as Source from './Source'
+import { EventEntity } from 'src/events/EventEntity';
 
 @Entity({ name: 'matchers' })
 @ObjectType()
@@ -21,6 +20,19 @@ export class MatcherEntity {
   @PrimaryGeneratedColumn()
   @Field(type => ID)
   id!: number;
+
+  @ManyToOne(type => EventEntity, (event: EventEntity) => event.matchers, {
+    nullable: false
+  })
+  @Field()
+  event: EventEntity;
+
+  @RelationId((matcher: MatcherEntity) => matcher.event)
+  eventId: number;
+
+  @Column({ type: 'integer', nullable: false, default: 1 })
+  @Field()
+  order: number;
 
   @Column({ type: 'enum', enum: Source, nullable: false })
   @Field()
@@ -30,11 +42,11 @@ export class MatcherEntity {
   @Field()
   operator: Operator;
 
-  @Column({ type: 'text', nullable: false })
+  @Column({ type: 'text', nullable: true })
   @Field()
   operand: string;
 
-  @Column({ type: 'enum', enum: OperandDataType, nullable: false })
+  @Column({ type: 'enum', enum: OperandDataType, nullable: true })
   @Field()
   operandDataType: OperandDataType;
 
