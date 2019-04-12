@@ -5,6 +5,6 @@ items:
     name: 'Ethereum Transaction'
     dapp: '@dapp0'
   eventType1:
-    name: 'Transfer'
+    name: 'ERC20 Token Transfer'
     dapp: '@dapp1'
     
