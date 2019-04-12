@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import {
-  EventTypeEntity,
+  RecipeEntity,
   UserEntity,
   EventEntity,
   EventMatcherEntity
@@ -40,9 +40,9 @@ export class EventService {
         'user',
         'eventMatchers',
         'eventMatchers.matcher',
-        'eventType',
-        'eventType.eventTypeMatchers',
-        'eventType.eventTypeMatchers.matcher'
+        'recipe',
+        'recipe.recipeMatchers',
+        'recipe.recipeMatchers.matcher'
       ]
     })
   }
@@ -58,11 +58,11 @@ export class EventService {
   }
 
   @Transaction()
-  async getEventType(event: EventEntity): Promise<EventTypeEntity> {
+  async getRecipe(event: EventEntity): Promise<RecipeEntity> {
     return this.provider.get().createQueryBuilder()
-      .select('event_types')
-      .from(EventTypeEntity, 'event_types')
-      .innerJoin('event_types.events', 'events')
+      .select('recipes')
+      .from(RecipeEntity, 'recipes')
+      .innerJoin('recipes.events', 'events')
       .where('events.id = :id', { id: event.id })
       .getOne()
   }
@@ -84,8 +84,8 @@ export class EventService {
     const em = this.provider.get()
 
     event.user = user;
-    event.eventType =
-      await em.findOneOrFail(EventTypeEntity, eventDto.eventTypeId)
+    event.recipe =
+      await em.findOneOrFail(RecipeEntity, eventDto.recipeId)
     await em.save(event)
 
     event.eventMatchers = await Promise.all(eventDto.matchers.map(matcherDto => (

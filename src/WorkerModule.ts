@@ -10,8 +10,8 @@ import {
   UserEntity
 } from './entities'
 import { EventMatcherModule } from './event-matchers'
-import { EventTypeMatcherModule } from './event-type-matchers'
-import { EventTypeModule } from './event-types'
+import { RecipeMatcherModule } from './recipe-matchers'
+import { RecipeModule } from './recipes'
 import { EventModule } from './events'
 import { DappModule } from './dapps'
 import { DappUserModule } from './dapp-users'
@@ -29,8 +29,8 @@ import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
     DappUserModule,
     mailModule,
     EventMatcherModule,
-    EventTypeMatcherModule,
-    EventTypeModule,
+    RecipeMatcherModule,
+    RecipeModule,
     EventModule,
     MatcherModule
   ],

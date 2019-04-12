@@ -1,0 +1,5 @@
+entity: recipe_matchers
+items:
+  recipeMatcher0:
+    recipe: '@recipe0'
+    matcher: '@matcher0'

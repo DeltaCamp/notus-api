@@ -14,7 +14,7 @@ import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import {
   UserEntity,
-  EventTypeEntity,
+  RecipeEntity,
   EventMatcherEntity
 } from '../entities'
 
@@ -33,11 +33,11 @@ export class EventEntity {
   @RelationId((event: EventEntity) => event.user)
   userId: number;
 
-  @Field(type => EventTypeEntity)
-  @ManyToOne(type => EventTypeEntity, eventType => eventType.events, {
+  @Field(type => RecipeEntity)
+  @ManyToOne(type => RecipeEntity, recipe => recipe.events, {
     nullable: false
   })
-  eventType: EventTypeEntity;
+  recipe: RecipeEntity;
 
   @Field(type => [EventMatcherEntity])
   @OneToMany(type => EventMatcherEntity, eventMatcher => eventMatcher.event)

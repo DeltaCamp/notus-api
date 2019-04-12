@@ -1,10 +1,9 @@
-entity: 'event_types'
-processor: ./EventTypeProcessor
+entity: 'recipes'
+processor: ./RecipeProcessor
 items:
-  eventType0:
+  recipe0:
     name: 'Ethereum Transaction'
     dapp: '@dapp0'
-  eventType1:
+  recipe1:
     name: 'ERC20 Token Transfer'
     dapp: '@dapp1'
-    

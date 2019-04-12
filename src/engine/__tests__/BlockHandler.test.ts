@@ -2,8 +2,8 @@ import { BlockHandler } from '../BlockHandler'
 
 import {
   EventEntity,
-  EventTypeEntity,
-  EventTypeMatcherEntity,
+  RecipeEntity,
+  RecipeMatcherEntity,
   EventMatcherEntity,
   MatcherEntity
 } from '../../entities'
@@ -14,22 +14,22 @@ describe('BlockHandler', () => {
   let events, matchHandler, matcher
   let block, transaction, log
 
-  let event, eventType, eventTypeMatcher, eventMatcher
+  let event, recipe, recipeMatcher, eventMatcher
   let matcher1, matcher2
 
   beforeEach(() => {
     matcher1 = new MatcherEntity()
     matcher2 = new MatcherEntity()
-    eventTypeMatcher = new EventTypeMatcherEntity()
-    eventTypeMatcher.matcher = matcher1
+    recipeMatcher = new RecipeMatcherEntity()
+    recipeMatcher.matcher = matcher1
 
     eventMatcher = new EventMatcherEntity()
     eventMatcher.matcher = matcher2
 
     event = new EventEntity()
-    eventType = new EventTypeEntity()
-    eventType.eventTypeMatchers = [eventTypeMatcher]
-    event.eventType = eventType
+    recipe = new RecipeEntity()
+    recipe.recipeMatchers = [recipeMatcher]
+    event.recipe = recipe
     event.eventMatchers = [eventMatcher]
 
     events = [event]

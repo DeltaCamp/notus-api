@@ -1,15 +1,15 @@
-// import { EventTypeService } from '../EventTypeService'
+// import { RecipeService } from '../RecipeService'
 import { DappEntity } from '../../entities'
 // import { VariableEntity, VariableType, SourceDataType } from '../../variables'
-// import { EventTypeMatcherEntity } from '../../event-type-matchers/EventTypeMatcherEntity'
-// import { EventTypeDto } from '../EventTypeDto'
-// import { EventTypeEntity } from '../EventTypeEntity'
+// import { RecipeMatcherEntity } from '../../recipe-matchers/RecipeMatcherEntity'
+// import { RecipeDto } from '../RecipeDto'
+// import { RecipeEntity } from '../RecipeEntity'
 // import { Operator } from '../../matchers'
 
-describe('EventTypeService', () => {
+describe('RecipeService', () => {
   let entityManager,
       variableService,
-      eventTypeMatcherService
+      recipeMatcherService
 
   beforeEach(() => {
     entityManager = {
@@ -19,21 +19,21 @@ describe('EventTypeService', () => {
     // variableService = {
     //   createVariable: jest.fn(() => Promise.resolve(new VariableEntity()))
     // }
-    // eventTypeMatcherService = {
-    //   createEventTypeMatcher: jest.fn(() => Promise.resolve(new EventTypeMatcherEntity()))
+    // recipeMatcherService = {
+    //   createRecipeMatcher: jest.fn(() => Promise.resolve(new RecipeMatcherEntity()))
     // }
   })
 
   // function newService() {
-  //   return new EventTypeService(
+  //   return new RecipeService(
   //     { get: () => entityManager },
   //     variableService,
-  //     eventTypeMatcherService
+  //     recipeMatcherService
   //   )
   // }
 
-  describe('createEventType()', () => {
-    it('should create a new EventTypeEntity', async () => {
+  describe('createRecipe()', () => {
+    it('should create a new RecipeEntity', async () => {
       // const service = newService()
       //
       // const matcherDto = {
@@ -49,7 +49,7 @@ describe('EventTypeService', () => {
       //   isPublic: true
       // }
       //
-      // const eventTypeDto: EventTypeDto = {
+      // const recipeDto: RecipeDto = {
       //   dappId: 13,
       //   name: 'Event name',
       //   subject: 'the subject',
@@ -58,16 +58,16 @@ describe('EventTypeService', () => {
       //   variables: [ variableDto ]
       // }
       //
-      // const eventType = await service.createEventType(eventTypeDto)
+      // const recipe = await service.createRecipe(recipeDto)
       //
       // expect(entityManager.findOneOrFail).toHaveBeenCalledWith(DappEntity, 13)
       // expect(entityManager.save).toHaveBeenCalledTimes(1)
       // expect(variableService.createVariable).toHaveBeenCalledWith(expect.anything(), variableDto)
       //
-      // expect(eventTypeMatcherService.createEventTypeMatcher).toHaveBeenCalledWith(expect.anything(), matcherDto)
+      // expect(recipeMatcherService.createRecipeMatcher).toHaveBeenCalledWith(expect.anything(), matcherDto)
       //
-      // expect(eventType.eventTypeMatchers.length).toEqual(1)
-      // expect(eventType.variables.length).toEqual(1)
+      // expect(recipe.recipeMatchers.length).toEqual(1)
+      // expect(recipe.variables.length).toEqual(1)
     })
   })
 })

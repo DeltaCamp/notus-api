@@ -8,24 +8,24 @@ import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import {
   MatcherEntity,
-  EventTypeEntity
+  RecipeEntity
 } from '../entities'
 
 @ObjectType()
-@Entity({ name: 'event_type_matchers' })
-export class EventTypeMatcherEntity {
+@Entity({ name: 'recipe_matchers' })
+export class RecipeMatcherEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Field(type => EventTypeEntity)
-  @ManyToOne(type => EventTypeEntity, {
+  @Field(type => RecipeEntity)
+  @ManyToOne(type => RecipeEntity, {
     nullable: false
   })
-  eventType: EventTypeEntity;
+  recipe: RecipeEntity;
 
-  @RelationId((eventTypeMatcher: EventTypeMatcherEntity) => eventTypeMatcher.eventType)
-  eventTypeId: number;
+  @RelationId((recipeMatcher: RecipeMatcherEntity) => recipeMatcher.recipe)
+  recipeId: number;
 
   @Field(type => MatcherEntity)
   @ManyToOne(type => MatcherEntity, {
@@ -33,6 +33,6 @@ export class EventTypeMatcherEntity {
   })
   matcher: MatcherEntity;
 
-  @RelationId((eventTypeMatcher: EventTypeMatcherEntity) => eventTypeMatcher.matcher)
+  @RelationId((recipeMatcher: RecipeMatcherEntity) => recipeMatcher.matcher)
   matcherId: number;
 }

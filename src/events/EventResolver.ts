@@ -6,7 +6,7 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   UserEntity,
   EventEntity,
-  EventTypeEntity,
+  RecipeEntity,
   EventMatcherEntity
 } from '../entities'
 import { EventService } from './EventService'
@@ -30,9 +30,9 @@ export class EventResolver {
     return await this.eventService.findForUser(user);
   }
 
-  @ResolveProperty('eventType')
-  async eventType(@Parent() event: EventEntity): Promise<EventTypeEntity> {
-    return await this.eventService.getEventType(event)
+  @ResolveProperty('recipe')
+  async recipe(@Parent() event: EventEntity): Promise<RecipeEntity> {
+    return await this.eventService.getRecipe(event)
   }
 
   @ResolveProperty('eventMatchers')

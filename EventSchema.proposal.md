@@ -8,11 +8,11 @@ User {
 }
 
 Dapp {
-  eventTypes: EventType[]
+  recipes: Recipe[]
 }
 
 Variable {
-  eventType: EventType
+  recipe: Recipe
   source: 'transaction.from'
   type: 'address'
   description 'Who sent the transaction'
@@ -25,15 +25,15 @@ Matcher {
   operand: '0x1234'
 }
 
-EventTypeMatcher {
-  eventType: EventType
+RecipeMatcher {
+  recipe: Recipe
   matcher: Matcher
 }
 
-EventType {
+Recipe {
   dapp: Dapp
   name: 'ERC20 transfer event'
-  matchers: EventTypeMatcher[]
+  matchers: RecipeMatcher[]
   variables: Variable[]
   subject: text,
   body: text
@@ -46,6 +46,6 @@ EventMatcher {
 
 Event {
   user: User
-  eventType: EventType
+  recipe: Recipe
   matchers: EventMatcher[]
 }

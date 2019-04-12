@@ -22,7 +22,7 @@ export class MatchHandler {
     debug(`!!!!!!!!!!!!! FIRING !!!!!!!!!!!!!`)
     this.mailerService.sendMail({
       to: event.user.email,
-      subject: event.eventType.name,
+      subject: event.recipe.name,
       template: 'event.template.pug',
       context
     }).catch(error => rollbar.error(error))

@@ -2,12 +2,12 @@ import { Field, InputType, ID } from 'type-graphql';
 import { MatcherDto } from '../matchers'
 
 @InputType()
-export class EventTypeMatcherDto {
+export class RecipeMatcherDto {
   @Field(type => ID, { nullable: true })
   id: number;
 
   @Field({ nullable: true })
-  eventTypeId: number;
+  recipeId: number;
 
   @Field(type => MatcherDto)
   matcher: MatcherDto;

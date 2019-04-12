@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
-import { DappUserEntity, EventTypeEntity } from "../entities";
+import { DappUserEntity, RecipeEntity } from "../entities";
 
 @ObjectType()
 @Entity({ name: 'dapps' })
@@ -22,8 +22,8 @@ export class DappEntity {
   })
   dappUsers: DappUserEntity[];
 
-  @OneToMany(type => EventTypeEntity, contract => contract.dapp)
-  eventTypes: EventTypeEntity[];
+  @OneToMany(type => RecipeEntity, contract => contract.dapp)
+  recipes: RecipeEntity[];
 
   @Field()
   @Column({ type: 'text', nullable: false })

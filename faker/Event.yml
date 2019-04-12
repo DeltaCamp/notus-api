@@ -1,5 +1,5 @@
 entity: events
 items:
   event0:
-    eventType: '@eventType0'
+    recipe: '@recipe0'
     user: '@user0'

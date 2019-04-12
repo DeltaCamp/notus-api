@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 
 import {
   MatcherEntity,
-  EventTypeEntity
+  RecipeEntity
 } from '../entities'
 import {
   MatcherDto

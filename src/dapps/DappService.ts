@@ -6,7 +6,7 @@ import { rollbar } from '../rollbar'
 import { Transaction } from '../typeorm/Transaction'
 import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
 import { DappUserService } from '../dapp-users/DappUserService'
-import { EventTypeService } from '../event-types/EventTypeService'
+import { RecipeService } from '../recipes/RecipeService'
 
 @Injectable()
 export class DappService {
@@ -14,7 +14,7 @@ export class DappService {
   constructor(
     private readonly provider: EntityManagerProvider,
     private readonly dappUserService: DappUserService,
-    private readonly eventTypeService: EventTypeService
+    private readonly recipeService: RecipeService
   ) { }
 
   @Transaction()
@@ -81,8 +81,8 @@ export class DappService {
       return this.dappUserService.destroy(dappUser)
     }))
 
-    await Promise.all(dapp.eventTypes.map((eventType => {
-      return this.eventTypeService.destroy(eventType)
+    await Promise.all(dapp.recipes.map((recipe => {
+      return this.recipeService.destroy(recipe)
     })))
 
     await this.provider.get().delete(DappEntity, dapp.id)

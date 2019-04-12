@@ -1,7 +1,7 @@
 import { IProcessor } from 'typeorm-fixtures-cli'
-import { EventTypeEntity } from '../src/entities'
+import { RecipeEntity } from '../src/entities'
 
-export default class EventTypeProcessor implements IProcessor<EventTypeEntity> {
+export default class RecipeProcessor implements IProcessor<RecipeEntity> {
   postProcess(name: string, object: { [key: string]: any }): void {
     // console.log(name)
     // console.log(object)

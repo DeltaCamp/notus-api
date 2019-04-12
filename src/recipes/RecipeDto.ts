@@ -4,7 +4,7 @@ import { DappDto } from '../dapps/DappDto'
 import { MatcherDto } from '../matchers/MatcherDto'
 
 @InputType()
-export class EventTypeDto {
+export class RecipeDto {
   @Field(type => ID, { nullable: true })
   id?: number;
 

@@ -12,25 +12,25 @@ import {
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import {
-  EventTypeMatcherEntity,
+  RecipeMatcherEntity,
   DappEntity,
   EventEntity
 } from '../entities';
 
 @ObjectType()
-@Entity({ name: 'event_types' })
-export class EventTypeEntity {
+@Entity({ name: 'recipes' })
+export class RecipeEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Field(type => DappEntity)
-  @ManyToOne(type => DappEntity, dapp => dapp.eventTypes, {
+  @ManyToOne(type => DappEntity, dapp => dapp.recipes, {
     nullable: false
   })
   dapp: DappEntity;
 
-  @RelationId((eventType: EventTypeEntity) => eventType.dapp)
+  @RelationId((recipe: RecipeEntity) => recipe.dapp)
   dappId: number;
 
   @Field()
@@ -38,11 +38,11 @@ export class EventTypeEntity {
   name: string = '';
 
   // Fixed default variables: ie. a contractAddress at 0x1234 that gets set for every event
-  @Field(type => [EventTypeMatcherEntity])
-  @OneToMany(type => EventTypeMatcherEntity, eventTypeMatcher => eventTypeMatcher.eventType)
-  eventTypeMatchers: EventTypeMatcherEntity[];
+  @Field(type => [RecipeMatcherEntity])
+  @OneToMany(type => RecipeMatcherEntity, recipeMatcher => recipeMatcher.recipe)
+  recipeMatchers: RecipeMatcherEntity[];
 
-  @OneToMany(type => EventEntity, event => event.eventType)
+  @OneToMany(type => EventEntity, event => event.recipe)
   events: EventEntity[];
 
   @Field(type => Date)

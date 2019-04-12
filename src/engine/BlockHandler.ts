@@ -27,9 +27,9 @@ export class BlockHandler {
   async checkEvent(matchContext: MatchContext, event: EventEntity) {
     let failed = false
     debug(`Checking event`)
-    event.eventType.eventTypeMatchers.forEach(eventTypeMatcher => {
-      if (!this.matcher.matches(matchContext, eventTypeMatcher.matcher)) {
-        debug(`Failing on `, eventTypeMatcher)
+    event.recipe.recipeMatchers.forEach(recipeMatcher => {
+      if (!this.matcher.matches(matchContext, recipeMatcher.matcher)) {
+        debug(`Failing on `, recipeMatcher)
         failed = true
         return
       }

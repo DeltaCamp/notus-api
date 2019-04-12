@@ -13,8 +13,8 @@ import { DappModule } from './dapps';
 import { DappUserModule } from './dapp-users';
 import { EventModule } from './events/EventModule';
 import { EventMatcherModule } from './event-matchers';
-import { EventTypeMatcherModule } from './event-type-matchers';
-import { EventTypeModule } from './event-types';
+import { RecipeMatcherModule } from './recipe-matchers';
+import { RecipeModule } from './recipes';
 import { mailModule } from './mailModule'
 import { MatcherModule } from './matchers';
 import { TransactionMiddleware, TransactionModule } from './typeorm';
@@ -37,8 +37,8 @@ if (isProduction) {
     MatcherModule,
     EventModule,
     EventMatcherModule,
-    EventTypeMatcherModule,
-    EventTypeModule,
+    RecipeMatcherModule,
+    RecipeModule,
     GraphQLModule.forRoot({
       playground: !isProduction,
       debug: !isProduction,

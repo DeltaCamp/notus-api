@@ -8,7 +8,7 @@ export class EventDto {
   id?: number;
 
   @Field()
-  eventTypeId: number;
+  recipeId: number;
 
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];
