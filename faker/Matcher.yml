@@ -6,27 +6,32 @@ items:
     operator: '2'
     operandDataType: 1
     operand: '1000'
+    order: 1
   matcher1:
     event: '@event1'
-    source: 'transaction.to'
+    source: 'transaction.to' # 'Contract Address'
     operator: '1'
     operandDataType: 1
     operand: ''
+    order: 1
   matcher2:
     event: '@event1'
     source: 'transaction.from'
     operator: '1'
-    operandDataType: 1
+    operandDataType: 1 # 'Sender Address'
     operand: ''
+    order: 2
   matcher3:
     event: '@event1'
-    source: 'log.topic[2]'
+    source: 'log.topic[2]' # 'Recipient Address'
     operator: '1'
     operandDataType: 1
     operand: ''
+    order: 4
   matcher4:
     event: '@event1'
-    source: 'log.topic[3]'
+    source: 'log.topic[3]' # 'Amount'
     operator: '3'
     operandDataType: 6
     operand: '10'
+    order: 2

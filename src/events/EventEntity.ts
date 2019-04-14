@@ -31,6 +31,7 @@ export class EventEntity {
   @RelationId((event: EventEntity) => event.user)
   userId: number;
 
+  @Field(type => AppEntity, { nullable: true })
   @ManyToOne(type => AppEntity, app => app.events, {
     nullable: true
   })
@@ -52,10 +53,9 @@ export class EventEntity {
   })
   parent: EventEntity;
 
-  // sometimes we have this for relations but sometimes we don't?
-  // @Field({ nullable: true })
-  // @RelationId((event: EventEntity) => event.parent)
-  // parentId: number;
+  @Field({ nullable: true })
+  @RelationId((event: EventEntity) => event.parent)
+  parentId: number;
 
   @OneToMany(type => EventEntity, child => child.parent, {
     nullable: true

@@ -8,7 +8,7 @@ export class EventDto {
   @Field(type => ID, { nullable: true })
   id?: number;
 
-  @Field(type => AppDto)
+  @Field(type => AppDto, { nullable: true })
   app: AppDto;
 
   @Field()
@@ -19,6 +19,9 @@ export class EventDto {
 
   @Field({ nullable: true })
   parent: EventDto;
+
+  @Field({ nullable: true })
+  parentId: number;
 
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];

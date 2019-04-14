@@ -18,17 +18,20 @@ scalar Date
 
 input EventDto {
   id: ID
-  app: AppDto!
+  app: AppDto
   title: String!
   isPublic: Boolean!
   parent: EventDto
+  parentId: Float
   matchers: [MatcherDto!]!
 }
 
 type EventEntity {
   id: ID!
+  app: AppEntity
   title: String!
   parent: EventEntity
+  parentId: Float
   matchers: [MatcherEntity!]!
   createdAt: Date!
   updatedAt: Date!
