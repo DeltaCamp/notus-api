@@ -8,7 +8,25 @@ items:
     operand: '1000'
   matcher1:
     event: '@event1'
-    source: 'transaction.value'
+    source: 'transaction.to'
     operator: '1'
     operandDataType: 1
-    operand: '2000'
+    operand: ''
+  matcher2:
+    event: '@event1'
+    source: 'transaction.from'
+    operator: '1'
+    operandDataType: 1
+    operand: ''
+  matcher3:
+    event: '@event1'
+    source: 'log.topic[2]'
+    operator: '1'
+    operandDataType: 1
+    operand: ''
+  matcher4:
+    event: '@event1'
+    source: 'log.topic[3]'
+    operator: '3'
+    operandDataType: 6
+    operand: '10'

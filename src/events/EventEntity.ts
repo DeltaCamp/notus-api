@@ -39,17 +39,23 @@ export class EventEntity {
   @RelationId((event: EventEntity) => event.app)
   appId: number;
 
+  @Field()
   @Column({ type: 'text', nullable: false })
   title: string;
 
   @Column({ type: 'boolean', default: false, nullable: false })
   isPublic: boolean;
 
-  @Field(type => EventEntity)
+  @Field(type => EventEntity, { nullable: true }) 
   @ManyToOne(type => EventEntity, event => event.children, {
     nullable: true
   })
   parent: EventEntity;
+
+  // sometimes we have this for relations but sometimes we don't?
+  // @Field({ nullable: true })
+  // @RelationId((event: EventEntity) => event.parent)
+  // parentId: number;
 
   @OneToMany(type => EventEntity, child => child.parent, {
     nullable: true

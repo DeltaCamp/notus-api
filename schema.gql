@@ -21,13 +21,14 @@ input EventDto {
   app: AppDto!
   title: String!
   isPublic: Boolean!
-  parentId: Float!
+  parent: EventDto
   matchers: [MatcherDto!]!
 }
 
 type EventEntity {
   id: ID!
-  parent: EventEntity!
+  title: String!
+  parent: EventEntity
   matchers: [MatcherEntity!]!
   createdAt: Date!
   updatedAt: Date!
