@@ -70,11 +70,18 @@ export class EventService {
   async createEvent(user: UserEntity, eventDto: EventDto): Promise<EventEntity> {
     const em = this.provider.get()
 
-    const appDto = eventDto.app
     const event = new EventEntity()
+
+    const appDto = eventDto.app
     if (appDto && (appDto.id || appDto.name)) {
       event.app = await this.appService.findOrCreate(user, eventDto.app)
     }
+
+    const parentDto = eventDto.parent
+    if (parentDto && parentDto.id) {
+      event.parent = await this.findOneOrFail(parentDto.id)
+    }
+
     event.user = user;
     event.title = eventDto.title
     event.isPublic = eventDto.isPublic

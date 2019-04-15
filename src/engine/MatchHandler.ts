@@ -17,7 +17,7 @@ export class MatchHandler {
   async handle(matchContext: MatchContext, event: EventEntity) {
     const context = {
       ...matchContext,
-      ...event
+      event
     }
     debug(`!!!!!!!!!!!!! FIRING !!!!!!!!!!!!!`)
     this.mailerService.sendMail({

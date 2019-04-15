@@ -32,14 +32,12 @@ export class BlockListener {
     debug(`Received block number ${blockNumber}`)
     return transactionContextRunner(async () => {
       const events = await this.eventService.findAllForMatch()
-      debug(events)
       await this.checkBlockNumber(events, blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10))
     })
   }
 
   checkBlockNumber = async (events: EventEntity[], blockNumber) => {
     const block: Block = await this.provider.getBlock(blockNumber)
-    debug(block)
     await Promise.all(block.transactions.map(transactionHash => (
       this.handleTransaction(events, block, transactionHash)
     )))

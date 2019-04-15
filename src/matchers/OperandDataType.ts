@@ -6,5 +6,6 @@ export enum OperandDataType {
   MICROETHER,
   MILLIETHER,
   ETHER,
-  NUMBER
+  NUMBER,
+  ADDRESS
 }
