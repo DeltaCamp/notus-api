@@ -12,7 +12,7 @@ import { AppModule } from './apps';
 import { EventModule } from './events/EventModule';
 import { mailModule } from './mailModule'
 import { MatcherModule } from './matchers';
-import { TransactionMiddleware, TransactionModule } from './typeorm';
+import { TransactionMiddleware, TransactionModule } from './transactions';
 import { UserModule } from './users';
 
 const isProduction = process.env.NODE_ENV === 'production'

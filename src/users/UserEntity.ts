@@ -13,10 +13,13 @@ import { AppEntity, EventEntity } from '../entities'
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
 import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
+import { Field, ObjectType, ID } from 'type-graphql';
 
 @Entity({ name: 'users' })
+@ObjectType()
 export class UserEntity {
   @PrimaryGeneratedColumn()
+  @Field(type => ID)
   id!: number;
 
   @OneToMany(type => AppEntity, app => app.owner)
@@ -25,9 +28,11 @@ export class UserEntity {
   @OneToMany(type => EventEntity, event => event.user)
   events: EventEntity[];
 
+  @Field()
   @Column({ type: 'text' })
   name: string = '';
 
+  @Field()
   @Column({ type: 'text' })
   email: string = '';
 

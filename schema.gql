@@ -28,6 +28,7 @@ input EventDto {
 
 type EventEntity {
   id: ID!
+  user: UserEntity!
   app: AppEntity
   title: String!
   parent: EventEntity
@@ -77,6 +78,7 @@ type Query {
   apps: [AppEntity!]!
   event(id: Float!): EventEntity
   events: [EventEntity!]!
+  publicEvents: [EventEntity!]!
   sources: [SourceEntity!]!
 }
 
@@ -84,4 +86,10 @@ type SourceEntity {
   source: ID!
   title: String!
   dataType: String!
+}
+
+type UserEntity {
+  id: ID!
+  name: String!
+  email: String!
 }

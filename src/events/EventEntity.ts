@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
@@ -23,6 +24,7 @@ export class EventEntity {
   @Field(type => ID)
   id!: number;
 
+  @Field(type => UserEntity)
   @ManyToOne(type => UserEntity, user => user.events, {
     nullable: false
   })
@@ -51,11 +53,12 @@ export class EventEntity {
   @ManyToOne(type => EventEntity, event => event.children, {
     nullable: true
   })
-  parent: EventEntity;
+  @JoinColumn({ name: 'parentId' })
+  parent?: EventEntity | null;
 
   @Field({ nullable: true })
   @RelationId((event: EventEntity) => event.parent)
-  parentId: number;
+  parentId?: number | null;
 
   @OneToMany(type => EventEntity, child => child.parent, {
     nullable: true

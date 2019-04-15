@@ -5,8 +5,8 @@ import { UserEntity } from '../entities';
 import { rollbar } from '../rollbar'
 import { generateRandomBytes } from '../utils/generateRandomBytes';
 import { keyHashHex } from '../utils/keyHashHex'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { Transaction } from '../transactions/Transaction'
+import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 
 @Injectable()
 export class UserService {

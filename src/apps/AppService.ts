@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import { AppEntity, UserEntity } from '../entities';
 import { AppDto } from './AppDto';
 import { rollbar } from '../rollbar'
-import { Transaction } from '../typeorm/Transaction'
-import { EntityManagerProvider } from '../typeorm/EntityManagerProvider'
+import { Transaction } from '../transactions/Transaction'
+import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 import { EventService } from '../events/EventService'
 
 @Injectable()

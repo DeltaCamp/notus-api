@@ -7,8 +7,10 @@ import {
 } from '../entities'
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
-import { Transaction, EntityManagerProvider } from '../typeorm'
+import { Transaction, EntityManagerProvider } from '../transactions'
+import { IsNull } from 'typeorm'
 import { AppService } from '../apps/AppService';
+import { isNull } from 'util';
 
 @Injectable()
 export class EventService {
@@ -33,6 +35,16 @@ export class EventService {
   @Transaction()
   async findForUser(user: UserEntity): Promise<EventEntity[]> {
     return this.provider.get().find(EventEntity, { user })
+  }
+
+  @Transaction()
+  async findPublic(): Promise<EventEntity[]> {
+    return await this.provider.get().createQueryBuilder()
+      .select('*')
+      .from(EventEntity, '')
+      .where('"parentId" IS NULL')
+      .orderBy('"createdAt"', 'DESC')
+      .getRawMany()
   }
 
   @Transaction()

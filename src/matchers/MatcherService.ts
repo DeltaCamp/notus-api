@@ -10,7 +10,7 @@ import {
 import {
   Transaction,
   EntityManagerProvider
- } from '../typeorm'
+ } from '../transactions'
 
 @Injectable()
 export class MatcherService {

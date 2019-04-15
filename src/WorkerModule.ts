@@ -10,7 +10,7 @@ import { AppModule } from './apps'
 import { EngineModule } from './engine/EngineModule'
 import { MatcherModule } from './matchers';
 import { mailModule } from './mailModule'
-import { EntityManagerProvider } from './typeorm/EntityManagerProvider';
+import { EntityManagerProvider } from './transactions/EntityManagerProvider';
 
 @Global()
 @Module({

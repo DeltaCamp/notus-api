@@ -7,7 +7,7 @@ import { Transaction } from './Transaction'
 import { EventEntity } from '../entities'
 import { EventService } from '../events/EventService'
 import { range } from 'lodash'
-import { transactionContextRunner } from '../typeorm'
+import { transactionContextRunner } from '../transactions'
 
 const debug = require('debug')('notus:BlockListener')
 

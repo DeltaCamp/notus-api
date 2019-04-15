@@ -6,7 +6,7 @@ import { EventEntity, EventMatcherEntity, MatcherEntity } from '../entities'
 import { MatcherDto } from '../matchers/MatcherDto'
 import { EventMatcherDto } from './EventMatcherDto'
 import { MatcherService } from '../matchers/MatcherService'
-import { Transaction, EntityManagerProvider } from '../typeorm'
+import { Transaction, EntityManagerProvider } from '../transactions'
 
 @Injectable()
 export class EventMatcherService {

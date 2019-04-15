@@ -29,6 +29,16 @@ export class EventResolver {
     return await this.eventService.findForUser(user);
   }
 
+  @Query(returns => [EventEntity])
+  async publicEvents(): Promise<EventEntity[]> {
+    return await this.eventService.findPublic();
+  }
+
+  @ResolveProperty('user')
+  async user(@Parent() event: EventEntity): Promise<UserEntity> {
+    return await this.eventService.getUser(event)
+  }
+
   @ResolveProperty('matchers')
   async matchers(@Parent() event: EventEntity): Promise<MatcherEntity[]> {
     return await this.eventService.getMatchers(event)
