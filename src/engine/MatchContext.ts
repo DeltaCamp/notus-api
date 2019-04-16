@@ -5,13 +5,19 @@ import { BigNumber, bigNumberify } from 'ethers/utils';
 import { Transaction } from './Transaction'
 
 export class MatchContext {
+  public event: Object = {};
+
   constructor (
-    private readonly block: Block,
-    private readonly transaction: Transaction,
-    private readonly log: Log
+    public readonly block: Block,
+    public readonly transaction: Transaction,
+    public readonly log: Log
   ) {}
 
   get(source: string) {
     return get(this, source)
+  }
+
+  clone() {
+    return new MatchContext(this.block, this.transaction, this.log)
   }
 }

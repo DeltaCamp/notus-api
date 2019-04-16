@@ -26,5 +26,6 @@ export const SourceDataType = {
   [Source.LOG_TOPIC_1]: SolidityDataType.BYTES,
   [Source.LOG_TOPIC_2]: SolidityDataType.BYTES,
   [Source.LOG_TOPIC_3]: SolidityDataType.BYTES,
-  [Source.LOG_DATA]: SolidityDataType.BYTES
+  [Source.LOG_DATA]: SolidityDataType.BYTES,
+  [Source.CONTRACT_EVENT_INPUT]: SolidityDataType.BYTES
 }

@@ -20,7 +20,7 @@ export class BlockHandler {
   async handleBlock(events: EventEntity[], block: Block, transaction: Transaction, log: Log): Promise<void> {
     const matchContext = new MatchContext(block, transaction, log)
     await Promise.all(events.map(event => (
-      this.checkEvent(matchContext, event)
+      this.checkEvent(matchContext.clone(), event)
     )))
   }
 

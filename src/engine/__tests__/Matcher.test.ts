@@ -3,9 +3,14 @@ import { Matcher } from '../Matcher'
 import { MatchContext } from '../MatchContext'
 import { Operator } from '../../matchers'
 import {
-  MatcherEntity
+  MatcherEntity,
+  ContractEventInputEntity,
+  ContractEventEntity,
+  ContractEntity
 } from '../../entities'
 import * as Source from '../../matchers/Source'
+import { ERC20 } from './ERC20'
+import { SolidityDataType } from '../../common/SolidityDataType';
 
 describe('MatchContext', () => {
 
@@ -29,6 +34,48 @@ describe('MatchContext', () => {
   })
 
   describe('matches()', () => {
+
+    describe('with custom event inputs', () => {
+      let contract, contractEvent, contractEventInput
+
+      beforeEach(() => {
+        contract = new ContractEntity()
+        contract.abi = JSON.stringify(ERC20)
+        contractEvent = new ContractEventEntity()
+        contractEvent.name = 'Transfer'
+        contractEventInput = new ContractEventInputEntity()
+        contractEventInput.name = 'value'
+
+        contractEventInput.contractEvent = contractEvent
+        contractEvent.contract = contract
+
+        log = {
+          data: '0x0000000000000000000000000000000000000000000000000000000d661188c0',
+          topics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            '0x0000000000000000000000002f7973eee7b0e9bc205e805d8e8fde54184187da',
+            '0x0000000000000000000000003f5ce5fbfe3e9af3971dd833d26ba9b5c936f0be'
+          ]
+        }
+        matchContext = new MatchContext(block, transaction, log)
+
+        matcherEntity.source = Source.CONTRACT_EVENT_INPUT
+        matcherEntity.contractEventInput = contractEventInput
+        matcherEntity.operator = Operator.GT
+        matcherEntity.operand = '400'
+        matcherEntity.operandDataType = SolidityDataType.UINT256
+      })
+
+      it('should be truthy when passing', () => {
+        expect(matcher.matches(matchContext, matcherEntity)).toBeTruthy()
+      })
+
+      it('should be falsy when failing', () => {
+        matcherEntity.operand = '67547000000'
+        expect(matcher.matches(matchContext, matcherEntity)).toBeFalsy()
+      })
+    })
+
     describe('with numbers', () => {
       beforeEach(() => {
         matcherEntity.source = Source.BLOCK_TIMESTAMP

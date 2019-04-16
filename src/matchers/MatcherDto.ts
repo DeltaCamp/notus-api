@@ -10,7 +10,7 @@ export class MatcherDto {
   @Field({ nullable: true })
   eventId: number;
 
-  @Field()
+  @Field({ nullable: true })
   order: number;
 
   @Field()

@@ -12,7 +12,11 @@ import { Field, ObjectType, ID } from 'type-graphql';
 import { OperandDataType } from './OperandDataType'
 import { Operator } from './Operator'
 import * as Source from './Source'
-import { EventEntity } from '../entities';
+import {
+  EventEntity,
+  ContractEventEntity,
+  ContractEventInputEntity
+} from '../entities';
 
 @Entity({ name: 'matchers' })
 @ObjectType()
@@ -38,6 +42,12 @@ export class MatcherEntity {
   @Field()
   source: string;
 
+  @ManyToOne(type => ContractEventInputEntity, { nullable: true })
+  contractEventInput: ContractEventInputEntity;
+
+  @RelationId((matcher: MatcherEntity) => matcher.contractEventInput)
+  contractEventInputId: number;
+
   @Column({ type: 'enum', enum: Operator, nullable: false })
   @Field()
   operator: Operator;
@@ -49,6 +59,12 @@ export class MatcherEntity {
   @Column({ type: 'enum', enum: OperandDataType, nullable: true })
   @Field()
   operandDataType: OperandDataType;
+
+  /**
+   * When the operand matches a contract event topic this will be the first contract event that matches
+   */
+  @Field(type => ContractEventEntity, { nullable: true })
+  operandContractEvent: ContractEventEntity;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

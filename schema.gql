@@ -13,6 +13,40 @@ type AppEntity {
   name: String!
 }
 
+input ContractDto {
+  id: ID
+  name: String
+  address: String
+  isPublic: Boolean
+  abi: String
+}
+
+type ContractEntity {
+  id: ID!
+  name: String!
+  address: String
+  abi: String!
+  isPublic: Boolean!
+  contractEvents: [ContractEventEntity!]!
+}
+
+type ContractEventEntity {
+  id: ID!
+  name: String!
+  topic: String!
+  contract: ContractEntity!
+  contractId: Float!
+  contractEventInputs: [ContractEventInputEntity!]!
+}
+
+type ContractEventInputEntity {
+  id: ID!
+  name: String!
+  type: String!
+  contractEvent: ContractEventEntity!
+  contractEventId: Float!
+}
+
 """Date custom scalar type"""
 scalar Date
 
@@ -41,7 +75,7 @@ type EventEntity {
 input MatcherDto {
   id: ID
   eventId: Float
-  order: Float!
+  order: Float
   source: String!
   operator: Float!
   operandDataType: Float
@@ -56,6 +90,7 @@ type MatcherEntity {
   operator: Float!
   operand: String!
   operandDataType: Float!
+  operandContractEvent: ContractEventEntity
   createdAt: Date!
   updatedAt: Date!
 }
@@ -70,6 +105,9 @@ type Mutation {
   createMatcher(matcher: MatcherDto!): MatcherEntity!
   updateMatcher(matcher: MatcherDto!): MatcherEntity!
   destroyMatcher(matcherId: Float!): Boolean!
+  createContract(contract: ContractDto!): ContractEntity!
+  updateContract(contract: ContractDto!): ContractEntity!
+  destroyContract(id: Float!): ContractEntity!
 }
 
 type Query {
@@ -80,6 +118,10 @@ type Query {
   events: [EventEntity!]!
   publicEvents: [EventEntity!]!
   sources: [SourceEntity!]!
+  contract(id: Float!): ContractEntity!
+  contracts(address: String, name: String): [ContractEntity!]!
+  contractEventInputs(contractEventId: Float, name: String): [ContractEventInputEntity!]!
+  contractEvents(topic: String, name: String): [ContractEventEntity!]!
 }
 
 type SourceEntity {

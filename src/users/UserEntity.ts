@@ -7,13 +7,17 @@ import {
   OneToMany,
   ManyToOne
 } from 'typeorm';
+import { Field, ObjectType, ID } from 'type-graphql';
 
-import { AppEntity, EventEntity } from '../entities'
+import {
+  AppEntity,
+  EventEntity,
+  ContractEntity
+} from '../entities'
 
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
 import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
-import { Field, ObjectType, ID } from 'type-graphql';
 
 @Entity({ name: 'users' })
 @ObjectType()
@@ -27,6 +31,9 @@ export class UserEntity {
 
   @OneToMany(type => EventEntity, event => event.user)
   events: EventEntity[];
+
+  @OneToMany(type => ContractEntity, contract => contract.owner)
+  contracts: ContractEntity[];
 
   @Field()
   @Column({ type: 'text' })

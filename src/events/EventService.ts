@@ -52,7 +52,10 @@ export class EventService {
     return this.provider.get().find(EventEntity, {
       relations: [
         'user',
-        'matchers'
+        'matchers',
+        'matchers.contractEventInput',
+        'matchers.contractEventInput.contractEvent',
+        'matchers.contractEventInput.contractEvent.contract',
       ]
     })
   }
@@ -63,7 +66,7 @@ export class EventService {
       .select('users')
       .from(UserEntity, 'users')
       .innerJoin('users.events', 'events')
-      .where('events.id = :id', { id: event.id })
+      .where('"events"."id" = :id', { id: event.id })
       .getOne()
   }
 
@@ -73,7 +76,7 @@ export class EventService {
       .select('matchers')
       .from(MatcherEntity, 'matchers')
       .innerJoin('matchers.event', 'events')
-      .where('events.id = :id', { id: event.id })
+      .where('"events"."id" = :id', { id: event.id })
       .printSql()
       .getMany()
   }

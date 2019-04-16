@@ -24,5 +24,6 @@ export const SourceTitle = {
   [Source.LOG_TOPIC_1]: 'log topic 1',
   [Source.LOG_TOPIC_2]: 'log topic 2',
   [Source.LOG_TOPIC_3]: 'log topic 3',
-  [Source.LOG_DATA]: 'log data'
+  [Source.LOG_DATA]: 'log data',
+  [Source.CONTRACT_EVENT_INPUT]: 'custom event argument'
 }

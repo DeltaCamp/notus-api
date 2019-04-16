@@ -2,11 +2,13 @@ import { BigNumber, bigNumberify, getAddress } from 'ethers/utils';
 
 import { MatchContext } from './MatchContext'
 import {
-  MatcherEntity
+  MatcherEntity,
+  ContractEventInputEntity
 } from '../entities'
 import { Operator } from '../matchers'
 import { SolidityDataType } from '../common/SolidityDataType'
 import { SourceDataType } from '../matchers/SourceDataType'
+import * as Source from '../matchers/Source'
 
 const debug = require('debug')('notus:Matcher')
 
@@ -37,12 +39,11 @@ export class Matcher {
   }
 
   eq(matchContext, matcher): boolean {
-    const { source, operand } = matcher
-    var sourceDataType = SourceDataType[source]
-    const value = matchContext.get(source)
+    const { operand } = matcher
+    const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
       return value.eq(operand)
-    } else if (SourceDataType[source] === SolidityDataType.ADDRESS) {
+    } else if (this.getSourceDataType(matcher) === SolidityDataType.ADDRESS) {
       return getAddress(value) === getAddress(operand)
     } else if (isNaN(value)) {
       return value === operand
@@ -52,8 +53,8 @@ export class Matcher {
   }
 
   lt(matchContext, matcher): boolean {
-    const { source, operand } = matcher
-    const value = matchContext.get(source)
+    const { operand } = matcher
+    const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
       return value.lt(operand)
     } else if (isNaN(value)) {
@@ -64,8 +65,8 @@ export class Matcher {
   }
 
   gt(matchContext, matcher): boolean {
-    const { source, operand } = matcher
-    const value = matchContext.get(source)
+    const { operand } = matcher
+    const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
       return value.gt(operand)
     } else if (isNaN(value)) {
@@ -76,8 +77,8 @@ export class Matcher {
   }
 
   lte(matchContext, matcher): boolean {
-    const { source, operand } = matcher
-    const value = matchContext.get(source)
+    const { operand } = matcher
+    const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
       return value.lte(operand)
     } else if (isNaN(value)) {
@@ -88,8 +89,8 @@ export class Matcher {
   }
 
   gte(matchContext, matcher): boolean {
-    const { source, operand } = matcher
-    const value = matchContext.get(source)
+    const { operand } = matcher
+    const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
       return value.gte(operand)
     } else if (isNaN(value)) {
@@ -97,5 +98,31 @@ export class Matcher {
     } else {
       return value >= Number(operand)
     }
+  }
+
+  getSourceValue(matchContext, matcher) {
+    if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
+      const event = this.getEvent(matchContext, matcher.contractEventInput)
+      return event[matcher.contractEventInput.name]
+    }
+    return matchContext.get(matcher.source)
+  }
+
+  getSourceDataType(matcher): SolidityDataType {
+    if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
+      return matcher.contractEventInput.type
+    }
+    return SourceDataType[matcher.source]
+  }
+
+  getEvent(matchContext: MatchContext, contractEventInput: ContractEventInputEntity) {
+    const { contractEvent } = contractEventInput
+    if (!matchContext.event[contractEvent.name]) {
+      const ethersInterface = contractEventInput.contractEvent.contract.interface()
+      const { data, topics } = matchContext.log
+      const values = ethersInterface.events[contractEvent.name].decode(data, topics)
+      matchContext.event[contractEvent.name] = values
+    }
+    return matchContext.event[contractEvent.name]
   }
 }

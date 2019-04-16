@@ -23,14 +23,14 @@ items:
     order: 2
   matcher3:
     event: '@event1'
-    source: 'log.topic[2]' # 'Recipient Address'
+    source: 'log.topics[2]' # 'Recipient Address'
     operator: '1'
     operandDataType: 1
     operand: ''
     order: 4
   matcher4:
     event: '@event1'
-    source: 'log.topic[3]' # 'Amount'
+    source: 'log.topics[3]' # 'Amount'
     operator: '3'
     operandDataType: 6
     operand: '10'

@@ -5,12 +5,14 @@ import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   UserEntity,
+  ContractEventEntity,
   MatcherEntity,
   EventEntity
 } from '../entities'
 import { MatcherDto } from './MatcherDto'
 import { MatcherService } from './MatcherService'
 import { EventService } from '../events/EventService'
+import { ContractEventService } from '../contracts/ContractEventService'
 
 const debug = require('debug')('notus:MatcherResolver')
 
@@ -19,8 +21,18 @@ export class MatcherResolver {
 
   constructor(
     private readonly eventService: EventService,
-    private readonly matcherService: MatcherService
+    private readonly matcherService: MatcherService,
+    private readonly contractEventService: ContractEventService
   ) {}
+
+  @ResolveProperty('operandContractEvent')
+  async operandContractEvent(@Parent() matcher: MatcherEntity): Promise<ContractEventEntity> {
+    const contractEvents = await this.contractEventService.find(undefined, matcher.operand)
+    if (contractEvents.length) {
+      return contractEvents[0]
+    }
+    return null
+  }
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => MatcherEntity)
