@@ -89,9 +89,9 @@ export class EventService {
       event.app = await this.appService.findOrCreate(user, eventDto.app)
     }
 
-    const parentDto = eventDto.parent
-    if (parentDto && parentDto.id) {
-      event.parent = await this.findOneOrFail(parentDto.id)
+    const parentDtoId = eventDto.parentId
+    if (parentDtoId) {
+      event.parent = await this.findOneOrFail(parentDtoId)
     }
 
     event.user = user;
