@@ -30,6 +30,11 @@ export class EventResolver {
   }
 
   @Query(returns => [EventEntity])
+  async findAllForMatch(): Promise<EventEntity[]> {
+    return await this.eventService.findAllForMatch()
+  }
+
+  @Query(returns => [EventEntity])
   async publicEvents(): Promise<EventEntity[]> {
     return await this.eventService.findPublic();
   }
@@ -70,14 +75,16 @@ export class EventResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventEntity)
-  async destroyEvent(
+  async deleteEvent(
     @GqlAuthUser() user: UserEntity,
     @Args('eventId') eventId: number
-  ): Promise<boolean> {
+  ): Promise<EventEntity> {
     const event = await this.eventService.findOneOrFail(eventId);
     if (event.userId !== user.id) {
       throw new UnauthorizedException()
     }
-    return await this.eventService.destroy(event)
+
+    await this.eventService.deleteEvent(event.id)
+    return event
   }
 }

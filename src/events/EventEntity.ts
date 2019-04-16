@@ -76,4 +76,8 @@ export class EventEntity {
   @Field()
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  @Field({ nullable: true })
+  @Column({ type: 'timestamp', default: null, nullable: true })
+  deletedAt?: Date;
 }
