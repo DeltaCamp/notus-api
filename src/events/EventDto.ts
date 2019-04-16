@@ -18,10 +18,7 @@ export class EventDto {
   isPublic: boolean;
 
   @Field({ nullable: true })
-  parent: EventDto;
-
-  @Field({ nullable: true })
-  parentId: number;
+  parentId?: number;
 
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];

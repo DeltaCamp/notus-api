@@ -55,7 +55,6 @@ input EventDto {
   app: AppDto
   title: String!
   isPublic: Boolean!
-  parent: EventDto
   parentId: Float
   matchers: [MatcherDto!]!
 }
