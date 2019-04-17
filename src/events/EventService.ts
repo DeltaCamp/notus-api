@@ -35,7 +35,14 @@ export class EventService {
 
   @Transaction()
   async findForUser(user: UserEntity): Promise<EventEntity[]> {
-    return this.provider.get().find(EventEntity, { user })
+    // AND "deletedAt" IS NULL
+    // return this.provider.get().find(EventEntity, { user })
+    return this.provider.get().createQueryBuilder()
+      .select('*')
+      .from(EventEntity, '')
+      .where('"deletedAt" IS NULL AND "userId" = :id', { id: user.id })
+      .orderBy('"createdAt"', 'DESC')
+      .getRawMany()
   }
 
   @Transaction()
@@ -43,13 +50,24 @@ export class EventService {
     return await this.provider.get().createQueryBuilder()
       .select('*')
       .from(EventEntity, '')
-      .where('"parentId" IS NULL')
+      .where('"parentId" IS NULL AND "deletedAt" IS NULL')
       .orderBy('"createdAt"', 'DESC')
       .getRawMany()
   }
 
   @Transaction()
   async findAllForMatch(): Promise<EventEntity[]> {
+    return await this.provider.get().createQueryBuilder()
+      .select('*')
+      .from(EventEntity, '')
+      // .leftJoinAndSelect("events.user", "users")
+      // .leftJoinAndSelect("events.matchers", "matchers")
+      // .leftJoinAndSelect("events.matchers.contractEventInput", "contract_events")
+      // .leftJoinAndSelect("events.matchers.contractEventInput.contractEvent", "contract_events")
+      // .leftJoinAndSelect("events.matchers.contractEventInput.contractEvent.contract", "contract_events")
+      .where('"deletedAt" IS NULL')
+      .getRawMany()
+
     return this.provider.get().find(EventEntity, {
       relations: [
         'user',
@@ -86,7 +104,6 @@ export class EventService {
       .from(MatcherEntity, 'matchers')
       .innerJoin('matchers.event', 'events')
       .where('"events"."id" = :id', { id: event.id })
-      .printSql()
       .getMany()
   }
 
@@ -144,12 +161,11 @@ export class EventService {
   }
 
   @Transaction()
-  async destroy(event: EventEntity): Promise<boolean> {
-    await Promise.all(event.matchers.map(matcher => {
-      return this.matcherService.destroy(matcher.id)
-    }))
+  async deleteEvent(eventId: number): Promise<EventEntity> {
+    const event = await this.findOneOrFail(eventId)
+    event.deletedAt = new Date
 
-    await this.provider.get().delete(EventEntity, event.id)
-    return true
+    await this.provider.get().save(event)
+    return event
   }
 }

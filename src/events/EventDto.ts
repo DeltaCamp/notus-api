@@ -26,6 +26,9 @@ export class EventDto {
   @Field({ nullable: true })
   parentId?: number;
 
+  @Field({ nullable: true })
+  deletedAt?: Date;
+
   @Field(type => [MatcherDto])
   matchers: MatcherDto[];
 }

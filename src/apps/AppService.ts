@@ -70,9 +70,9 @@ export class AppService {
     const app = await this.findOneOrFail(appId)
     
     await Promise.all(app.events.map((event => {
-      return this.eventService.destroy(event)
+      return this.eventService.deleteEvent(event.id) // soft delete ...
     })))
 
-    await this.provider.get().delete(AppEntity, app.id)
+    await this.provider.get().delete(AppEntity, app.id) // soft delete?
   }
 }

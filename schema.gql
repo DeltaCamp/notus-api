@@ -59,6 +59,7 @@ input EventDto {
   contractEventId: Float
   isPublic: Boolean!
   parentId: Float
+  deletedAt: Date
   matchers: [MatcherDto!]!
 }
 
@@ -74,6 +75,7 @@ type EventEntity {
   matchers: [MatcherEntity!]!
   createdAt: Date!
   updatedAt: Date!
+  deletedAt: Date
 }
 
 input MatcherDto {
@@ -105,7 +107,7 @@ type Mutation {
   destroyApp(appId: Float!): AppEntity!
   createEvent(event: EventDto!): EventEntity!
   updateEvent(event: EventDto!): EventEntity!
-  destroyEvent(eventId: Float!): EventEntity!
+  deleteEvent(eventId: Float!): EventEntity!
   createMatcher(matcher: MatcherDto!): MatcherEntity!
   updateMatcher(matcher: MatcherDto!): MatcherEntity!
   destroyMatcher(matcherId: Float!): Boolean!
@@ -120,6 +122,7 @@ type Query {
   apps: [AppEntity!]!
   event(id: Float!): EventEntity
   events: [EventEntity!]!
+  findAllForMatch: [EventEntity!]!
   publicEvents: [EventEntity!]!
   sources: [SourceEntity!]!
   contract(id: Float!): ContractEntity!
