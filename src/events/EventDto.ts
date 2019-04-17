@@ -14,6 +14,12 @@ export class EventDto {
   @Field()
   title: string;
 
+  @Field({ nullable: true })
+  scope: number;
+
+  @Field({ nullable: true })
+  contractEventId: number;
+
   @Field()
   isPublic: boolean;
 

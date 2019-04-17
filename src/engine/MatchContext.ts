@@ -8,9 +8,9 @@ export class MatchContext {
   public event: Object = {};
 
   constructor (
-    public readonly block: Block,
-    public readonly transaction: Transaction,
-    public readonly log: Log
+    public readonly block?: Block,
+    public readonly transaction?: Transaction,
+    public readonly log?: Log
   ) {}
 
   get(source: string) {

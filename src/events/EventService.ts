@@ -3,14 +3,14 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import {
   UserEntity,
   EventEntity,
+  ContractEventEntity,
   MatcherEntity
 } from '../entities'
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../transactions'
-import { IsNull } from 'typeorm'
 import { AppService } from '../apps/AppService';
-import { isNull } from 'util';
+import { ContractEventService } from '../contracts/ContractEventService'
 
 @Injectable()
 export class EventService {
@@ -19,7 +19,8 @@ export class EventService {
     private readonly provider: EntityManagerProvider,
     private readonly matcherService: MatcherService,
     @Inject(forwardRef(() => AppService))
-    private readonly appService: AppService
+    private readonly appService: AppService,
+    private readonly contractEventService: ContractEventService
   ) {}
 
   @Transaction()
@@ -71,6 +72,14 @@ export class EventService {
   }
 
   @Transaction()
+  async getContractEvent(event: EventEntity): Promise<ContractEventEntity> {
+    return this.provider.get().createQueryBuilder(ContractEventEntity, 'contractEvents')
+      .innerJoin('contractEvents.events', 'events')
+      .where('"events"."id" = :id', { id: event.id })
+      .getOne()
+  }
+
+  @Transaction()
   async getMatchers(event: EventEntity): Promise<MatcherEntity[]> {
     return this.provider.get().createQueryBuilder()
       .select('matchers')
@@ -97,6 +106,10 @@ export class EventService {
       event.parent = await this.findOneOrFail(parentDtoId)
     }
 
+    if (eventDto.contractEventId) {
+      event.contractEvent = await this.contractEventService.findOneOrFail(eventDto.contractEventId)
+    }
+
     event.user = user;
     event.title = eventDto.title
     event.isPublic = eventDto.isPublic
@@ -115,6 +128,15 @@ export class EventService {
     const event = await this.findOneOrFail(eventDto.id)
     event.title = eventDto.title;
     event.isPublic = eventDto.isPublic
+
+    const parentDtoId = eventDto.parentId
+    if (parentDtoId) {
+      event.parent = await this.findOneOrFail(parentDtoId)
+    }
+
+    if (eventDto.contractEventId) {
+      event.contractEvent = await this.contractEventService.findOneOrFail(eventDto.contractEventId)
+    }
 
     await this.provider.get().save(event)
 

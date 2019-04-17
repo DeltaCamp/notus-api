@@ -2,7 +2,8 @@ import { BlockHandler } from '../BlockHandler'
 
 import {
   EventEntity,
-  MatcherEntity
+  MatcherEntity,
+  ContractEventEntity
 } from '../../entities'
 
 describe('BlockHandler', () => {
@@ -39,6 +40,19 @@ describe('BlockHandler', () => {
   })
 
   describe('handleBlock()', () => {
+    it('should exit if the contractEvent does not match', async () => {
+      matcher.matches = jest.fn(() => true)
+      event.contractEvent = new ContractEventEntity()
+      event.contractEvent.topic = '0x1234'
+      log = {
+        topics: [
+          '0x9999'
+        ]
+      }
+      await blockHandler.handleBlock(events, block, transaction, log)
+      expect(matchHandler.handle).not.toHaveBeenCalled()
+    })
+
     it('should not call the match handler if a matcher fails', async () => {
       await blockHandler.handleBlock(events, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()

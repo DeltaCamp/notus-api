@@ -6,6 +6,7 @@ import { MatchContext } from './MatchContext'
 import { Transaction } from './Transaction'
 import { EventEntity } from '../entities'
 import { MatchHandler } from './MatchHandler'
+import { EventScope } from '../events/EventScope'
 
 const debug = require('debug')('notus:BlockHandler')
 
@@ -26,14 +27,16 @@ export class BlockHandler {
 
   async checkEvent(matchContext: MatchContext, event: EventEntity) {
     let i;
-    debug(`Checking event`)
+    debug(`Checking event ${event.id}`)
+
+    if (event.contractEvent && matchContext.log.topics[0] !== event.contractEvent.topic) {
+      return
+    }
 
     let matchers = []
-
     if (event.parent) {
       matchers = matchers.concat(event.parent.matchers)
     }
-
     matchers = matchers.concat(event.matchers)
 
     if (!matchers.length) {

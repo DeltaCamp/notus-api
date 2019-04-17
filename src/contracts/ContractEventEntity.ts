@@ -10,7 +10,11 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
 
-import { ContractEntity, ContractEventInputEntity } from '../entities';
+import {
+  ContractEntity,
+  ContractEventInputEntity,
+  EventEntity
+} from '../entities';
 
 @ObjectType()
 @Entity({ name: 'contract_events' })
@@ -26,6 +30,10 @@ export class ContractEventEntity {
   @Field()
   @Column({ type: 'text', nullable: false })
   topic: string = '';
+
+  @Field(type => [EventEntity])
+  @OneToMany(type => EventEntity, event => event.contractEvent)
+  events: EventEntity[];
 
   @Field()
   @ManyToOne(type => ContractEntity, contract => contract.contractEvents)

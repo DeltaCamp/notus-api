@@ -34,6 +34,7 @@ type ContractEventEntity {
   id: ID!
   name: String!
   topic: String!
+  events: [EventEntity!]!
   contract: ContractEntity!
   contractId: Float!
   contractEventInputs: [ContractEventInputEntity!]!
@@ -54,6 +55,8 @@ input EventDto {
   id: ID
   app: AppDto
   title: String!
+  scope: Float
+  contractEventId: Float
   isPublic: Boolean!
   parentId: Float
   matchers: [MatcherDto!]!
@@ -62,6 +65,8 @@ input EventDto {
 type EventEntity {
   id: ID!
   user: UserEntity!
+  scope: Float!
+  contractEvent: ContractEventEntity!
   app: AppEntity
   title: String!
   parent: EventEntity

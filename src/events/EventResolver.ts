@@ -6,6 +6,7 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
   UserEntity,
   EventEntity,
+  ContractEventEntity,
   MatcherEntity
 } from '../entities'
 import { EventService } from './EventService'
@@ -32,6 +33,11 @@ export class EventResolver {
   @Query(returns => [EventEntity])
   async publicEvents(): Promise<EventEntity[]> {
     return await this.eventService.findPublic();
+  }
+
+  @ResolveProperty('contractEvent')
+  async contractEvent(@Parent() event: EventEntity): Promise<ContractEventEntity> {
+    return await this.eventService.getContractEvent(event)
   }
 
   @ResolveProperty('user')

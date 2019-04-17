@@ -14,8 +14,10 @@ import { Field, Int, ObjectType, ID } from 'type-graphql';
 import {
   UserEntity,
   AppEntity,
+  ContractEventEntity,
   MatcherEntity
 } from '../entities'
+import { EventScope } from './EventScope';
 
 @Entity({ name: 'events' })
 @ObjectType()
@@ -32,6 +34,17 @@ export class EventEntity {
 
   @RelationId((event: EventEntity) => event.user)
   userId: number;
+
+  @Field()
+  @Column({ type: 'enum', enum: EventScope, default: EventScope.EVENT })
+  scope: EventScope = EventScope.EVENT;
+
+  @Field(type => ContractEventEntity)
+  @ManyToOne(type => ContractEventEntity)
+  contractEvent?: ContractEventEntity | null;
+
+  @RelationId((event: EventEntity) => event.contractEvent)
+  contractEventId?: number;
 
   @Field(type => AppEntity, { nullable: true })
   @ManyToOne(type => AppEntity, app => app.events, {
