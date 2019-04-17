@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { ethers } from 'ethers'
 
-import { BlockHandler } from './BlockHandler'
+import { BaseHandler } from './BaseHandler'
 import { BlockListener } from './BlockListener'
 import { EventService } from '../events/EventService'
 
@@ -12,7 +12,7 @@ export class BlockListenerManager {
   listeners: BlockListener[];
 
   constructor (
-    private readonly blockHandler: BlockHandler,
+    private readonly eventHandler: BaseHandler,
     private readonly eventService: EventService
   ) {
     this.listeners = [];
@@ -40,7 +40,7 @@ export class BlockListenerManager {
     } else {
       provider = ethers.getDefaultProvider(network)
     }
-    const listener = new BlockListener(provider, this.blockHandler, this.eventService)
+    const listener = new BlockListener(provider, this.eventHandler, this.eventService)
     debug(`Starting BlockListener for ${network}`)
     listener.start()
     return listener

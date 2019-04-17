@@ -16,5 +16,6 @@ items:
     title: 'Deleted Event'
     app: '@app1'
     user: '@user0'
+    scope: 0
     deletedAt: '1980-10-10 12:12:00'
     scope: 0

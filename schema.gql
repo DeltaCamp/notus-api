@@ -93,10 +93,10 @@ type MatcherEntity {
   event: EventEntity!
   order: Float!
   source: String!
+  contractEventInput: ContractEventInputEntity!
   operator: Float!
   operand: String!
   operandDataType: Float!
-  operandContractEvent: ContractEventEntity
   createdAt: Date!
   updatedAt: Date!
 }

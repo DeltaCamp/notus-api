@@ -1,5 +1,5 @@
 export enum EventScope {
-  EVENT,
-  CONTRACT_EVENT,
-  INHERITED
+  TRANSACTION,
+  BLOCK,
+  CONTRACT_EVENT
 }

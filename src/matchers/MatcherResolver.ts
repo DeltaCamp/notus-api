@@ -25,13 +25,9 @@ export class MatcherResolver {
     private readonly contractEventService: ContractEventService
   ) {}
 
-  @ResolveProperty('operandContractEvent')
-  async operandContractEvent(@Parent() matcher: MatcherEntity): Promise<ContractEventEntity> {
-    const contractEvents = await this.contractEventService.find(undefined, matcher.operand)
-    if (contractEvents.length) {
-      return contractEvents[0]
-    }
-    return null
+  @ResolveProperty('contractEventInput')
+  async contractEventInput(@Parent() matcher: MatcherEntity): Promise<ContractEventEntity> {
+    return await this.contractEventService.findOneOrFail(matcher.contractEventInputId)
   }
 
   @UseGuards(GqlAuthGuard)

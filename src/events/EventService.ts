@@ -6,6 +6,7 @@ import {
   ContractEventEntity,
   MatcherEntity
 } from '../entities'
+import { EventScope } from './EventScope'
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../transactions'
@@ -124,6 +125,14 @@ export class EventService {
     )))
 
     return event
+  }
+
+  @Transaction()
+  async findByScope(scope: EventScope): Promise<EventEntity[]> {
+    return await this.provider.get().createQueryBuilder(EventEntity, 'events')
+      .leftJoin('events.parent', 'parent_events')
+      .where('events.scope = :scope OR parent_events.scope = :scope', { scope })
+      .getMany()
   }
 
   @Transaction()

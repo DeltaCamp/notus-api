@@ -36,8 +36,8 @@ export class EventEntity {
   userId: number;
 
   @Field()
-  @Column({ type: 'enum', enum: EventScope, default: EventScope.EVENT })
-  scope: EventScope = EventScope.EVENT;
+  @Column({ type: 'enum', enum: EventScope, default: EventScope.TRANSACTION })
+  scope: EventScope = EventScope.TRANSACTION;
 
   @Field(type => ContractEventEntity)
   @ManyToOne(type => ContractEventEntity)

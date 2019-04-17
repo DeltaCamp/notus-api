@@ -5,6 +5,7 @@ import {
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
+import { ContractModule } from './contracts/ContractModule'
 import { EventModule } from './events'
 import { AppModule } from './apps'
 import { EngineModule } from './engine/EngineModule'
@@ -20,7 +21,8 @@ import { EntityManagerProvider } from './transactions/EntityManagerProvider';
     AppModule,
     mailModule,
     EventModule,
-    MatcherModule
+    MatcherModule,
+    ContractModule
   ],
   providers: [
     EntityManagerProvider

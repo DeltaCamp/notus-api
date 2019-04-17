@@ -1,5 +1,5 @@
 export * from './EngineModule'
-export * from './BlockHandler'
+export * from './BaseHandler'
 export * from './BlockListener'
 export * from './BlockListenerManager'
 export * from './createTransaction'

@@ -42,6 +42,7 @@ export class MatcherEntity {
   @Field()
   source: string;
 
+  @Field(type => ContractEventInputEntity)
   @ManyToOne(type => ContractEventInputEntity, { nullable: true })
   contractEventInput: ContractEventInputEntity;
 
@@ -59,12 +60,6 @@ export class MatcherEntity {
   @Column({ type: 'enum', enum: OperandDataType, nullable: true })
   @Field()
   operandDataType: OperandDataType;
-
-  /**
-   * When the operand matches a contract event topic this will be the first contract event that matches
-   */
-  @Field(type => ContractEventEntity, { nullable: true })
-  operandContractEvent: ContractEventEntity;
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
