@@ -51,6 +51,10 @@ export class UserController {
     @Body('password') password
   ) {
     if (password) {
+      if (password.length < 8) {
+        throw new NotAcceptableException('Password needs to be at least 8 characters')
+      }
+
       try {
         await this.userService.confirm(user, password)
         return this.authJwtService.signIn(user)

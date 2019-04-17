@@ -3,7 +3,8 @@ import {
   Body,
   Get,
   Query,
-  UnauthorizedException
+  UnauthorizedException,
+  NotAcceptableException
 } from '@nestjs/common'
 
 import { UserEntity } from '../entities'
@@ -23,6 +24,10 @@ export class AuthController {
     @Query('email') email: string,
     @Query('password') password: string
   ) {
+    if (password.length < 8) {
+      throw new NotAcceptableException('Password needs to be at least 8 characters')
+    }
+    
     let userEntity = await this.userService.findByEmailAndPassword(email, password)
     if (!userEntity) {
       throw new UnauthorizedException()
