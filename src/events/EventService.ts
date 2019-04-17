@@ -116,6 +116,7 @@ export class EventService {
 
     event.user = user;
     event.title = eventDto.title
+    event.scope = eventDto.scope
     event.isPublic = eventDto.isPublic
 
     await em.save(event)
@@ -140,7 +141,8 @@ export class EventService {
     const event = await this.findOneOrFail(eventDto.id)
     event.title = eventDto.title;
     event.isPublic = eventDto.isPublic
-
+    event.scope = eventDto.scope
+    
     const parentDtoId = eventDto.parentId
     if (parentDtoId) {
       event.parent = await this.findOneOrFail(parentDtoId)

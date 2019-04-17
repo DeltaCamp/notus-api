@@ -59,6 +59,7 @@ export class EventEntity {
   @Column({ type: 'text', nullable: false })
   title: string;
 
+  @Field()
   @Column({ type: 'boolean', default: false, nullable: false })
   isPublic: boolean;
 

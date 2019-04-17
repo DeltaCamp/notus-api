@@ -70,6 +70,7 @@ type EventEntity {
   contractEvent: ContractEventEntity!
   app: AppEntity
   title: String!
+  isPublic: Boolean!
   parent: EventEntity
   parentId: Float
   matchers: [MatcherEntity!]!
