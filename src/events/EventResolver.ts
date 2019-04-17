@@ -30,10 +30,10 @@ export class EventResolver {
     return await this.eventService.findForUser(user);
   }
 
-  @Query(returns => [EventEntity])
-  async findAllForMatch(): Promise<EventEntity[]> {
-    return await this.eventService.findAllForMatch()
-  }
+  // @Query(returns => [EventEntity])
+  // async findAllForMatch(): Promise<EventEntity[]> {
+  //   return await this.eventService.findAllForMatch()
+  // }
 
   @Query(returns => [EventEntity])
   async publicEvents(): Promise<EventEntity[]> {
@@ -47,11 +47,13 @@ export class EventResolver {
 
   @ResolveProperty('user')
   async user(@Parent() event: EventEntity): Promise<UserEntity> {
+    if (event.user) { return event.user }
     return await this.eventService.getUser(event)
   }
 
   @ResolveProperty('matchers')
   async matchers(@Parent() event: EventEntity): Promise<MatcherEntity[]> {
+    if (event.matchers && event.matchers.length > 0) { return event.matchers }
     return await this.eventService.getMatchers(event)
   }
 

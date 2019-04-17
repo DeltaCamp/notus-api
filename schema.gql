@@ -122,7 +122,6 @@ type Query {
   apps: [AppEntity!]!
   event(id: Float!): EventEntity
   events: [EventEntity!]!
-  findAllForMatch: [EventEntity!]!
   publicEvents: [EventEntity!]!
   sources: [SourceEntity!]!
   contract(id: Float!): ContractEntity!

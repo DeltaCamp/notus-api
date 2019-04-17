@@ -35,48 +35,34 @@ export class EventService {
 
   @Transaction()
   async findForUser(user: UserEntity): Promise<EventEntity[]> {
-    // AND "deletedAt" IS NULL
-    // return this.provider.get().find(EventEntity, { user })
-    return this.provider.get().createQueryBuilder()
-      .select('*')
-      .from(EventEntity, '')
-      .where('"deletedAt" IS NULL AND "userId" = :id', { id: user.id })
-      .orderBy('"createdAt"', 'DESC')
-      .getRawMany()
+    return this.provider.get().createQueryBuilder(EventEntity, 'events')
+      .leftJoinAndSelect("events.user", "users")
+      .leftJoinAndSelect("events.matchers", "matchers")
+      .where('"events"."deletedAt" IS NULL AND "events"."userId" = :id', { id: user.id })
+      .orderBy('"events"."createdAt"', 'DESC')
+      .getMany()
   }
 
   @Transaction()
   async findPublic(): Promise<EventEntity[]> {
-    return await this.provider.get().createQueryBuilder()
-      .select('*')
-      .from(EventEntity, '')
-      .where('"parentId" IS NULL AND "deletedAt" IS NULL')
-      .orderBy('"createdAt"', 'DESC')
-      .getRawMany()
+    return await this.provider.get().createQueryBuilder(EventEntity, 'events')
+      .leftJoinAndSelect("events.user", "users")
+      .leftJoinAndSelect("events.matchers", "matchers")
+      .where('"events"."isPublic" IS TRUE AND "events"."parentId" IS NULL AND "events"."deletedAt" IS NULL')
+      .orderBy('"events"."createdAt"', 'DESC')
+      .getMany()
   }
 
   @Transaction()
   async findAllForMatch(): Promise<EventEntity[]> {
-    return await this.provider.get().createQueryBuilder()
-      .select('*')
-      .from(EventEntity, '')
-      // .leftJoinAndSelect("events.user", "users")
-      // .leftJoinAndSelect("events.matchers", "matchers")
-      // .leftJoinAndSelect("events.matchers.contractEventInput", "contract_events")
-      // .leftJoinAndSelect("events.matchers.contractEventInput.contractEvent", "contract_events")
-      // .leftJoinAndSelect("events.matchers.contractEventInput.contractEvent.contract", "contract_events")
-      .where('"deletedAt" IS NULL')
-      .getRawMany()
-
-    return this.provider.get().find(EventEntity, {
-      relations: [
-        'user',
-        'matchers',
-        'matchers.contractEventInput',
-        'matchers.contractEventInput.contractEvent',
-        'matchers.contractEventInput.contractEvent.contract',
-      ]
-    })
+    return await this.provider.get().createQueryBuilder(EventEntity, 'events')
+      .leftJoinAndSelect("events.user", "users")
+      .leftJoinAndSelect("events.matchers", "matchers")
+      .leftJoinAndSelect("matchers.contractEventInput", "input")
+      .leftJoinAndSelect("input.contractEvent", "contract_event")
+      .leftJoinAndSelect("contract_event.contract", "contract")
+      .where('"events"."deletedAt" IS NULL')
+      .getMany()
   }
 
   @Transaction()

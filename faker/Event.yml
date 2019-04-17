@@ -4,12 +4,17 @@ items:
     title: 'Ethereum Transaction'
     app: '@app0'
     user: '@user0'
+    isPublic: true
+    scope: 0
   event1:
     title: 'ERC20 Token Transfer'
     app: '@app1'
     user: '@user0'
+    isPublic: true
+    scope: 0
   event2:
-    title: 'ERC20 Token Transfer'
+    title: 'Deleted Event'
     app: '@app1'
     user: '@user0'
     deletedAt: '1980-10-10 12:12:00'
+    scope: 0
