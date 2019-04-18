@@ -52,14 +52,14 @@ scalar Date
 input EventDto {
   id: ID
   app: AppDto
-  title: String!
+  title: String
   scope: Float
   abiEventId: Float
   isPublic: Boolean
   isActive: Boolean
   parentId: Float
   deletedAt: Date
-  matchers: [MatcherDto!]!
+  matchers: [MatcherDto!]
 }
 
 type EventEntity {

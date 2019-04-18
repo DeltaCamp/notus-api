@@ -11,7 +11,7 @@ export class EventDto {
   @Field(type => AppDto, { nullable: true })
   app: AppDto;
 
-  @Field()
+  @Field(({ nullable: true }))
   title: string;
 
   @Field({ nullable: true })
@@ -32,6 +32,6 @@ export class EventDto {
   @Field({ nullable: true })
   deletedAt?: Date;
 
-  @Field(type => [MatcherDto])
+  @Field(type => [MatcherDto], { nullable: true })
   matchers: MatcherDto[];
 }

@@ -146,21 +146,22 @@ export class EventService {
   async updateEvent(eventDto: EventDto): Promise<EventEntity> {
     const event = await this.findOneOrFail(eventDto.id)
 
-    event.title = eventDto.title
-    event.isActive = eventDto.isActive
-    event.isPublic = eventDto.isPublic
-    event.scope = eventDto.scope
+    new Array(
+      'title', 
+      'isActive', 
+      'isPublic', 
+      'scope'
+    ).forEach(attr => {
+      if (eventDto[attr] !== undefined) {
+        event[attr] = eventDto[attr]
+      }
+    })
 
-    // implement updating of matchers:
-    if (eventDto.matchers) {
-      // process update matchers
-    }
-    
-    if (eventDto.parentId) {
+    if (eventDto.parentId !== undefined) {
       event.parent = await this.findOneOrFail(eventDto.parentId)
     }
 
-    if (eventDto.abiEventId) {
+    if (eventDto.abiEventId !== undefined) {
       event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
     }
 
