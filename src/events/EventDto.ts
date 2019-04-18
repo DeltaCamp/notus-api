@@ -20,8 +20,11 @@ export class EventDto {
   @Field({ nullable: true })
   abiEventId: number;
 
-  @Field()
+  @Field({ nullable: true })
   isPublic: boolean;
+
+  @Field({ nullable: true })
+  isActive: boolean;
 
   @Field({ nullable: true })
   parentId?: number;

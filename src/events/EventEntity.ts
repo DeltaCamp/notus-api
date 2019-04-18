@@ -63,6 +63,10 @@ export class EventEntity {
   @Column({ type: 'boolean', default: false, nullable: false })
   isPublic: boolean;
 
+  @Field()
+  @Column({ type: 'boolean', default: true, nullable: false })
+  isActive: boolean;
+
   @Field(type => EventEntity, { nullable: true }) 
   @ManyToOne(type => EventEntity, event => event.children, {
     nullable: true

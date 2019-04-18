@@ -62,7 +62,7 @@ export class EventService {
       .leftJoinAndSelect("matchers.abiEventInput", "input")
       .leftJoinAndSelect("input.abiEvent", "abi_event")
       .leftJoinAndSelect("abi_event.abi", "abi")
-      .where('"events"."deletedAt" IS NULL')
+      .where('"events"."isActive" IS TRUE AND "events"."deletedAt" IS NULL')
       .getMany()
   }
 
@@ -139,13 +139,19 @@ export class EventService {
   @Transaction()
   async updateEvent(eventDto: EventDto): Promise<EventEntity> {
     const event = await this.findOneOrFail(eventDto.id)
-    event.title = eventDto.title;
+
+    event.title = eventDto.title
+    event.isActive = eventDto.isActive
     event.isPublic = eventDto.isPublic
     event.scope = eventDto.scope
+
+    // implement updating of matchers:
+    if (eventDto.matchers) {
+      // process update matchers
+    }
     
-    const parentDtoId = eventDto.parentId
-    if (parentDtoId) {
-      event.parent = await this.findOneOrFail(parentDtoId)
+    if (eventDto.parentId) {
+      event.parent = await this.findOneOrFail(eventDto.parentId)
     }
 
     if (eventDto.abiEventId) {
