@@ -33,7 +33,8 @@ import { AbiEventResolver } from './AbiEventResolver'
 
   exports: [
     AbiService,
-    AbiEventService
+    AbiEventService,
+    AbiEventInputService
   ]
 })
 export class AbiModule {}

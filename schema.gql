@@ -80,6 +80,7 @@ type EventEntity {
 input MatcherDto {
   id: ID
   eventId: Float
+  abiEventInputId: Float
   order: Float
   source: String!
   operator: Float!

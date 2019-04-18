@@ -11,12 +11,14 @@ import {
   Transaction,
   EntityManagerProvider
  } from '../transactions'
+ import { AbiEventInputService } from '../abis/AbiEventInputService'
 
 @Injectable()
 export class MatcherService {
 
   constructor (
-    private readonly provider: EntityManagerProvider
+    private readonly provider: EntityManagerProvider,
+    private readonly abiEventInputService: AbiEventInputService
   ) {}
 
   @Transaction()
@@ -26,6 +28,9 @@ export class MatcherService {
     matcher.event = event
     matcher.order = matcherDto.order
     matcher.source = matcherDto.source
+    if (matcherDto.abiEventInputId) {
+      matcher.abiEventInput = await this.abiEventInputService.findOneOrFail(matcherDto.abiEventInputId)
+    }
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
     matcher.operandDataType = matcherDto.operandDataType
@@ -40,6 +45,9 @@ export class MatcherService {
     const matcher = await this.findOneOrFail(matcherDto.id)
     matcher.order = matcherDto.order
     matcher.source = matcherDto.source
+    if (matcherDto.abiEventInputId) {
+      matcher.abiEventInput = await this.abiEventInputService.findOneOrFail(matcherDto.abiEventInputId)
+    }
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
     matcher.operandDataType = matcherDto.operandDataType

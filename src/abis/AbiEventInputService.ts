@@ -20,6 +20,11 @@ export class AbiEventInputService {
   ) {}
 
   @Transaction()
+  async findOneOrFail(id: number): Promise<AbiEventInputEntity> {
+    return await this.provider.get().findOneOrFail(AbiEventInputEntity, id)
+  }
+
+  @Transaction()
   async findByNameAndAbiEventId(name: String, abiEventId: number): Promise<AbiEventInputEntity[]> {
     let query = await this.provider.get().createQueryBuilder(AbiEventInputEntity, 'abiEventInput')
 

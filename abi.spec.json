@@ -80,6 +80,10 @@
           "type": "array",
           "items": { "$ref": "#/definitions/Parameter" }
         },
+        "stateMutability": {
+          "$ref": "#/definitions/StateMutability"
+        },
+        "constant": { "type": "boolean" },
         "payable": { "type": "boolean", "default": false }
       },
       "required": ["type", "inputs"],
@@ -92,6 +96,9 @@
         "type": {
           "type": "string",
           "enum": ["fallback"]
+        },
+        "stateMutability": {
+          "$ref": "#/definitions/StateMutability"
         },
         "constant": { "type": "boolean" },
         "payable": { "type": "boolean", "default": false }

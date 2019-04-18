@@ -11,6 +11,9 @@ export class MatcherDto {
   eventId: number;
 
   @Field({ nullable: true })
+  abiEventInputId: number;
+
+  @Field({ nullable: true })
   order: number;
 
   @Field()

@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { Validator } from 'jsonschema'
 import { Like } from 'typeorm'
+import { validate } from 'class-validator'
 
+import { ClassValidationError } from '../ClassValidationError'
 import { AbiDto } from './AbiDto'
 import {
   AbiEntity,
@@ -53,6 +55,8 @@ export class AbiService {
       abi.isPublic = abiDto.isPublic || false
     }
 
+    await this.validate(abi)
+
     await this.provider.get().save(abi)
 
     return abi
@@ -80,7 +84,7 @@ export class AbiService {
     const result = validator.validate(abiJson, schema)
 
     if (!result.valid) {
-      throw new Error('Invalid JSON')
+      throw new Error(`Invalid JSON: ${result.errors.join(', ')}`)
     }
 
     const abi = new AbiEntity()
@@ -88,6 +92,8 @@ export class AbiService {
     abi.abi = abiDto.abi
     abi.isPublic = abiDto.isPublic || false
     abi.abiEvents = []
+
+    await this.validate(abi)
 
     abiJson.forEach((element: any) => {
       if (element.type === 'event') {
@@ -126,5 +132,12 @@ export class AbiService {
 
   async findAbiEventInputs(abiEvent: AbiEventEntity): Promise<AbiEventInputEntity[]> {
     return await this.provider.get().find(AbiEventInputEntity, { abiEventId: abiEvent.id })
+  }
+
+  async validate(abi: AbiEntity) {
+    const errors = await validate(abi)
+    if (errors.length) {
+      throw new ClassValidationError(errors)
+    }
   }
 }
