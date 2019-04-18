@@ -12,7 +12,7 @@ import { Field, ObjectType, ID } from 'type-graphql';
 import {
   AppEntity,
   EventEntity,
-  ContractEntity
+  AbiEntity
 } from '../entities'
 
 import { keyHashHex } from '../utils/keyHashHex'
@@ -32,8 +32,8 @@ export class UserEntity {
   @OneToMany(type => EventEntity, event => event.user)
   events: EventEntity[];
 
-  @OneToMany(type => ContractEntity, contract => contract.owner)
-  contracts: ContractEntity[];
+  @OneToMany(type => AbiEntity, abi => abi.owner)
+  abis: AbiEntity[];
 
   @Field()
   @Column({ type: 'text' })

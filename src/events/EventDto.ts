@@ -18,7 +18,7 @@ export class EventDto {
   scope: number;
 
   @Field({ nullable: true })
-  contractEventId: number;
+  abiEventId: number;
 
   @Field()
   isPublic: boolean;

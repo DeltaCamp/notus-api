@@ -4,9 +4,9 @@ import { MatchContext } from '../MatchContext'
 import { Operator } from '../../matchers'
 import {
   MatcherEntity,
-  ContractEventInputEntity,
-  ContractEventEntity,
-  ContractEntity
+  AbiEventInputEntity,
+  AbiEventEntity,
+  AbiEntity
 } from '../../entities'
 import * as Source from '../../matchers/Source'
 import { ERC20 } from './ERC20'
@@ -36,18 +36,18 @@ describe('MatchContext', () => {
   describe('matches()', () => {
 
     describe('with custom event inputs', () => {
-      let contract, contractEvent, contractEventInput
+      let abi, abiEvent, abiEventInput
 
       beforeEach(() => {
-        contract = new ContractEntity()
-        contract.abi = JSON.stringify(ERC20)
-        contractEvent = new ContractEventEntity()
-        contractEvent.name = 'Transfer'
-        contractEventInput = new ContractEventInputEntity()
-        contractEventInput.name = 'value'
+        abi = new AbiEntity()
+        abi.abi = JSON.stringify(ERC20)
+        abiEvent = new AbiEventEntity()
+        abiEvent.name = 'Transfer'
+        abiEventInput = new AbiEventInputEntity()
+        abiEventInput.name = 'value'
 
-        contractEventInput.contractEvent = contractEvent
-        contractEvent.contract = contract
+        abiEventInput.abiEvent = abiEvent
+        abiEvent.abi = abi
 
         log = {
           data: '0x0000000000000000000000000000000000000000000000000000000d661188c0',
@@ -60,7 +60,7 @@ describe('MatchContext', () => {
         matchContext = new MatchContext(block, transaction, log)
 
         matcherEntity.source = Source.CONTRACT_EVENT_INPUT
-        matcherEntity.contractEventInput = contractEventInput
+        matcherEntity.abiEventInput = abiEventInput
         matcherEntity.operator = Operator.GT
         matcherEntity.operand = '400'
         matcherEntity.operandDataType = SolidityDataType.UINT256

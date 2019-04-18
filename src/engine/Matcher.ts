@@ -3,7 +3,7 @@ import { BigNumber, bigNumberify, getAddress } from 'ethers/utils';
 import { MatchContext } from './MatchContext'
 import {
   MatcherEntity,
-  ContractEventInputEntity
+  AbiEventInputEntity
 } from '../entities'
 import { Operator } from '../matchers'
 import { SolidityDataType } from '../common/SolidityDataType'
@@ -102,27 +102,27 @@ export class Matcher {
 
   getSourceValue(matchContext, matcher) {
     if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
-      const event = this.getEvent(matchContext, matcher.contractEventInput)
-      return event[matcher.contractEventInput.name]
+      const event = this.getEvent(matchContext, matcher.abiEventInput)
+      return event[matcher.abiEventInput.name]
     }
     return matchContext.get(matcher.source)
   }
 
   getSourceDataType(matcher): SolidityDataType {
     if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
-      return matcher.contractEventInput.type
+      return matcher.abiEventInput.type
     }
     return SourceDataType[matcher.source]
   }
 
-  getEvent(matchContext: MatchContext, contractEventInput: ContractEventInputEntity) {
-    const { contractEvent } = contractEventInput
-    if (!matchContext.event[contractEvent.name]) {
-      const ethersInterface = contractEventInput.contractEvent.contract.interface()
+  getEvent(matchContext: MatchContext, abiEventInput: AbiEventInputEntity) {
+    const { abiEvent } = abiEventInput
+    if (!matchContext.event[abiEvent.name]) {
+      const ethersInterface = abiEventInput.abiEvent.abi.interface()
       const { data, topics } = matchContext.log
-      const values = ethersInterface.events[contractEvent.name].decode(data, topics)
-      matchContext.event[contractEvent.name] = values
+      const values = ethersInterface.events[abiEvent.name].decode(data, topics)
+      matchContext.event[abiEvent.name] = values
     }
-    return matchContext.event[contractEvent.name]
+    return matchContext.event[abiEvent.name]
   }
 }

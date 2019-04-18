@@ -7,7 +7,7 @@ export const SourceTitle = {
   [Source.BLOCK_GAS_LIMIT]: 'block gas limit',
   [Source.BLOCK_GAS_USED]: 'block gas used',
   [Source.BLOCK_MINER]: 'miner address',
-  [Source.TRANSACTION_CREATES]: 'created contract address',
+  [Source.TRANSACTION_CREATES]: 'created abi address',
   [Source.TRANSACTION_TO]: 'transaction to',
   [Source.TRANSACTION_DATA]: 'transaction data',
   [Source.TRANSACTION_FROM]: 'transaction from',
@@ -16,7 +16,7 @@ export const SourceTitle = {
   [Source.TRANSACTION_NONCE]: 'transaction nonce',
   [Source.TRANSACTION_VALUE]: 'transaction value',
   [Source.TRANSACTION_CHAIN_ID]: 'transaction chainId',
-  [Source.TRANSACTION_CONTRACT_ADDRESS]: 'transaction contract address',
+  [Source.TRANSACTION_CONTRACT_ADDRESS]: 'transaction abi address',
   [Source.TRANSACTION_CUMULATIVE_GAS_USED]: 'transaction cumulative gas used',
   [Source.TRANSACTION_GAS_USED]: 'transaction gas used',
   [Source.LOG_ADDRESS]: 'log address', // originator address

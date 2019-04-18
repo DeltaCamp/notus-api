@@ -3,6 +3,39 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AbiDto {
+  id: ID
+  name: String
+  isPublic: Boolean
+  abi: String
+}
+
+type AbiEntity {
+  id: ID!
+  name: String!
+  abi: String!
+  isPublic: Boolean!
+  abiEvents: [AbiEventEntity!]!
+}
+
+type AbiEventEntity {
+  id: ID!
+  name: String!
+  topic: String!
+  events: [EventEntity!]!
+  abi: AbiEntity!
+  abiId: Float!
+  abiEventInputs: [AbiEventInputEntity!]!
+}
+
+type AbiEventInputEntity {
+  id: ID!
+  name: String!
+  type: String!
+  abiEvent: AbiEventEntity!
+  abiEventId: Float!
+}
+
 input AppDto {
   id: ID
   name: String = ""
@@ -13,41 +46,6 @@ type AppEntity {
   name: String!
 }
 
-input ContractDto {
-  id: ID
-  name: String
-  address: String
-  isPublic: Boolean
-  abi: String
-}
-
-type ContractEntity {
-  id: ID!
-  name: String!
-  address: String
-  abi: String!
-  isPublic: Boolean!
-  contractEvents: [ContractEventEntity!]!
-}
-
-type ContractEventEntity {
-  id: ID!
-  name: String!
-  topic: String!
-  events: [EventEntity!]!
-  contract: ContractEntity!
-  contractId: Float!
-  contractEventInputs: [ContractEventInputEntity!]!
-}
-
-type ContractEventInputEntity {
-  id: ID!
-  name: String!
-  type: String!
-  contractEvent: ContractEventEntity!
-  contractEventId: Float!
-}
-
 """Date custom scalar type"""
 scalar Date
 
@@ -56,7 +54,7 @@ input EventDto {
   app: AppDto
   title: String!
   scope: Float
-  contractEventId: Float
+  abiEventId: Float
   isPublic: Boolean!
   parentId: Float
   deletedAt: Date
@@ -67,7 +65,7 @@ type EventEntity {
   id: ID!
   user: UserEntity!
   scope: Float!
-  contractEvent: ContractEventEntity!
+  abiEvent: AbiEventEntity!
   app: AppEntity
   title: String!
   isPublic: Boolean!
@@ -94,7 +92,7 @@ type MatcherEntity {
   event: EventEntity!
   order: Float!
   source: String!
-  contractEventInput: ContractEventInputEntity!
+  abiEventInput: AbiEventInputEntity!
   operator: Float!
   operand: String!
   operandDataType: Float!
@@ -112,9 +110,9 @@ type Mutation {
   createMatcher(matcher: MatcherDto!): MatcherEntity!
   updateMatcher(matcher: MatcherDto!): MatcherEntity!
   destroyMatcher(matcherId: Float!): Boolean!
-  createContract(contract: ContractDto!): ContractEntity!
-  updateContract(contract: ContractDto!): ContractEntity!
-  destroyContract(id: Float!): ContractEntity!
+  createAbi(abi: AbiDto!): AbiEntity!
+  updateAbi(abi: AbiDto!): AbiEntity!
+  destroyAbi(id: Float!): AbiEntity!
 }
 
 type Query {
@@ -125,10 +123,10 @@ type Query {
   events: [EventEntity!]!
   publicEvents: [EventEntity!]!
   sources: [SourceEntity!]!
-  contract(id: Float!): ContractEntity!
-  contracts(address: String, name: String): [ContractEntity!]!
-  contractEventInputs(contractEventId: Float, name: String): [ContractEventInputEntity!]!
-  contractEvents(topic: String, name: String): [ContractEventEntity!]!
+  abi(id: Float!): AbiEntity!
+  abis(address: String, name: String): [AbiEntity!]!
+  abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
+  abiEvents(topic: String, name: String): [AbiEventEntity!]!
 }
 
 type SourceEntity {

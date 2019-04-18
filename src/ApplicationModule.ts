@@ -12,7 +12,7 @@ import { AppModule } from './apps';
 import { EventModule } from './events/EventModule';
 import { mailModule } from './mailModule'
 import { MatcherModule } from './matchers';
-import { ContractModule } from './contracts/ContractModule';
+import { AbiModule } from './abis/AbiModule';
 
 import { TransactionMiddleware, TransactionModule } from './transactions';
 import { UserModule } from './users';
@@ -24,7 +24,7 @@ const isProduction = process.env.NODE_ENV === 'production'
   imports: [
     AuthModule,
     CommonModule,
-    ContractModule,
+    AbiModule,
     AppModule,
     UserModule,
     MatcherModule,

@@ -34,8 +34,8 @@ export class BaseHandler {
     let i: number;
 
     if (
-      (event.parent && this.contractEventScopeDoesNotMatch(matchContext, event.parent)) ||
-      this.contractEventScopeDoesNotMatch(matchContext, event)
+      (event.parent && this.abiEventScopeDoesNotMatch(matchContext, event.parent)) ||
+      this.abiEventScopeDoesNotMatch(matchContext, event)
     ) {
       return false
     }
@@ -51,8 +51,8 @@ export class BaseHandler {
     return true
   }
 
-  contractEventScopeDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
-    return event.scope === EventScope.CONTRACT_EVENT && matchContext.log.topics[0] !== event.contractEvent.topic
+  abiEventScopeDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
+    return event.scope === EventScope.CONTRACT_EVENT && matchContext.log.topics[0] !== event.abiEvent.topic
   }
 
   matchersSucceed(matchContext: MatchContext, event: EventEntity): Boolean {

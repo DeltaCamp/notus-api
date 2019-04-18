@@ -3,7 +3,7 @@ import { EventScope } from '../../events/EventScope'
 import {
   EventEntity,
   MatcherEntity,
-  ContractEventEntity
+  AbiEventEntity
 } from '../../entities'
 
 describe('BaseHandler', () => {
@@ -40,12 +40,12 @@ describe('BaseHandler', () => {
   })
 
   describe('handleEvent()', () => {
-    it('should exit if the contractEvent does not match', async () => {
+    it('should exit if the abiEvent does not match', async () => {
       // Set so that all matchers are successful
       matcher.matches = jest.fn(() => true)
       event.scope = EventScope.CONTRACT_EVENT
-      event.contractEvent = new ContractEventEntity()
-      event.contractEvent.topic = '0x1234'
+      event.abiEvent = new AbiEventEntity()
+      event.abiEvent.topic = '0x1234'
       log = {
         topics: [
           '0x9999'

@@ -10,11 +10,11 @@ import {
 import { Field, ObjectType, ID } from 'type-graphql';
 
 import { SolidityDataType } from '../common/SolidityDataType';
-import { ContractEventEntity } from './ContractEventEntity'
+import { AbiEventEntity } from './AbiEventEntity'
 
 @ObjectType()
-@Entity({ name: 'contract_event_inputs' })
-export class ContractEventInputEntity {
+@Entity({ name: 'abi_event_inputs' })
+export class AbiEventInputEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
@@ -27,13 +27,13 @@ export class ContractEventInputEntity {
   @Column({ type: 'enum', enum: SolidityDataType, nullable: false })
   type: SolidityDataType;
 
-  @Field(type => ContractEventEntity)
-  @ManyToOne(type => ContractEventEntity, contractEvent => contractEvent.contractEventInputs)
-  contractEvent: ContractEventEntity;
+  @Field(type => AbiEventEntity)
+  @ManyToOne(type => AbiEventEntity, abiEvent => abiEvent.abiEventInputs)
+  abiEvent: AbiEventEntity;
 
   @Field()
-  @RelationId((contractEventInput: ContractEventInputEntity) => contractEventInput.contractEvent)
-  contractEventId: number;
+  @RelationId((abiEventInput: AbiEventInputEntity) => abiEventInput.abiEvent)
+  abiEventId: number;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

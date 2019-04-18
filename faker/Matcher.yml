@@ -9,7 +9,7 @@ items:
     order: 1
   matcher1:
     event: '@event1'
-    source: 'transaction.to' # 'Contract Address'
+    source: 'transaction.to' # 'Abi Address'
     operator: '1'
     operandDataType: 1
     operand: ''

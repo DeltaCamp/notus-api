@@ -4,7 +4,7 @@ import { BigNumber } from 'ethers/utils'
 export interface Transaction {
   to?: string;
   from?: string;
-  contractAddress?: string;
+  abiAddress?: string;
   transactionIndex?: number;
   root?: string;
   gasUsed?: BigNumber;

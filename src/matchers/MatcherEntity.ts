@@ -14,8 +14,8 @@ import { Operator } from './Operator'
 import * as Source from './Source'
 import {
   EventEntity,
-  ContractEventEntity,
-  ContractEventInputEntity
+  AbiEventEntity,
+  AbiEventInputEntity
 } from '../entities';
 
 @Entity({ name: 'matchers' })
@@ -42,12 +42,12 @@ export class MatcherEntity {
   @Field()
   source: string;
 
-  @Field(type => ContractEventInputEntity)
-  @ManyToOne(type => ContractEventInputEntity, { nullable: true })
-  contractEventInput: ContractEventInputEntity;
+  @Field(type => AbiEventInputEntity)
+  @ManyToOne(type => AbiEventInputEntity, { nullable: true })
+  abiEventInput: AbiEventInputEntity;
 
-  @RelationId((matcher: MatcherEntity) => matcher.contractEventInput)
-  contractEventInputId: number;
+  @RelationId((matcher: MatcherEntity) => matcher.abiEventInput)
+  abiEventInputId: number;
 
   @Column({ type: 'enum', enum: Operator, nullable: false })
   @Field()

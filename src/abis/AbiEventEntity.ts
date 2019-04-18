@@ -11,14 +11,14 @@ import {
 import { Field, ObjectType, ID } from 'type-graphql';
 
 import {
-  ContractEntity,
-  ContractEventInputEntity,
+  AbiEntity,
+  AbiEventInputEntity,
   EventEntity
 } from '../entities';
 
 @ObjectType()
-@Entity({ name: 'contract_events' })
-export class ContractEventEntity {
+@Entity({ name: 'abi_events' })
+export class AbiEventEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
@@ -32,22 +32,22 @@ export class ContractEventEntity {
   topic: string = '';
 
   @Field(type => [EventEntity])
-  @OneToMany(type => EventEntity, event => event.contractEvent)
+  @OneToMany(type => EventEntity, event => event.abiEvent)
   events: EventEntity[];
 
   @Field()
-  @ManyToOne(type => ContractEntity, contract => contract.contractEvents)
-  contract: ContractEntity;
+  @ManyToOne(type => AbiEntity, abi => abi.abiEvents)
+  abi: AbiEntity;
 
   @Field()
-  @RelationId((contractEvent: ContractEventEntity) => contractEvent.contract)
-  contractId: number;
+  @RelationId((abiEvent: AbiEventEntity) => abiEvent.abi)
+  abiId: number;
   
-  @Field(type => [ContractEventInputEntity])
-  @OneToMany(type => ContractEventInputEntity, contractEventInput => contractEventInput.contractEvent, {
+  @Field(type => [AbiEventInputEntity])
+  @OneToMany(type => AbiEventInputEntity, abiEventInput => abiEventInput.abiEvent, {
     cascade: true
   })
-  contractEventInputs: ContractEventInputEntity[];
+  abiEventInputs: AbiEventInputEntity[];
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;

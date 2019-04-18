@@ -13,7 +13,7 @@ const debug = require('debug')('notus:BlockListener')
 export class BlockListener {
   private blockEvents: EventEntity[];
   private transactionEvents: EventEntity[];
-  private contractEventEvents: EventEntity[];
+  private abiEventEvents: EventEntity[];
 
   constructor (
     private readonly provider: BaseProvider,
@@ -34,7 +34,7 @@ export class BlockListener {
     return transactionContextRunner(async () => {
       this.blockEvents = await this.eventService.findByScope(EventScope.BLOCK)
       this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
-      this.contractEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
+      this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
       await this.checkBlockNumber(blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10))
     })
   }
@@ -65,7 +65,7 @@ export class BlockListener {
   }
 
   handleLog = async (block: Block, transaction: Transaction, log: Log) => {
-    debug(`Checking ${this.contractEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
-    await this.baseHandler.handle(this.contractEventEvents, block, transaction, log)
+    debug(`Checking ${this.abiEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
+    await this.baseHandler.handle(this.abiEventEvents, block, transaction, log)
   }
 }

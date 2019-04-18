@@ -14,7 +14,7 @@ import { Field, Int, ObjectType, ID } from 'type-graphql';
 import {
   UserEntity,
   AppEntity,
-  ContractEventEntity,
+  AbiEventEntity,
   MatcherEntity
 } from '../entities'
 import { EventScope } from './EventScope';
@@ -39,12 +39,12 @@ export class EventEntity {
   @Column({ type: 'enum', enum: EventScope, default: EventScope.TRANSACTION })
   scope: EventScope = EventScope.TRANSACTION;
 
-  @Field(type => ContractEventEntity)
-  @ManyToOne(type => ContractEventEntity)
-  contractEvent?: ContractEventEntity | null;
+  @Field(type => AbiEventEntity)
+  @ManyToOne(type => AbiEventEntity)
+  abiEvent?: AbiEventEntity | null;
 
-  @RelationId((event: EventEntity) => event.contractEvent)
-  contractEventId?: number;
+  @RelationId((event: EventEntity) => event.abiEvent)
+  abiEventId?: number;
 
   @Field(type => AppEntity, { nullable: true })
   @ManyToOne(type => AppEntity, app => app.events, {

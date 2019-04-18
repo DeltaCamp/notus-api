@@ -13,13 +13,13 @@ import { Interface } from 'ethers/utils';
 import { Field, ObjectType, ID } from 'type-graphql';
 
 import {
-  ContractEventEntity,
+  AbiEventEntity,
   UserEntity
 } from '../entities';
 
 @ObjectType()
-@Entity({ name: 'contracts' })
-export class ContractEntity {
+@Entity({ name: 'abis' })
+export class AbiEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
@@ -27,10 +27,6 @@ export class ContractEntity {
   @Field()
   @Column({ type: 'text' })
   name: string = '';
-
-  @Field({ nullable: true })
-  @Column({ type: 'text', nullable: true })
-  address: string = '';
 
   @Field()
   @Column({ type: 'text' })
@@ -40,16 +36,16 @@ export class ContractEntity {
   @Column({ type: 'boolean' })
   isPublic: boolean;
 
-  @Field(type => [ContractEventEntity])
-  @OneToMany(type => ContractEventEntity, contractEvent => contractEvent.contract, {
+  @Field(type => [AbiEventEntity])
+  @OneToMany(type => AbiEventEntity, abiEvent => abiEvent.abi, {
     cascade: true
   })
-  contractEvents: ContractEventEntity[];
+  abiEvents: AbiEventEntity[];
 
-  @ManyToOne(type => UserEntity, user => user.contracts)
+  @ManyToOne(type => UserEntity, user => user.abis)
   owner: UserEntity;
 
-  @RelationId((contract: ContractEntity) => contract.owner)
+  @RelationId((abi: AbiEntity) => abi.owner)
   ownerId: number;
 
   @CreateDateColumn({ type: 'timestamp' })

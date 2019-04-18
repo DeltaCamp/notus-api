@@ -3,7 +3,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import {
   UserEntity,
   EventEntity,
-  ContractEventEntity,
+  AbiEventEntity,
   MatcherEntity
 } from '../entities'
 import { EventScope } from './EventScope'
@@ -11,7 +11,7 @@ import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../transactions'
 import { AppService } from '../apps/AppService';
-import { ContractEventService } from '../contracts/ContractEventService'
+import { AbiEventService } from '../abis/AbiEventService'
 
 @Injectable()
 export class EventService {
@@ -21,7 +21,7 @@ export class EventService {
     private readonly matcherService: MatcherService,
     @Inject(forwardRef(() => AppService))
     private readonly appService: AppService,
-    private readonly contractEventService: ContractEventService
+    private readonly abiEventService: AbiEventService
   ) {}
 
   @Transaction()
@@ -59,9 +59,9 @@ export class EventService {
     return await this.provider.get().createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect("events.user", "users")
       .leftJoinAndSelect("events.matchers", "matchers")
-      .leftJoinAndSelect("matchers.contractEventInput", "input")
-      .leftJoinAndSelect("input.contractEvent", "contract_event")
-      .leftJoinAndSelect("contract_event.contract", "contract")
+      .leftJoinAndSelect("matchers.abiEventInput", "input")
+      .leftJoinAndSelect("input.abiEvent", "abi_event")
+      .leftJoinAndSelect("abi_event.abi", "abi")
       .where('"events"."deletedAt" IS NULL')
       .getMany()
   }
@@ -77,9 +77,9 @@ export class EventService {
   }
 
   @Transaction()
-  async getContractEvent(event: EventEntity): Promise<ContractEventEntity> {
-    return this.provider.get().createQueryBuilder(ContractEventEntity, 'contractEvents')
-      .innerJoin('contractEvents.events', 'events')
+  async getAbiEvent(event: EventEntity): Promise<AbiEventEntity> {
+    return this.provider.get().createQueryBuilder(AbiEventEntity, 'abiEvents')
+      .innerJoin('abiEvents.events', 'events')
       .where('"events"."id" = :id', { id: event.id })
       .getOne()
   }
@@ -110,8 +110,8 @@ export class EventService {
       event.parent = await this.findOneOrFail(parentDtoId)
     }
 
-    if (eventDto.contractEventId) {
-      event.contractEvent = await this.contractEventService.findOneOrFail(eventDto.contractEventId)
+    if (eventDto.abiEventId) {
+      event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
     }
 
     event.user = user;
@@ -148,8 +148,8 @@ export class EventService {
       event.parent = await this.findOneOrFail(parentDtoId)
     }
 
-    if (eventDto.contractEventId) {
-      event.contractEvent = await this.contractEventService.findOneOrFail(eventDto.contractEventId)
+    if (eventDto.abiEventId) {
+      event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
     }
 
     await this.provider.get().save(event)

@@ -6,7 +6,7 @@ describe('BlockListener', () => {
 
   let provider, eventHandler, eventService
 
-  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, contractEventEvents
+  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, abiEventEvents
 
   beforeEach(() => {
     block = {
@@ -32,7 +32,7 @@ describe('BlockListener', () => {
 
     blockEvents = ['block']
     transactionEvents = ['transaction']
-    contractEventEvents = ['contractEvent']
+    abiEventEvents = ['abiEvent']
 
     eventService = {
       findByScope: jest.fn((eventScope) => {
@@ -42,7 +42,7 @@ describe('BlockListener', () => {
           case EventScope.TRANSACTION:
             return Promise.resolve(transactionEvents)
           case EventScope.CONTRACT_EVENT:
-            return Promise.resolve(contractEventEvents)
+            return Promise.resolve(abiEventEvents)
           default:
             throw new Error(`Unknown scope ${eventScope}`)
         }
@@ -66,7 +66,7 @@ describe('BlockListener', () => {
 
       expect(eventHandler.handle).toHaveBeenCalledWith(blockEvents, block, undefined, undefined)
       expect(eventHandler.handle).toHaveBeenCalledWith(transactionEvents, block, expect.anything(), undefined)
-      expect(eventHandler.handle).toHaveBeenCalledWith(contractEventEvents, block, expect.anything(), 'log')
+      expect(eventHandler.handle).toHaveBeenCalledWith(abiEventEvents, block, expect.anything(), 'log')
     })
   })
 })
