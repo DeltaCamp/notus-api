@@ -20,7 +20,7 @@ export class BlockListenerManager {
 
   start() {
     debug(`Starting BlockListenerManager...`)
-    this.listeners.push(this.newListener('localhost'))
+    this.listeners.push(this.newListener(process.env.ETHEREUM_NETWORK))
     // this.listeners.push(this.newListener('rinkeby'))
     // this.listeners.push(this.newListener('ropsten'))
     // this.listeners.push(this.newListener('kovan'))

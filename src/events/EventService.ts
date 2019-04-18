@@ -131,8 +131,14 @@ export class EventService {
   @Transaction()
   async findByScope(scope: EventScope): Promise<EventEntity[]> {
     return await this.provider.get().createQueryBuilder(EventEntity, 'events')
-      .leftJoin('events.parent', 'parent_events')
-      .where('events.scope = :scope OR parent_events.scope = :scope', { scope })
+      .leftJoinAndSelect('events.user', 'users')
+      .leftJoinAndSelect('events.parent', 'parent_events')
+      .leftJoinAndSelect('events.abiEvent', 'abiEvents')
+      .leftJoinAndSelect('events.matchers', 'matchers')
+      .leftJoinAndSelect('matchers.abiEventInput', 'abiEventInputs')
+      .where('(events.scope = :scope OR parent_events.scope = :scope)', { scope })
+      .andWhere('events.deletedAt IS NULL')
+      .andWhere('events.isActive IS TRUE')
       .getMany()
   }
 

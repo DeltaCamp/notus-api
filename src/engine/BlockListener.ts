@@ -30,30 +30,37 @@ export class BlockListener {
   }
 
   onBlockNumber = (blockNumber: number): Promise<any> => {
-    debug(`Received block number ${blockNumber}`)
     return transactionContextRunner(async () => {
       this.blockEvents = await this.eventService.findByScope(EventScope.BLOCK)
       this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
       this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
+
+      debug(`Found ${this.transactionEvents.length} transaction events`)
       await this.checkBlockNumber(blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10))
     })
   }
 
   checkBlockNumber = async (blockNumber) => {
     const block: Block = await this.provider.getBlock(blockNumber)
-    await this.baseHandler.handle(this.blockEvents, block, undefined, undefined)
+    debug(`Received block number ${block.number}`)
+    if (this.blockEvents.length) {
+      debug(`Checking ${this.blockEvents.length} events for block: ${blockNumber}`)
+      await this.baseHandler.handle(this.blockEvents, block, undefined, undefined)
+    }
     await Promise.all(block.transactions.map(transactionHash => (
       this.handleTransaction(block, transactionHash)
     )))
   }
 
   handleTransaction = async (block: Block, transactionHash: string) => {
-    debug(`Checking ${this.transactionEvents.length} for transaction: ${transactionHash}`)
     const transactionResponse: TransactionResponse = await this.provider.getTransaction(transactionHash)
     const transactionReceipt: TransactionReceipt = await this.provider.getTransactionReceipt(transactionHash)
     if (transactionReceipt) {
       const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
-      await this.baseHandler.handle(this.transactionEvents, block, transaction, undefined)
+      if (this.transactionEvents.length) {
+        debug(`Checking ${this.transactionEvents.length} events for transaction: ${transactionHash}`)
+        await this.baseHandler.handle(this.transactionEvents, block, transaction, undefined)
+      }
       if (transactionReceipt.logs && transactionReceipt.logs.length) {
         await Promise.all(transactionReceipt.logs.map(log => (
           this.handleLog(block, transaction, log)
@@ -65,7 +72,9 @@ export class BlockListener {
   }
 
   handleLog = async (block: Block, transaction: Transaction, log: Log) => {
-    debug(`Checking ${this.abiEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
-    await this.baseHandler.handle(this.abiEventEvents, block, transaction, log)
+    if (this.abiEventEvents.length) {
+      debug(`Checking ${this.abiEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
+      await this.baseHandler.handle(this.abiEventEvents, block, transaction, log)
+    }
   }
 }

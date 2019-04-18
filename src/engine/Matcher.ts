@@ -44,7 +44,7 @@ export class Matcher {
     if (BigNumber.isBigNumber(value)) {
       return value.eq(operand)
     } else if (this.getSourceDataType(matcher) === SolidityDataType.ADDRESS) {
-      return getAddress(value) === getAddress(operand)
+      return this.getAddress(value) === this.getAddress(operand)
     } else if (isNaN(value)) {
       return value === operand
     } else {
@@ -124,5 +124,13 @@ export class Matcher {
       matchContext.event[abiEvent.name] = values
     }
     return matchContext.event[abiEvent.name]
+  }
+
+  getAddress(addr) {
+    try {
+      return getAddress(addr)
+    } catch (error) {
+      return '0x0000000000000000000000000000000000000000'
+    }
   }
 }

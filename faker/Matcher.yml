@@ -3,35 +3,14 @@ items:
   matcher0:
     event: '@event0'
     source: 'transaction.value'
-    operator: '2'
+    operator: '3' # Greater than
     operandDataType: 1
     operand: '1000'
     order: 1
   matcher1:
     event: '@event1'
-    source: 'transaction.to' # 'Abi Address'
-    operator: '1'
+    source: 'transaction.value' # 'Abi Address'
+    operator: '2' # less than
     operandDataType: 1
-    operand: ''
+    operand: '1000'
     order: 1
-  matcher2:
-    event: '@event1'
-    source: 'transaction.from'
-    operator: '1'
-    operandDataType: 1 # 'Sender Address'
-    operand: ''
-    order: 2
-  matcher3:
-    event: '@event1'
-    source: 'log.topics[2]' # 'Recipient Address'
-    operator: '1'
-    operandDataType: 1
-    operand: ''
-    order: 4
-  matcher4:
-    event: '@event1'
-    source: 'log.topics[3]' # 'Amount'
-    operator: '3'
-    operandDataType: 6
-    operand: '10'
-    order: 2

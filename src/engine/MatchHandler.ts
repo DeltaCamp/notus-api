@@ -19,7 +19,7 @@ export class MatchHandler {
       ...matchContext,
       event
     }
-    debug(`!!!!!!!!!!!!! FIRING !!!!!!!!!!!!!`)
+    debug(`!!!!!!!!!!!!! FIRING EVENT ${event.id} !!!!!!!!!!!!!`)
     this.mailerService.sendMail({
       to: event.user.email,
       subject: event.title,

@@ -7,12 +7,6 @@ items:
     isPublic: true
     scope: 0
   event1:
-    title: 'ERC20 Token Transfer'
-    app: '@app1'
-    user: '@user0'
-    isPublic: true
-    scope: 0
-  event2:
     title: 'Deleted Event'
     app: '@app1'
     user: '@user0'

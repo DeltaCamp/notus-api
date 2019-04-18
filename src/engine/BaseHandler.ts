@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { Block, Log } from 'ethers/providers'
 
 import { EventScope } from '../events/EventScope'
@@ -10,6 +11,7 @@ import {
   MatcherEntity
 } from '../entities'
 
+@Injectable()
 export class BaseHandler {
 
   constructor (
@@ -56,6 +58,8 @@ export class BaseHandler {
   }
 
   matchersSucceed(matchContext: MatchContext, event: EventEntity): Boolean {
+    if (event.matchers.length === 0) { return false }
+
     let i: number;
     let matcher: MatcherEntity
     for (i = 0; i < event.matchers.length; i++) {
