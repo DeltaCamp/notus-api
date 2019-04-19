@@ -34,8 +34,6 @@ export class BlockListener {
       this.blockEvents = await this.eventService.findByScope(EventScope.BLOCK)
       this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
       this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
-
-      debug(`Found ${this.transactionEvents.length} transaction events`)
       await this.checkBlockNumber(blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10))
     })
   }

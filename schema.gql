@@ -129,6 +129,7 @@ type Query {
   abi(id: Float!): AbiEntity!
   abis(address: String, name: String): [AbiEntity!]!
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
+  abiEvent(id: Float!): AbiEventEntity!
   abiEvents(topic: String, name: String): [AbiEventEntity!]!
 }
 

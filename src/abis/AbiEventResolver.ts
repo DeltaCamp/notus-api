@@ -18,6 +18,13 @@ export class AbiEventResolver {
     private readonly abiEventService: AbiEventService
   ) {}
 
+  @Query(returns => AbiEventEntity)
+  async abiEvent (
+    @Args('id') id: number
+  ) {
+    return await this.abiEventService.findOneOrFail(id)
+  }
+
   @Query(returns => [AbiEventEntity])
   async abiEvents (
     @Args({ name: 'name', type: () => String, nullable: true }) name: string,
