@@ -39,10 +39,15 @@ export class EventEntity {
   @Column({ type: 'enum', enum: EventScope, default: EventScope.TRANSACTION })
   scope: EventScope = EventScope.TRANSACTION;
 
-  @Field(type => AbiEventEntity)
+  @Field(type => AbiEventEntity, {
+    nullable: true
+  })
   @ManyToOne(type => AbiEventEntity)
   abiEvent?: AbiEventEntity | null;
 
+  @Field({
+    nullable: true
+  })
   @RelationId((event: EventEntity) => event.abiEvent)
   abiEventId?: number;
 

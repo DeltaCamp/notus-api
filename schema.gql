@@ -66,7 +66,8 @@ type EventEntity {
   id: ID!
   user: UserEntity!
   scope: Float!
-  abiEvent: AbiEventEntity!
+  abiEvent: AbiEventEntity
+  abiEventId: Float
   app: AppEntity
   title: String!
   isPublic: Boolean!
@@ -125,6 +126,7 @@ type Query {
   event(id: Float!): EventEntity
   events: [EventEntity!]!
   publicEvents: [EventEntity!]!
+  source(source: String!): SourceEntity!
   sources: [SourceEntity!]!
   abi(id: Float!): AbiEntity!
   abis(address: String, name: String): [AbiEntity!]!

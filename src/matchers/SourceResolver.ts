@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException, Inject, forwardRef } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, Inject, forwardRef, NotFoundException } from '@nestjs/common'
 import { Resolver, Query, Args } from '@nestjs/graphql'
 
 import * as Source from './Source'
@@ -8,6 +8,18 @@ import { SourceEntity } from './SourceEntity'
 
 @Resolver(of => SourceEntity)
 export class SourceResolver {
+
+  @Query(returns => SourceEntity)
+  source(@Args('source') source: string): SourceEntity {
+    const sourceEntity = new SourceEntity()
+    sourceEntity.source = source
+    sourceEntity.title = SourceTitle[source]
+    sourceEntity.dataType = SourceDataType[source]
+    if (!sourceEntity.title) {
+      throw new NotFoundException()
+    }
+    return sourceEntity
+  }
 
   @Query(returns => [SourceEntity])
   sources(): SourceEntity[] {
