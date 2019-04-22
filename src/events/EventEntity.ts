@@ -9,7 +9,7 @@ import {
   ManyToOne,
   RelationId
 } from 'typeorm';
-import { Field, Int, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID } from 'type-graphql';
 
 import {
   UserEntity,
@@ -18,6 +18,8 @@ import {
   MatcherEntity
 } from '../entities'
 import { EventScope } from './EventScope';
+import { EventScopeTitle } from './EventScopeTitle'
+import { TRANSACTION_CHAIN_ID } from 'src/matchers/Source';
 
 @Entity({ name: 'events' })
 @ObjectType()
@@ -103,4 +105,21 @@ export class EventEntity {
   @Field({ nullable: true })
   @Column({ type: 'timestamp', default: null, nullable: true })
   deletedAt?: Date;
+
+  formatTitle(): string {
+    let title: string
+
+    if (this.title) {
+      title = this.title
+    } else if (this.parent) {
+      title = this.parent.formatTitle()
+    } else if (this.scope === EventScope.CONTRACT_EVENT) {
+      title = this.abiEvent.format()
+    } else {
+      title = EventScopeTitle[this.scope]
+    }
+
+    return title
+  }
 }
+  

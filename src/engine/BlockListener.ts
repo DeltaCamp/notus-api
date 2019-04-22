@@ -7,6 +7,7 @@ import { Transaction } from './Transaction'
 import { EventEntity } from '../entities'
 import { EventService } from '../events/EventService'
 import { transactionContextRunner } from '../transactions'
+import { Network } from 'ethers/utils';
 
 const debug = require('debug')('notus:BlockListener')
 
@@ -14,6 +15,7 @@ export class BlockListener {
   private blockEvents: EventEntity[];
   private transactionEvents: EventEntity[];
   private abiEventEvents: EventEntity[];
+  private network: Network;
 
   constructor (
     private readonly provider: BaseProvider,
@@ -21,7 +23,9 @@ export class BlockListener {
     private readonly eventService: EventService
   ) {}
 
-  start() {
+  async start() {
+    this.network = await this.provider.getNetwork()
+    console.log('network: ', this.network)
     this.provider.on('block', this.onBlockNumber)
   }
 
@@ -43,7 +47,7 @@ export class BlockListener {
     debug(`Received block number ${block.number}`)
     if (this.blockEvents.length) {
       debug(`Checking ${this.blockEvents.length} events for block: ${blockNumber}`)
-      await this.baseHandler.handle(this.blockEvents, block, undefined, undefined)
+      await this.baseHandler.handle(this.blockEvents, this.network, block, undefined, undefined)
     }
     await Promise.all(block.transactions.map(transactionHash => (
       this.handleTransaction(block, transactionHash)
@@ -57,7 +61,7 @@ export class BlockListener {
       const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
       if (this.transactionEvents.length) {
         debug(`Checking ${this.transactionEvents.length} events for transaction: ${transactionHash}`)
-        await this.baseHandler.handle(this.transactionEvents, block, transaction, undefined)
+        await this.baseHandler.handle(this.transactionEvents, this.network, block, transaction, undefined)
       }
       if (transactionReceipt.logs && transactionReceipt.logs.length) {
         await Promise.all(transactionReceipt.logs.map(log => (
@@ -72,7 +76,7 @@ export class BlockListener {
   handleLog = async (block: Block, transaction: Transaction, log: Log) => {
     if (this.abiEventEvents.length) {
       debug(`Checking ${this.abiEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
-      await this.baseHandler.handle(this.abiEventEvents, block, transaction, log)
+      await this.baseHandler.handle(this.abiEventEvents, this.network, block, transaction, log)
     }
   }
 }

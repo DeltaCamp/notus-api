@@ -10,11 +10,12 @@ import {
 import { Field, ObjectType, ID } from 'type-graphql';
 
 import { OperandDataType } from './OperandDataType'
+import { OperatorTitle } from './OperatorTitle'
 import { Operator } from './Operator'
 import * as Source from './Source'
+import { SourceTitle } from './SourceTitle'
 import {
   EventEntity,
-  AbiEventEntity,
   AbiEventInputEntity
 } from '../entities';
 
@@ -68,4 +69,16 @@ export class MatcherEntity {
   @Field()
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  description(): string {
+    return `${this.formatSource()} is ${OperatorTitle[this.operator]} ${this.operand}`
+  }
+
+  formatSource(): string {
+    if (this.source === Source.CONTRACT_EVENT_INPUT) {
+      return this.abiEventInput.description()
+    } else {
+      return SourceTitle[this.source]
+    }
+  }
 }

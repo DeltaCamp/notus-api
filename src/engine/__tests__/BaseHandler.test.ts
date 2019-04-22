@@ -10,7 +10,7 @@ describe('BaseHandler', () => {
   let baseHandler
 
   let events, matchHandler, matcher
-  let block, transaction, log
+  let block, transaction, log, network
 
   let event
   let matcher1, matcher2
@@ -35,6 +35,7 @@ describe('BaseHandler', () => {
     block = {}
     transaction = {}
     log = {}
+    network = {}
 
     baseHandler = new BaseHandler(matchHandler, matcher)
   })
@@ -51,18 +52,18 @@ describe('BaseHandler', () => {
           '0x9999'
         ]
       }
-      await baseHandler.handle(events, block, transaction, log)
+      await baseHandler.handle(events, network, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()
     })
 
-    xit('should not call the match handler if a matcher fails', async () => {
-      await baseHandler.handle(events, block, transaction, log)
+    it('should not call the match handler if a matcher fails', async () => {
+      await baseHandler.handle(events, network, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()
     })
 
-    xit('should call the matcher when all matchers pass', async () => {
+    it('should call the matcher when all matchers pass', async () => {
       matcher.matches = jest.fn(() => true)
-      await baseHandler.handle(events, block, transaction, log)
+      await baseHandler.handle(events, network, block, transaction, log)
       expect(matchHandler.handle).toHaveBeenCalled()
     })
   })

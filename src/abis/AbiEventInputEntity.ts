@@ -40,4 +40,8 @@ export class AbiEventInputEntity {
 
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
+
+  description(): string {
+    return `${this.abiEvent.name} ${this.name}`
+  }
 }

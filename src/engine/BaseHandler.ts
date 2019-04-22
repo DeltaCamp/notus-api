@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Block, Log } from 'ethers/providers'
+import { Network } from 'ethers/utils';
 
 import { EventScope } from '../events/EventScope'
 import { Transaction } from './Transaction'
@@ -19,8 +20,8 @@ export class BaseHandler {
     protected readonly matcher: Matcher
   ) {}
 
-  handle(events: EventEntity[], block: Block, transaction: Transaction, log: Log) {
-    this.handleEvents(new MatchContext(block, transaction, log), events)
+  handle(events: EventEntity[], network: Network, block: Block, transaction: Transaction, log: Log) {
+    this.handleEvents(new MatchContext(block, transaction, log, network), events)
   }
 
   handleEvents(matchContext: MatchContext, events: EventEntity[]) {

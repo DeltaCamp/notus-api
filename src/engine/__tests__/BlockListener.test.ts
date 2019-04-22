@@ -6,13 +6,17 @@ describe('BlockListener', () => {
 
   let provider, eventHandler, eventService
 
-  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, abiEventEvents
+  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, abiEventEvents, network
 
   beforeEach(() => {
     block = {
       transactions: [
         '0x1234'
       ]
+    }
+    network = {
+      name: 'homestead',
+      chainId: 1
     }
     transactionResponse = {}
     transactionReceipt = {
@@ -21,6 +25,7 @@ describe('BlockListener', () => {
 
     provider = {
       on: jest.fn(),
+      getNetwork: jest.fn(() => Promise.resolve(network)),
       getBlock: jest.fn(() => Promise.resolve(block)),
       getTransaction: jest.fn(() => Promise.resolve(transactionResponse)),
       getTransactionReceipt: jest.fn(() => Promise.resolve(transactionReceipt))
@@ -54,6 +59,7 @@ describe('BlockListener', () => {
 
   describe('onBlockNumber()', () => {
     it('should work', async () => {
+      await blockListener.start()
       await blockListener.onBlockNumber('1')
 
       expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.BLOCK)
@@ -64,9 +70,9 @@ describe('BlockListener', () => {
       expect(provider.getTransaction).toHaveBeenCalledWith('0x1234')
       expect(provider.getTransactionReceipt).toHaveBeenCalledWith('0x1234')
 
-      expect(eventHandler.handle).toHaveBeenCalledWith(blockEvents, block, undefined, undefined)
-      expect(eventHandler.handle).toHaveBeenCalledWith(transactionEvents, block, expect.anything(), undefined)
-      expect(eventHandler.handle).toHaveBeenCalledWith(abiEventEvents, block, expect.anything(), 'log')
+      expect(eventHandler.handle).toHaveBeenCalledWith(blockEvents, network, block, undefined, undefined)
+      expect(eventHandler.handle).toHaveBeenCalledWith(transactionEvents, network, block, expect.anything(), undefined)
+      expect(eventHandler.handle).toHaveBeenCalledWith(abiEventEvents, network, block, expect.anything(), 'log')
     })
   })
 })

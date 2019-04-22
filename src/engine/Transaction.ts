@@ -4,6 +4,7 @@ import { BigNumber } from 'ethers/utils'
 export interface Transaction {
   to?: string;
   from?: string;
+  data?: string;
   abiAddress?: string;
   transactionIndex?: number;
   root?: string;
@@ -19,4 +20,6 @@ export interface Transaction {
   status?: number;
   timestamp?: number;
   raw?: string;
+  value: BigNumber;
+  chainId: number;
 }

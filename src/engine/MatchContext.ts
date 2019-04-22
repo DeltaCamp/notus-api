@@ -1,6 +1,6 @@
 import { Block, Log } from 'ethers/providers';
+import { Network } from 'ethers/utils/networks';
 import { get } from 'lodash';
-import { BigNumber, bigNumberify } from 'ethers/utils';
 
 import { Transaction } from './Transaction'
 
@@ -10,7 +10,8 @@ export class MatchContext {
   constructor (
     public readonly block?: Block,
     public readonly transaction?: Transaction,
-    public readonly log?: Log
+    public readonly log?: Log,
+    public readonly network?: Network
   ) {}
 
   get(source: string) {
@@ -18,6 +19,6 @@ export class MatchContext {
   }
 
   clone() {
-    return new MatchContext(this.block, this.transaction, this.log)
+    return new MatchContext(this.block, this.transaction, this.log, this.network)
   }
 }
