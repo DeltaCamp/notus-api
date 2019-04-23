@@ -87,7 +87,6 @@ input MatcherDto {
   order: Float
   source: String!
   operator: Float!
-  operandDataType: Float
   operand: String = ""
 }
 
@@ -100,7 +99,6 @@ type MatcherEntity {
   abiEventInputId: Float
   operator: Float!
   operand: String!
-  operandDataType: Float!
   createdAt: Date!
   updatedAt: Date!
 }

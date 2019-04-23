@@ -23,8 +23,5 @@ export class MatcherDto {
   operator: Operator;
 
   @Field({ nullable: true })
-  operandDataType: OperandDataType;
-
-  @Field({ nullable: true })
   operand: string = '';
 }

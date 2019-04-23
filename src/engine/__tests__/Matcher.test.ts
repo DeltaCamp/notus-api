@@ -63,7 +63,6 @@ describe('MatchContext', () => {
         matcherEntity.abiEventInput = abiEventInput
         matcherEntity.operator = Operator.GT
         matcherEntity.operand = '400'
-        matcherEntity.operandDataType = SolidityDataType.UINT256
       })
 
       it('should be truthy when passing', () => {

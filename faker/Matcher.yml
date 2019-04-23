@@ -4,13 +4,11 @@ items:
     event: '@event0'
     source: 'transaction.value'
     operator: '3' # Greater than
-    operandDataType: 1
     operand: '1000'
     order: 1
   matcher1:
     event: '@event1'
     source: 'transaction.value' # 'Abi Address'
     operator: '2' # less than
-    operandDataType: 1
     operand: '1000'
     order: 1

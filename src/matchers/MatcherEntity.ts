@@ -59,10 +59,6 @@ export class MatcherEntity {
   @Field()
   operand: string;
 
-  @Column({ type: 'enum', enum: OperandDataType, nullable: true })
-  @Field()
-  operandDataType: OperandDataType;
-
   @Field()
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
