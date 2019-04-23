@@ -19,7 +19,6 @@ import {
 } from '../entities'
 import { EventScope } from './EventScope';
 import { EventScopeTitle } from './EventScopeTitle'
-import { TRANSACTION_CHAIN_ID } from 'src/matchers/Source';
 
 @Entity({ name: 'events' })
 @ObjectType()

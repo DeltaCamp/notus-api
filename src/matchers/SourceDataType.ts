@@ -15,11 +15,11 @@ export const SourceDataType = {
   [Source.TRANSACTION_FROM]: SolidityDataType.ADDRESS,
   [Source.TRANSACTION_GAS_LIMIT]: SolidityDataType.UINT256,
   [Source.TRANSACTION_GAS_PRICE]: SolidityDataType.UINT256,
-  [Source.TRANSACTION_NONCE]: SolidityDataType.BYTES,
+  // [Source.TRANSACTION_NONCE]: SolidityDataType.BYTES,
   [Source.TRANSACTION_VALUE]: SolidityDataType.UINT256,
-  [Source.TRANSACTION_CHAIN_ID]: SolidityDataType.UINT256,
-  [Source.TRANSACTION_CONTRACT_ADDRESS]: SolidityDataType.ADDRESS,
-  [Source.TRANSACTION_CUMULATIVE_GAS_USED]: SolidityDataType.UINT256,
+  // [Source.TRANSACTION_CHAIN_ID]: SolidityDataType.UINT256,
+  // [Source.TRANSACTION_CONTRACT_ADDRESS]: SolidityDataType.ADDRESS,
+  // [Source.TRANSACTION_CUMULATIVE_GAS_USED]: SolidityDataType.UINT256,
   [Source.TRANSACTION_GAS_USED]: SolidityDataType.UINT256,
   [Source.LOG_ADDRESS]: SolidityDataType.ADDRESS, // originator address
   [Source.LOG_TOPIC_0]: SolidityDataType.BYTES, // eventSignature(x, y, z)
