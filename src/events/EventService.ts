@@ -138,6 +138,7 @@ export class EventService {
       .leftJoinAndSelect('events.matchers', 'matchers')
       .leftJoinAndSelect('matchers.abiEventInput', 'abiEventInputs')
       .leftJoinAndSelect('abiEventInputs.abiEvent', 'aei_abiEvents')
+      .leftJoinAndSelect('aei_abiEvents.abi', 'aei_abis')
       .where('(events.scope = :scope OR parent_events.scope = :scope)', { scope })
       .andWhere('events.deletedAt IS NULL')
       .andWhere('events.isActive IS TRUE')

@@ -38,7 +38,7 @@ export class Matcher {
     return false
   }
 
-  eq(matchContext, matcher): boolean {
+  eq(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     const { operand } = matcher
     const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
@@ -52,7 +52,7 @@ export class Matcher {
     }
   }
 
-  lt(matchContext, matcher): boolean {
+  lt(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     const { operand } = matcher
     const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
@@ -64,7 +64,7 @@ export class Matcher {
     }
   }
 
-  gt(matchContext, matcher): boolean {
+  gt(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     const { operand } = matcher
     const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
@@ -76,7 +76,7 @@ export class Matcher {
     }
   }
 
-  lte(matchContext, matcher): boolean {
+  lte(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     const { operand } = matcher
     const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
@@ -88,7 +88,7 @@ export class Matcher {
     }
   }
 
-  gte(matchContext, matcher): boolean {
+  gte(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     const { operand } = matcher
     const value = this.getSourceValue(matchContext, matcher)
     if (BigNumber.isBigNumber(value)) {
@@ -100,7 +100,7 @@ export class Matcher {
     }
   }
 
-  getSourceValue(matchContext, matcher) {
+  getSourceValue(matchContext: MatchContext, matcher: MatcherEntity) {
     if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
       const event = this.getEvent(matchContext, matcher.abiEventInput)
       return event[matcher.abiEventInput.name]
@@ -108,7 +108,7 @@ export class Matcher {
     return matchContext.get(matcher.source)
   }
 
-  getSourceDataType(matcher): SolidityDataType {
+  getSourceDataType(matcher: MatcherEntity): SolidityDataType {
     if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
       return matcher.abiEventInput.type
     }
@@ -126,7 +126,7 @@ export class Matcher {
     return matchContext.event[abiEvent.name]
   }
 
-  getAddress(addr) {
+  getAddress(addr: string) {
     try {
       return getAddress(addr)
     } catch (error) {

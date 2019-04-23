@@ -23,6 +23,13 @@ export class AbiEventInputResolver {
     return await this.abiEventInputService.findByNameAndAbiEventId(name, abiEventId)
   }
 
+  @Query(returns => AbiEventInputEntity)
+  async abiEventInput (
+    @Args('id') id: number
+  ) {
+    return await this.abiEventInputService.findOneOrFail(id)
+  }
+
   @ResolveProperty('abiEvent')
   async abiEvent(@Parent() abiEventInput: AbiEventInputEntity): Promise<AbiEventEntity> {
     return await this.abiEventService.findOneOrFail(abiEventInput.abiEventId)

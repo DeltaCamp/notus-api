@@ -47,6 +47,7 @@ export class MatcherEntity {
   @ManyToOne(type => AbiEventInputEntity, { nullable: true })
   abiEventInput: AbiEventInputEntity;
 
+  @Field({ nullable: true })
   @RelationId((matcher: MatcherEntity) => matcher.abiEventInput)
   abiEventInputId: number;
 
