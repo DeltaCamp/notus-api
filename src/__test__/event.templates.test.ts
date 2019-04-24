@@ -85,7 +85,7 @@ describe('Event templates', () => {
     let result = renderer.render(htmlTemplate, context, event)
     
     expect(result).toContain(`ERC20 transfer occurred at block 1234`)
-    expect(result).toContain(`where transaction from is equal to 0x4321 and`)
+    expect(result).toContain(`where transaction from address is equal to 0x4321 and`)
     expect(result).toContain(`transfer value is greater than 1000`)
   })
 })

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nest-modules/mailer';
 
 import { MatchContext } from './MatchContext'
 import { EventEntity } from '../entities'
 import { rollbar } from '../rollbar'
 import { addArticle } from '../utils/addArticle'
 import { Renderer } from './Renderer'
+import { MailJobPublisher } from '../jobs/MailJobPublisher'
 
 const debug = require('debug')('notus:MatchHandler')
 const fs = require('fs');
@@ -17,7 +17,7 @@ export class MatchHandler {
   private eventTemplateHtml: string;
 
   constructor (
-    private readonly mailerService: MailerService,
+    private readonly mailJobPublisher: MailJobPublisher,
     private readonly renderer: Renderer
   ) {
     this.eventTemplateText = fs.readFileSync(__dirname + '/../../templates/event.template.text.mst', { encoding: 'utf8' })
@@ -29,7 +29,7 @@ export class MatchHandler {
     const html = this.renderer.render(this.eventTemplateHtml, matchContext, event)
     debug(`!!!!!!!!!!!!! FIRING EVENT ${event.id} !!!!!!!!!!!!!`)
     debug(text)
-    this.mailerService.sendMail({
+    this.mailJobPublisher.sendMail({
       to: event.user.email,
       subject: `${addArticle(event.formatTitle(), { an: 'An', a: 'A' })} occurred`,
       text,

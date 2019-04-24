@@ -10,7 +10,9 @@ import { EventModule } from './events'
 import { AppModule } from './apps'
 import { EngineModule } from './engine/EngineModule'
 import { MatcherModule } from './matchers';
-import { mailModule } from './mailModule'
+import { mailerModule } from './mailerModule'
+import { WorkLogModule } from './work-logs/WorkLogModule'
+import { JobModule } from './jobs/JobModule'
 import { EntityManagerProvider } from './transactions/EntityManagerProvider';
 
 @Global()
@@ -19,16 +21,17 @@ import { EntityManagerProvider } from './transactions/EntityManagerProvider';
     TypeOrmModule.forRoot(),
     EngineModule,
     AppModule,
-    mailModule,
+    mailerModule,
     EventModule,
     MatcherModule,
+    JobModule,
     AbiModule
   ],
   providers: [
     EntityManagerProvider
   ],
   exports: [
-    mailModule, EntityManagerProvider
+    mailerModule, EntityManagerProvider
   ]
 })
 export class WorkerModule {

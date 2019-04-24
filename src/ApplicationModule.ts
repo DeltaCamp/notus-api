@@ -10,8 +10,9 @@ import { AuthModule } from './auth/AuthModule';
 import { CommonModule } from './common/CommonModule';
 import { AppModule } from './apps';
 import { EventModule } from './events/EventModule';
-import { mailModule } from './mailModule'
+import { mailerModule } from './mailerModule'
 import { MatcherModule } from './matchers';
+import { JobModule } from './jobs/JobModule'
 import { AbiModule } from './abis/AbiModule';
 
 import { TransactionMiddleware, TransactionModule } from './transactions';
@@ -36,7 +37,8 @@ const isProduction = process.env.NODE_ENV === 'production'
       autoSchemaFile: 'schema.gql',
       context: ({ req }) => ({ req })
     }),
-    mailModule,
+    JobModule,
+    mailerModule,
     TransactionModule,
     TypeOrmModule.forRoot()
   ],
@@ -47,7 +49,7 @@ const isProduction = process.env.NODE_ENV === 'production'
     AppService
   ],
   exports: [
-    mailModule
+    mailerModule
   ]
 })
 

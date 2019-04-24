@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { MailerService } from '@nest-modules/mailer';
 
 import { UserEntity } from '../entities';
 import { rollbar } from '../rollbar'
-import { generateRandomBytes } from '../utils/generateRandomBytes';
+import { MailJobPublisher } from '../jobs/MailJobPublisher'
 import { keyHashHex } from '../utils/keyHashHex'
 import { Transaction } from '../transactions/Transaction'
 import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
@@ -13,7 +12,7 @@ export class UserService {
 
   constructor(
     private readonly provider: EntityManagerProvider,
-    private readonly mailerService: MailerService
+    private readonly mailJobPublisher: MailJobPublisher
   ) { }
 
   @Transaction()
@@ -83,7 +82,7 @@ export class UserService {
   }
 
   public sendWelcome(user: UserEntity, oneTimeKey: string) {
-    this.mailerService.sendMail({
+    this.mailJobPublisher.sendMail({
       to: user.email,
       subject: 'Welcome to Notus Network',
       template: 'welcome.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
@@ -95,7 +94,7 @@ export class UserService {
   }
 
   public sendMagicLink(user: UserEntity, oneTimeKey: string) {
-    this.mailerService.sendMail({
+    this.mailJobPublisher.sendMail({
       to: user.email,
       subject: 'Your Magic Access Link',
       template: 'magic_link.template.pug', // The `.pug` or `.hbs` extension is appended automatically.

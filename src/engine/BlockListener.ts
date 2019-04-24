@@ -33,16 +33,20 @@ export class BlockListener {
     this.provider.removeListener('block', this.onBlockNumber)
   }
 
+  confirmationLevel(): number {
+    return parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10)
+  }
+
   onBlockNumber = (blockNumber: number): Promise<any> => {
     return transactionContextRunner(async () => {
-      this.blockEvents = await this.eventService.findByScope(EventScope.BLOCK)
-      this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
-      this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
-      await this.checkBlockNumber(blockNumber - parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10))
+      await this.checkBlockNumber(blockNumber - this.confirmationLevel())
     })
   }
 
   checkBlockNumber = async (blockNumber) => {
+    this.blockEvents = await this.eventService.findByScope(EventScope.BLOCK)
+    this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
+    this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
     const block: Block = await this.provider.getBlock(blockNumber)
     debug(`Received block number ${block.number}`)
     if (this.blockEvents.length) {
