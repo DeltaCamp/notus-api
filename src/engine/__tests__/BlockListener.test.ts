@@ -1,78 +1,136 @@
 import { BlockListener } from '../BlockListener'
-import { EventScope } from '../../events/EventScope';
 
 describe('BlockListener', () => {
   let blockListener
 
-  let provider, eventHandler, eventService
+  let ethersProvider, workLogService, blockJobPublisher
 
-  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, abiEventEvents, network
+  let provider, lastBlockNumber
+
+  let oldBlockConfirmationLevel, oldCatchUpMaxBlocks
 
   beforeEach(() => {
-    block = {
-      transactions: [
-        '0x1234'
-      ]
-    }
-    network = {
-      name: 'homestead',
-      chainId: 1
-    }
-    transactionResponse = {}
-    transactionReceipt = {
-      logs: ['log']
-    }
-
     provider = {
+      getNetwork: jest.fn(() => ({ name: 'homestead', chainId: 1 })),
       on: jest.fn(),
-      getNetwork: jest.fn(() => Promise.resolve(network)),
-      getBlock: jest.fn(() => Promise.resolve(block)),
-      getTransaction: jest.fn(() => Promise.resolve(transactionResponse)),
-      getTransactionReceipt: jest.fn(() => Promise.resolve(transactionReceipt))
+      removeListener: jest.fn()
     }
 
-    eventHandler = {
-      handle: jest.fn()
+    ethersProvider = {
+      getNetworkProvider: jest.fn(() => provider)
+    }
+    
+    workLogService = {
+      getLastBlock: jest.fn(() => lastBlockNumber),
+      setLastBlock: jest.fn()
+    }
+    
+    blockJobPublisher = {
+      newBlock: jest.fn()
     }
 
-    blockEvents = ['block']
-    transactionEvents = ['transaction']
-    abiEventEvents = ['abiEvent']
+    oldBlockConfirmationLevel = process.env.BLOCK_CONFIRMATION_LEVEL
+    oldCatchUpMaxBlocks = process.env.MAX_REPLAY_BLOCKS
 
-    eventService = {
-      findByScope: jest.fn((eventScope) => {
-        switch(eventScope) {
-          case EventScope.BLOCK:
-            return Promise.resolve(blockEvents)
-          case EventScope.TRANSACTION:
-            return Promise.resolve(transactionEvents)
-          case EventScope.CONTRACT_EVENT:
-            return Promise.resolve(abiEventEvents)
-          default:
-            throw new Error(`Unknown scope ${eventScope}`)
-        }
-      })
-    }
-
-    blockListener = new BlockListener(provider, eventHandler, eventService)
+    blockListener = new BlockListener(ethersProvider, workLogService, blockJobPublisher)
   })
 
-  describe('onBlockNumber()', () => {
-    it('should work', async () => {
-      await blockListener.start()
-      await blockListener.onBlockNumber('1')
+  afterEach(() => {
+    process.env.BLOCK_CONFIRMATION_LEVEL = oldBlockConfirmationLevel
+    process.env.MAX_REPLAY_BLOCKS = oldCatchUpMaxBlocks
+  })
 
-      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.BLOCK)
-      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.TRANSACTION)
-      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.CONTRACT_EVENT)
+  describe('start()', () => {
+    it('should bind the onBlock handlers', async () => {
+      await blockListener.start('homestead')
 
-      expect(provider.getBlock).toHaveBeenCalledWith(1)
-      expect(provider.getTransaction).toHaveBeenCalledWith('0x1234')
-      expect(provider.getTransactionReceipt).toHaveBeenCalledWith('0x1234')
+      expect(blockListener.onBlocks['homestead']).toBeDefined()
+    })
 
-      expect(eventHandler.handle).toHaveBeenCalledWith(blockEvents, network, block, undefined, undefined)
-      expect(eventHandler.handle).toHaveBeenCalledWith(transactionEvents, network, block, expect.anything(), undefined)
-      expect(eventHandler.handle).toHaveBeenCalledWith(abiEventEvents, network, block, expect.anything(), 'log')
+    it('should throw if a network already started', async () => {
+      blockListener.start('homestead')
+      let fail = false
+      try {
+        await blockListener.start('homestead')
+      } catch (error) {
+        fail = true
+      }
+      expect(fail).toBeTruthy()
+    })
+  })
+
+  describe('onBlock()', () => {
+    it('should process all blocks since the last one', async () => {
+      await blockListener.start('homestead')
+
+      process.env.BLOCK_CONFIRMATION_LEVEL = '0' // current block
+      process.env.MAX_REPLAY_BLOCKS = '4' //
+      
+      lastBlockNumber = 2
+
+      await blockListener.onBlocks['homestead'](4)
+
+      expect(blockJobPublisher.newBlock).not.toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 2 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 3 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 4, networkName: 'homestead', chainId: 1 })
+      )
+
+      expect(workLogService.setLastBlock).toHaveBeenCalledWith(1, 4)
+    })
+
+    it('should only process confirmed blocks', async () => {
+      await blockListener.start('homestead')
+
+      process.env.BLOCK_CONFIRMATION_LEVEL = '2'
+      process.env.MAX_REPLAY_BLOCKS = '1'
+      
+      lastBlockNumber = 2
+
+      await blockListener.onBlocks['homestead'](10)
+
+      expect(blockJobPublisher.newBlock).not.toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 6 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 7 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 8, networkName: 'homestead', chainId: 1 })
+      )
+
+      expect(workLogService.setLastBlock).toHaveBeenCalledWith(1, 8)
+    })
+
+    it('should not process more than max number of catch up blocks', async () => {
+
+      await blockListener.start('homestead')
+
+      process.env.BLOCK_CONFIRMATION_LEVEL = '0' // current block
+      process.env.MAX_REPLAY_BLOCKS = '2' // process maximum the two previous blocks
+      
+      lastBlockNumber = 1
+
+      await blockListener.onBlocks['homestead'](50)
+      
+      expect(blockJobPublisher.newBlock).not.toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 47 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 48 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 49 })
+      )
+      expect(blockJobPublisher.newBlock).toHaveBeenCalledWith(
+        expect.objectContaining({ blockNumber: 50 })
+      )
+
+      expect(workLogService.setLastBlock).toHaveBeenCalledWith(1, 50)
     })
   })
 })

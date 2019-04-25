@@ -13,18 +13,18 @@ import {
 } from '../entities'
 
 @Injectable()
-export class BaseHandler {
+export class EventsMatcher {
 
   constructor (
     protected readonly matchHandler: MatchHandler,
     protected readonly matcher: Matcher
   ) {}
 
-  handle(events: EventEntity[], network: Network, block: Block, transaction: Transaction, log: Log) {
-    this.handleEvents(new MatchContext(block, transaction, log, network), events)
+  match(events: EventEntity[], network: Network, block: Block, transaction: Transaction, log: Log) {
+    this.matchEvents(new MatchContext(block, transaction, log, network), events)
   }
 
-  handleEvents(matchContext: MatchContext, events: EventEntity[]) {
+  matchEvents(matchContext: MatchContext, events: EventEntity[]) {
     events.forEach(event => {
       const context = matchContext.clone()
       if (this.matches(context, event)) {

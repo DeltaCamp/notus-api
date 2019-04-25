@@ -17,4 +17,6 @@ export JWT_EXPIRES_IN="30 days"
 export ONE_TIME_KEY_EXPIRES_IN=1200 # 20 minutes
 export BLOCK_CONFIRMATION_LEVEL=8
 export ETHEREUM_NETWORK=ropsten
+# When the worker is started, how many new blocks it should retroactively retrieve before continuing with current blocks
+export MAX_REPLAY_BLOCKS=20
 # export ETHEREUM_NETWORK=localhost

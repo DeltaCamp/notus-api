@@ -25,6 +25,7 @@ import { EntityManagerProvider } from './transactions/EntityManagerProvider';
     EventModule,
     MatcherModule,
     JobModule,
+    WorkLogModule,
     AbiModule
   ],
   providers: [

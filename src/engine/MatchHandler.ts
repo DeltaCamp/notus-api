@@ -7,7 +7,7 @@ import { addArticle } from '../utils/addArticle'
 import { Renderer } from './Renderer'
 import { MailJobPublisher } from '../jobs/MailJobPublisher'
 
-const debug = require('debug')('notus:MatchHandler')
+const debug = require('debug')('notus:engine:MatchHandler')
 const fs = require('fs');
 
 @Injectable()

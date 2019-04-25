@@ -1,4 +1,4 @@
-import { BaseHandler } from '../BaseHandler'
+import { EventsMatcher } from '../EventsMatcher'
 import { EventScope } from '../../events/EventScope'
 import {
   EventEntity,
@@ -6,8 +6,8 @@ import {
   AbiEventEntity
 } from '../../entities'
 
-describe('BaseHandler', () => {
-  let baseHandler
+describe('EventsMatcher', () => {
+  let eventsMatcher
 
   let events, matchHandler, matcher
   let block, transaction, log, network
@@ -37,7 +37,7 @@ describe('BaseHandler', () => {
     log = {}
     network = {}
 
-    baseHandler = new BaseHandler(matchHandler, matcher)
+    eventsMatcher = new EventsMatcher(matchHandler, matcher)
   })
 
   describe('handleEvent()', () => {
@@ -52,18 +52,18 @@ describe('BaseHandler', () => {
           '0x9999'
         ]
       }
-      await baseHandler.handle(events, network, block, transaction, log)
+      await eventsMatcher.match(events, network, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()
     })
 
     it('should not call the match handler if a matcher fails', async () => {
-      await baseHandler.handle(events, network, block, transaction, log)
+      await eventsMatcher.match(events, network, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()
     })
 
     it('should call the matcher when all matchers pass', async () => {
       matcher.matches = jest.fn(() => true)
-      await baseHandler.handle(events, network, block, transaction, log)
+      await eventsMatcher.match(events, network, block, transaction, log)
       expect(matchHandler.handle).toHaveBeenCalled()
     })
   })

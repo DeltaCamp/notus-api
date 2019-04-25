@@ -1,86 +1,64 @@
-import { Block, Log, TransactionResponse, TransactionReceipt, BaseProvider } from 'ethers/providers'
+import { Injectable } from '@nestjs/common';
 
-import { EventScope } from '../events/EventScope'
-import { BaseHandler } from './BaseHandler'
-import { createTransaction } from './createTransaction'
-import { Transaction } from './Transaction'
-import { EventEntity } from '../entities'
-import { EventService } from '../events/EventService'
-import { transactionContextRunner } from '../transactions'
-import { Network } from 'ethers/utils';
+import { EthersProvider } from './EthersProvider';
+import { WorkLogService } from '../work-logs/WorkLogService';
+import { BlockJobPublisher } from '../jobs/BlockJobPublisher';
+import { transactionContextRunner } from '../transactions';
 
-const debug = require('debug')('notus:BlockListener')
+const debug = require('debug')('notus:engine:BlockListener')
 
+@Injectable()
 export class BlockListener {
-  private blockEvents: EventEntity[];
-  private transactionEvents: EventEntity[];
-  private abiEventEvents: EventEntity[];
-  private network: Network;
+  private providers: {} = {};
+  public onBlocks: {} = {};
 
   constructor (
-    private readonly provider: BaseProvider,
-    private readonly baseHandler: BaseHandler,
-    private readonly eventService: EventService
+    private readonly ethersProvider: EthersProvider,
+    private readonly workLogService: WorkLogService,
+    private readonly blockJobPublisher: BlockJobPublisher
   ) {}
 
-  async start() {
-    this.network = await this.provider.getNetwork()
-    console.log('network: ', this.network)
-    this.provider.on('block', this.onBlockNumber)
+  async start(networkName: string) {
+    if (this.providers[networkName]) { throw new Error(`Provider already defined for network ${networkName}`) }
+    const provider = this.ethersProvider.getNetworkProvider(networkName)
+    this.providers[networkName] = provider
+    const network = await provider.getNetwork()
+    this.onBlocks[networkName] = (blockNumber: number) => this.onBlock(blockNumber, networkName, network.chainId)
+    this.providers[networkName].on('block', this.onBlocks[networkName])
   }
 
   stop() {
-    this.provider.removeListener('block', this.onBlockNumber)
+    Object.keys(this.providers).forEach((networkName: string) => {
+      this.providers[networkName].removeListener('block', this.onBlocks[networkName])
+    })
+  }
+
+  firstCatchUpBlock(currentBlockNumber: number): number {
+    const maxBlocks = parseInt(process.env.MAX_REPLAY_BLOCKS, 10)
+    return currentBlockNumber - maxBlocks
   }
 
   confirmationLevel(): number {
     return parseInt(process.env.BLOCK_CONFIRMATION_LEVEL, 10)
   }
 
-  onBlockNumber = (blockNumber: number): Promise<any> => {
-    return transactionContextRunner(async () => {
-      await this.checkBlockNumber(blockNumber - this.confirmationLevel())
+  onBlock = async (blockNumber: number, networkName: string, chainId: number) => {
+    const currentBlockNumber = blockNumber - this.confirmationLevel()
+    
+    const firstCatchUpBlock = this.firstCatchUpBlock(currentBlockNumber)
+    const lastCheckedBlock = await this.workLogService.getLastBlock(chainId)
+
+    let startingBlock = Math.max(firstCatchUpBlock, lastCheckedBlock + 1)
+    while (startingBlock <= currentBlockNumber) {
+      debug(`newBlock(${startingBlock})`)
+      this.blockJobPublisher.newBlock({ blockNumber: startingBlock, networkName, chainId })
+      startingBlock += 1;
+    }
+
+    await transactionContextRunner(() => {
+      return this.workLogService.setLastBlock(chainId, currentBlockNumber)
     })
-  }
 
-  checkBlockNumber = async (blockNumber) => {
-    this.blockEvents = await this.eventService.findByScope(EventScope.BLOCK)
-    this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
-    this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
-    const block: Block = await this.provider.getBlock(blockNumber)
-    debug(`Received block number ${block.number}`)
-    if (this.blockEvents.length) {
-      debug(`Checking ${this.blockEvents.length} events for block: ${blockNumber}`)
-      await this.baseHandler.handle(this.blockEvents, this.network, block, undefined, undefined)
-    }
-    await Promise.all(block.transactions.map(transactionHash => (
-      this.handleTransaction(block, transactionHash)
-    )))
-  }
-
-  handleTransaction = async (block: Block, transactionHash: string) => {
-    const transactionResponse: TransactionResponse = await this.provider.getTransaction(transactionHash)
-    const transactionReceipt: TransactionReceipt = await this.provider.getTransactionReceipt(transactionHash)
-    if (transactionReceipt) {
-      const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
-      if (this.transactionEvents.length) {
-        debug(`Checking ${this.transactionEvents.length} events for transaction: ${transactionHash}`)
-        await this.baseHandler.handle(this.transactionEvents, this.network, block, transaction, undefined)
-      }
-      if (transactionReceipt.logs && transactionReceipt.logs.length) {
-        await Promise.all(transactionReceipt.logs.map(log => (
-          this.handleLog(block, transaction, log)
-        )))
-      }
-    } else {
-      debug(`Skipping transaction ${transactionHash} for block ${block.number}`)
-    }
-  }
-
-  handleLog = async (block: Block, transaction: Transaction, log: Log) => {
-    if (this.abiEventEvents.length) {
-      debug(`Checking ${this.abiEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
-      await this.baseHandler.handle(this.abiEventEvents, this.network, block, transaction, log)
-    }
+    debug(`setLastBlock(${chainId}, ${currentBlockNumber})`)
   }
 }

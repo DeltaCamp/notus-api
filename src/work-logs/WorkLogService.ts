@@ -13,15 +13,16 @@ export class WorkLogService {
   @Transaction()
   async setLastBlock(chainId: number, blockNumber: number) {
     let workLog = await this.findOrCreate(chainId)
-    workLog.lastCompletedBlockNumber = blockNumber
-    await this.provider.get().save(workLog)
+    if (workLog.lastCompletedBlockNumber < blockNumber) {
+      workLog.lastCompletedBlockNumber = blockNumber
+      await this.provider.get().save(workLog)
+    }
   }
 
   async getLastBlock(chainId: number): Promise<number> {
     let workLog = await this.findOrCreate(chainId)
     return workLog.lastCompletedBlockNumber
   }
-
 
   async findOrCreate(chainId: number): Promise<WorkLogEntity> {
     let workLog: WorkLogEntity = await this.provider.get().findOne(WorkLogEntity, { chainId })
