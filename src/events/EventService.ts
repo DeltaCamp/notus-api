@@ -197,7 +197,7 @@ export class EventService {
     }
 
     if (eventDto.matchers !== undefined) {
-      event.matchers = await Promise.all(eventDto.matchers.map(matcherDto => (
+      await Promise.all(eventDto.matchers.map(matcherDto => (
         this.matcherService.update(matcherDto)
       )))
     }

@@ -32,6 +32,7 @@ export class MatcherEntity {
   @Field()
   event: EventEntity;
 
+  @Field()
   @RelationId((matcher: MatcherEntity) => matcher.event)
   eventId: number;
 
