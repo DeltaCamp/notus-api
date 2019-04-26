@@ -45,13 +45,8 @@ export class EventsMatcher {
     debug(`Checking event ${event.id}`, event.scope)
 
     if (
-      (event.parent && this.abiEventScopeDoesNotMatch(matchContext, event.parent)) ||
       this.abiEventScopeDoesNotMatch(matchContext, event)
     ) {
-      return false
-    }
-
-    if (event.parent && !this.matchersSucceed(matchContext, event.parent)) {
       return false
     }
 
