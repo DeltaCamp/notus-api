@@ -93,6 +93,7 @@ input MatcherDto {
 type MatcherEntity {
   id: ID!
   event: EventEntity!
+  eventId: Float!
   order: Float!
   source: String!
   abiEventInput: AbiEventInputEntity!
