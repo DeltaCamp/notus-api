@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
 
-import { OperandDataType } from './OperandDataType'
 import { OperatorTitle } from './OperatorTitle'
 import { Operator } from './Operator'
 import * as Source from './Source'

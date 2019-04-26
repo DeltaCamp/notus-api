@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common'
 
 import {
   MatcherEntity,
-  EventEntity
+  EventEntity,
+  AbiEventInputEntity
 } from '../entities'
 import {
   MatcherDto
@@ -11,7 +12,12 @@ import {
   Transaction,
   EntityManagerProvider
  } from '../transactions'
- import { AbiEventInputService } from '../abis/AbiEventInputService'
+import { AbiEventInputService } from '../abis/AbiEventInputService'
+import * as Source from './Source'
+import { Operator } from './Operator'
+import { SolidityDataType } from '../common/SolidityDataType';
+import { SourceDataType } from './SourceDataType';
+import { validateOperand } from './validateOperand'
 
 @Injectable()
 export class MatcherService {
@@ -34,6 +40,8 @@ export class MatcherService {
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
+    await this.validateMatcherOperand(matcher)
+
     await this.provider.get().save(matcher)
 
     return matcher
@@ -50,9 +58,31 @@ export class MatcherService {
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
+    await this.validateMatcherOperand(matcher)
+
     await this.provider.get().save(matcher)
 
     return matcher
+  }
+
+  async validateMatcherOperand(matcher: MatcherEntity) {
+    if (matcher.operator !== Operator.NOOP) {
+      const dataType: SolidityDataType = await this.getDataType(matcher)
+      validateOperand(dataType, matcher.operand)
+    }
+  }
+
+  async getDataType(matcher: MatcherEntity): Promise<SolidityDataType> {
+    if (matcher.source === Source.CONTRACT_EVENT_INPUT) {
+      if (matcher.abiEventInput) {
+        return matcher.abiEventInput.type        
+      } else {
+        const abiEventInput = await this.provider.get().findOneOrFail(AbiEventInputEntity, matcher.abiEventInputId)
+        return abiEventInput.type
+      }
+    } else {
+      return SourceDataType[matcher.source]
+    }
   }
 
   @Transaction()
