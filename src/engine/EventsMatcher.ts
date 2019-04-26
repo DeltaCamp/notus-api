@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Block, Log } from 'ethers/providers'
 import { Network } from 'ethers/utils';
 
+import { rollbar } from '../rollbar'
 import { EventScope } from '../events/EventScope'
 import { Transaction } from './Transaction'
 import { Matcher } from './Matcher'
@@ -11,6 +12,8 @@ import {
   EventEntity,
   MatcherEntity
 } from '../entities'
+
+const debug = require('debug')('notus:engine:EventsMatcher')
 
 @Injectable()
 export class EventsMatcher {
@@ -27,14 +30,19 @@ export class EventsMatcher {
   matchEvents(matchContext: MatchContext, events: EventEntity[]) {
     events.forEach(event => {
       const context = matchContext.clone()
-      if (this.matches(context, event)) {
-        this.matchHandler.handle(context, event);
+      try {
+        if (this.matches(context, event)) {
+          this.matchHandler.handle(context, event);
+        }
+      } catch(error) {
+        rollbar.error(`Error processing event ${event.id}: ${error.message}`, error)
       }
     })
   }
 
   matches(matchContext: MatchContext, event: EventEntity) {
     let i: number;
+    debug(`Checking event ${event.id}`, event.scope)
 
     if (
       (event.parent && this.abiEventScopeDoesNotMatch(matchContext, event.parent)) ||
@@ -55,6 +63,7 @@ export class EventsMatcher {
   }
 
   abiEventScopeDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
+    debug(`abiEventScopeDoesNotMatch: ${event.scope} ${EventScope.CONTRACT_EVENT} for ${event.id}`)
     return event.scope === EventScope.CONTRACT_EVENT && matchContext.log.topics[0] !== event.abiEvent.topic
   }
 

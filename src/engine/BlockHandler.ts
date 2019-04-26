@@ -42,7 +42,7 @@ export class BlockHandler {
     const block: Block = await this.provider.getBlock(blockNumber)
     debug(`Received block number ${block.number}`)
     if (this.blockEvents.length) {
-      debug(`Checking ${this.blockEvents.length} events for block: ${blockNumber}`)
+      debug(`Checking events ${this.blockEvents.map(event => event.id).join(', ')} for block: ${blockNumber}`)
       await this.eventsMatcher.match(this.blockEvents, this.network, block, undefined, undefined)
     }
     await Promise.all(block.transactions.map(transactionHash => (
@@ -56,7 +56,7 @@ export class BlockHandler {
     if (transactionReceipt) {
       const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
       if (this.transactionEvents.length) {
-        debug(`Checking ${this.transactionEvents.length} events for transaction: ${transactionHash}`)
+        debug(`Checking events ${this.transactionEvents.map(event => event.id).join(', ')} for transaction: ${transactionHash}`)
         await this.eventsMatcher.match(this.transactionEvents, this.network, block, transaction, undefined)
       }
       if (transactionReceipt.logs && transactionReceipt.logs.length) {
@@ -71,7 +71,7 @@ export class BlockHandler {
 
   handleLog = async (block: Block, transaction: Transaction, log: Log) => {
     if (this.abiEventEvents.length) {
-      debug(`Checking ${this.abiEventEvents.length} events for log: ${log.transactionHash}:${log.logIndex}`)
+      debug(`Checking events ${this.abiEventEvents.map(event => event.id).join(', ')} for log: ${log.transactionHash}:${log.logIndex}`)
       await this.eventsMatcher.match(this.abiEventEvents, this.network, block, transaction, log)
     }
   }
