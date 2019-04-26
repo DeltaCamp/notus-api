@@ -62,6 +62,7 @@ export class EventResolver {
 
   @UseGuards(GqlAuthGuard)
   @Mutation(returns => EventEntity)
+  @UseFilters(new GqlRollbarExceptionFilter())
   async createEvent(
     @GqlAuthUser() user: UserEntity,
     @Args('event') eventDto: EventDto

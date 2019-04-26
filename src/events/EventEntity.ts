@@ -10,6 +10,7 @@ import {
   RelationId
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
+import { MinLength } from 'class-validator'
 
 import {
   UserEntity,
@@ -61,6 +62,9 @@ export class EventEntity {
   @RelationId((event: EventEntity) => event.app)
   appId: number;
 
+  @MinLength(8, {
+    message: "Title must be longer than $constraint1 characters"
+  })
   @Field()
   @Column({ type: 'text', nullable: false })
   title: string;

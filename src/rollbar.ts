@@ -1,5 +1,7 @@
 var Rollbar = require("rollbar");
 
+const debug = require('debug')('rollbar')
+
 let instance
 
 if (process.env.ROLLBAR_ACCESS_TOKEN) {
@@ -8,8 +10,13 @@ if (process.env.ROLLBAR_ACCESS_TOKEN) {
     captureUncaught: true,
     captureUnhandledRejections: true
   });
-} else {
-  instance = console
 }
 
-export const rollbar = instance
+export const rollbar = {
+  error: function (...any) {
+    debug.call(undefined, arguments)
+    if (instance) {
+      instance.error.call(instance, arguments)
+    }
+  }
+}

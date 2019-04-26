@@ -8,6 +8,7 @@ import {
   RelationId
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
+import { IsNotEmpty, ValidateIf } from "class-validator";
 
 import { OperatorTitle } from './OperatorTitle'
 import { Operator } from './Operator'
@@ -54,6 +55,8 @@ export class MatcherEntity {
   @Field()
   operator: Operator;
 
+  @ValidateIf(matcher => matcher.operator !== Operator.NOOP)
+  @IsNotEmpty()
   @Column({ type: 'text', nullable: true })
   @Field()
   operand: string;

@@ -18,6 +18,8 @@ import { Operator } from './Operator'
 import { SolidityDataType } from '../common/SolidityDataType';
 import { SourceDataType } from './SourceDataType';
 import { validateOperand } from './validateOperand'
+import { ValidationException } from '../common/ValidationException'
+import { validate } from 'class-validator'
 
 @Injectable()
 export class MatcherService {
@@ -40,7 +42,7 @@ export class MatcherService {
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
-    await this.validateMatcherOperand(matcher)
+    await this.validateMatcher(matcher)
 
     await this.provider.get().save(matcher)
 
@@ -58,17 +60,34 @@ export class MatcherService {
     matcher.operator = matcherDto.operator
     matcher.operand = matcherDto.operand
 
-    await this.validateMatcherOperand(matcher)
+    await this.validateMatcher(matcher)
 
     await this.provider.get().save(matcher)
 
     return matcher
   }
 
-  async validateMatcherOperand(matcher: MatcherEntity) {
+  async validateMatcher(matcher: MatcherEntity) {
+    let errors = []
+
     if (matcher.operator !== Operator.NOOP) {
       const dataType: SolidityDataType = await this.getDataType(matcher)
-      validateOperand(dataType, matcher.operand)
+      try {
+        validateOperand(dataType, matcher.operand)
+      } catch (error) {
+        errors.push({
+          target: matcher,
+          property: 'operand',
+          value: matcher.operand,
+          constraints: {
+            DataTypeFormat: dataType
+          }
+        })
+      }
+    }
+    errors = errors.concat(await validate(matcher))
+    if (errors.length > 0) {
+      throw new ValidationException(`Matcher is invalid`, errors)
     }
   }
 

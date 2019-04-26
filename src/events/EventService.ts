@@ -1,4 +1,6 @@
-import { Injectable, Inject, forwardRef, HttpException } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { validate } from 'class-validator'
+import { ValidationException } from '../common/ValidationException'
 
 import {
   UserEntity,
@@ -119,6 +121,8 @@ export class EventService {
     event.scope = eventDto.scope
     event.isPublic = eventDto.isPublic
 
+    await this.validateEvent(event)
+
     await em.save(event)
 
     event.matchers = await Promise.all(eventDto.matchers.map(matcherDto => (
@@ -168,6 +172,8 @@ export class EventService {
       event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
     }
 
+    await this.validateEvent(event)
+
     await this.provider.get().save(event)
 
     return event
@@ -180,5 +186,12 @@ export class EventService {
 
     await this.provider.get().save(event)
     return event
+  }
+
+  async validateEvent(event: EventEntity) {
+    let errors = await validate(event)
+    if (errors.length > 0) {
+      throw new ValidationException(`Event is invalid`, errors)
+    }
   }
 }
