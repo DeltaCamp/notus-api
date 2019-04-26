@@ -4,9 +4,9 @@ import { EventScope } from '../../events/EventScope';
 describe('BlockHandler', () => {
   let blockListener
 
-  let provider, eventHandler, eventService
+  let provider, ethersProvider, eventHandler, eventService, matchHandler
 
-  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, abiEventEvents, network, ethersProvider
+  let block, transactionResponse, transactionReceipt, blockEvents, transactionEvents, abiEventEvents, network
 
   beforeEach(() => {
     block = {
@@ -54,11 +54,16 @@ describe('BlockHandler', () => {
       })
     }
 
+    matchHandler = {
+      startBlock: jest.fn(),
+      endBlock: jest.fn()
+    }
+
     ethersProvider = {
       getNetworkProvider: jest.fn(() => provider)
     }
 
-    blockListener = new BlockHandler(ethersProvider, eventHandler, eventService)
+    blockListener = new BlockHandler(ethersProvider, eventHandler, eventService, matchHandler)
   })
 
   describe('onBlockNumber()', () => {
