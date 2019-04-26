@@ -120,6 +120,7 @@ type Mutation {
 
 type Query {
   jwt(password: String!, email: String!): String!
+  Authorization(password: String!, email: String!): String!
   app(id: Float!): AppEntity
   apps: [AppEntity!]!
   event(id: Float!): EventEntity

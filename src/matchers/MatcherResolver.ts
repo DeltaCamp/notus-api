@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, UseFilters } from '@nestjs/common'
 import { Resolver, ResolveProperty, Parent, Mutation, Args } from '@nestjs/graphql'
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
@@ -15,7 +15,9 @@ import { EventService } from '../events/EventService'
 import { AbiEventService } from '../abis/AbiEventService'
 
 const debug = require('debug')('notus:MatcherResolver')
+import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 
+@UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => MatcherEntity)
 export class MatcherResolver {
 

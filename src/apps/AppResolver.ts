@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, UseFilters } from '@nestjs/common'
 import { Mutation, Resolver, Query, Args } from '@nestjs/graphql'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 
@@ -6,7 +6,9 @@ import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import { UserEntity, AppEntity } from '../entities'
 import { AppService } from './AppService'
 import { AppDto } from './AppDto'
+import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 
+@UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => AppEntity)
 export class AppResolver {
 

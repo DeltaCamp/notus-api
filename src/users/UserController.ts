@@ -5,7 +5,8 @@ import {
   Body,
   UseGuards,
   InternalServerErrorException,
-  NotAcceptableException
+  NotAcceptableException,
+  UseFilters
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 
@@ -13,7 +14,9 @@ import { AuthUser } from '../decorators/AuthUser'
 import { UserEntity } from "./UserEntity";
 import { UserService } from './UserService'
 import { AuthJwtService } from '../auth/AuthJwtService'
+import { RollbarExceptionsFilter } from '../filters/RollbarExceptionsFilter';
 
+@UseFilters(new RollbarExceptionsFilter())
 @Controller('users')
 export class UserController {
 

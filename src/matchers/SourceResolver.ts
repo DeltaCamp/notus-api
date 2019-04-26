@@ -1,11 +1,13 @@
-import { UseGuards, UnauthorizedException, Inject, forwardRef, NotFoundException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, Inject, forwardRef, NotFoundException, UseFilters } from '@nestjs/common'
 import { Resolver, Query, Args } from '@nestjs/graphql'
 
 import * as Source from './Source'
 import { SourceDataType } from './SourceDataType'
 import { SourceTitle } from './SourceTitle'
 import { SourceEntity } from './SourceEntity'
+import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 
+@UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => SourceEntity)
 export class SourceResolver {
 

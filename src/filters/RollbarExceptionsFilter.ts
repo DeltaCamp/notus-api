@@ -4,7 +4,7 @@ import { rollbar } from '../rollbar'
 
 @Catch()
 export class RollbarExceptionsFilter extends BaseExceptionFilter {
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: any, host: ArgumentsHost) {
     rollbar.error(exception)
     super.catch(exception, host);
   }

@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, UseFilters } from '@nestjs/common'
 import { Resolver, ResolveProperty, Parent, Mutation, Args, Query } from '@nestjs/graphql'
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
@@ -12,7 +12,9 @@ import { AbiDto } from './AbiDto'
 import { AbiService } from './AbiService'
 
 const debug = require('debug')('notus:AbiResolver')
+import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 
+@UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => AbiEntity)
 export class AbiResolver {
 

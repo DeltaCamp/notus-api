@@ -9,6 +9,7 @@ export function transactionContextRunner(callback: Function): Promise<void> {
         resolve(callback())
       });
     } catch (e) {
+      console.log("!!!!!!!!!!!!!!!!!!!! ", e)
       reject(e)
     }
   })

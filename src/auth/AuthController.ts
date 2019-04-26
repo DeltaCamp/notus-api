@@ -1,16 +1,17 @@
 import {
   Controller,
-  Body,
   Get,
   Query,
   UnauthorizedException,
-  NotAcceptableException
+  NotAcceptableException,
+  UseFilters
 } from '@nestjs/common'
 
-import { UserEntity } from '../entities'
 import { UserService } from '../users/UserService'
 import { AuthJwtService } from './AuthJwtService'
+import { RollbarExceptionsFilter } from '../filters/RollbarExceptionsFilter';
 
+@UseFilters(new RollbarExceptionsFilter())
 @Controller()
 export class AuthController {
 

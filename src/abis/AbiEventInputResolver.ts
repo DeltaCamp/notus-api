@@ -1,13 +1,15 @@
-import { Resolver, ResolveProperty, Parent, Mutation, Args, Query } from '@nestjs/graphql'
+import { Resolver, ResolveProperty, Parent, Args, Query } from '@nestjs/graphql'
 
 import {
-  AbiEntity,
   AbiEventEntity,
   AbiEventInputEntity
 } from '../entities'
 import { AbiEventInputService } from './AbiEventInputService'
 import { AbiEventService } from './AbiEventService'
+import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+import { UseFilters } from '@nestjs/common';
 
+@UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => AbiEventInputEntity)
 export class AbiEventInputResolver {
 

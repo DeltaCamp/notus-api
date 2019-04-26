@@ -1,4 +1,4 @@
-import { UseGuards, UnauthorizedException } from '@nestjs/common'
+import { UseGuards, UnauthorizedException, UseFilters, HttpException } from '@nestjs/common'
 import { Mutation, Resolver, Query, Args, ResolveProperty, Parent } from '@nestjs/graphql'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 
@@ -12,6 +12,9 @@ import {
 import { EventService } from './EventService'
 import { EventDto } from './EventDto'
 
+import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+
+@UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => EventEntity)
 export class EventResolver {
 
