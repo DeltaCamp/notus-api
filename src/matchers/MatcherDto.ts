@@ -16,10 +16,10 @@ export class MatcherDto {
   @Field({ nullable: true })
   order: number;
 
-  @Field()
+  @Field({ nullable: true })
   source: string;
 
-  @Field()
+  @Field({ nullable: true })
   operator: Operator;
 
   @Field({ nullable: true })

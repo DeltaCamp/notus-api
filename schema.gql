@@ -85,8 +85,8 @@ input MatcherDto {
   eventId: Float
   abiEventInputId: Float
   order: Float
-  source: String!
-  operator: Float!
+  source: String
+  operator: Float
   operand: String = ""
 }
 

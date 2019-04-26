@@ -34,13 +34,15 @@ export class MatcherService {
     const matcher = new MatcherEntity()
 
     matcher.event = event
+
     matcher.order = matcherDto.order
     matcher.source = matcherDto.source
+    matcher.operator = matcherDto.operator
+    matcher.operand = matcherDto.operand
+    
     if (matcherDto.abiEventInputId) {
       matcher.abiEventInput = await this.abiEventInputService.findOneOrFail(matcherDto.abiEventInputId)
     }
-    matcher.operator = matcherDto.operator
-    matcher.operand = matcherDto.operand
 
     await this.validateMatcher(matcher)
 
@@ -52,13 +54,21 @@ export class MatcherService {
   @Transaction()
   async update(matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = await this.findOneOrFail(matcherDto.id)
-    matcher.order = matcherDto.order
-    matcher.source = matcherDto.source
+
+    new Array(
+      'order',
+      'source',
+      'operator',
+      'operand'
+    ).forEach(attr => {
+      if (matcherDto[attr] !== undefined) {
+        matcher[attr] = matcherDto[attr]
+      }
+    })
+
     if (matcherDto.abiEventInputId) {
       matcher.abiEventInput = await this.abiEventInputService.findOneOrFail(matcherDto.abiEventInputId)
     }
-    matcher.operator = matcherDto.operator
-    matcher.operand = matcherDto.operand
 
     await this.validateMatcher(matcher)
 

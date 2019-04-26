@@ -171,6 +171,12 @@ export class EventService {
       event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
     }
 
+    if (eventDto.matchers !== undefined) {
+      event.matchers = await Promise.all(eventDto.matchers.map(matcherDto => (
+        this.matcherService.update(matcherDto)
+      )))
+    }
+      
     await this.validateEvent(event)
 
     await this.provider.get().save(event)
