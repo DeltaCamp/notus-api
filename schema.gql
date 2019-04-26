@@ -80,6 +80,20 @@ type EventEntity {
   deletedAt: Date
 }
 
+input EventsQuery {
+  skip: Float
+  take: Float
+  userId: Float
+  isPublic: Boolean
+}
+
+type EventsQueryResponse {
+  totalCount: Float!
+  skip: Float
+  take: Float
+  events: [EventEntity!]!
+}
+
 input MatcherDto {
   id: ID
   eventId: Float
@@ -118,14 +132,24 @@ type Mutation {
   destroyAbi(id: Float!): AbiEntity!
 }
 
+input PagedQuery {
+  skip: Float
+  take: Float
+}
+
+type PagedQueryResponse {
+  totalCount: Float!
+  skip: Float
+  take: Float
+}
+
 type Query {
   jwt(password: String!, email: String!): String!
   Authorization(password: String!, email: String!): String!
   app(id: Float!): AppEntity
   apps: [AppEntity!]!
   event(id: Float!): EventEntity
-  events: [EventEntity!]!
-  publicEvents: [EventEntity!]!
+  events(eventsQuery: EventsQuery): EventsQueryResponse!
   source(source: String!): SourceEntity!
   sources: [SourceEntity!]!
   abi(id: Float!): AbiEntity!

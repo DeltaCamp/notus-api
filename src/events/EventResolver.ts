@@ -13,6 +13,8 @@ import { EventService } from './EventService'
 import { EventDto } from './EventDto'
 
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+import { EventsQuery } from './EventsQuery'
+import { EventsQueryResponse } from './EventsQueryResponse';
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => EventEntity)
@@ -27,20 +29,20 @@ export class EventResolver {
     return await this.eventService.findOne(id);
   }
 
-  @Query(returns => [EventEntity])
+  @Query(returns => EventsQueryResponse)
   @UseGuards(GqlAuthGuard)
-  async events(@GqlAuthUser() user: UserEntity): Promise<EventEntity[]> {
-    return await this.eventService.findForUser(user);
-  }
-
-  // @Query(returns => [EventEntity])
-  // async findAllForMatch(): Promise<EventEntity[]> {
-  //   return await this.eventService.findAllForMatch()
-  // }
-
-  @Query(returns => [EventEntity])
-  async publicEvents(): Promise<EventEntity[]> {
-    return await this.eventService.findPublic();
+  async events(
+    @GqlAuthUser() user: UserEntity,
+    @Args({ name: 'eventsQuery', type: () => EventsQuery, nullable: true }) eventsQuery: EventsQuery): Promise<EventsQueryResponse> {
+    const result = new EventsQueryResponse()
+    const [events, totalCount] = await this.eventService.findAndCount(eventsQuery);
+    result.events = events
+    result.totalCount = totalCount
+    if (eventsQuery) {
+      result.skip = eventsQuery.skip
+      result.take = eventsQuery.take
+    }
+    return result
   }
 
   @ResolveProperty('abiEvent')

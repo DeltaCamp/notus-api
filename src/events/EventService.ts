@@ -14,6 +14,7 @@ import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../transactions'
 import { AppService } from '../apps/AppService';
 import { AbiEventService } from '../abis/AbiEventService'
+import { EventsQuery } from './EventsQuery'
 
 @Injectable()
 export class EventService {
@@ -34,6 +35,30 @@ export class EventService {
   @Transaction()
   async findOneOrFail(id: number): Promise<EventEntity> {
     return this.provider.get().findOneOrFail(EventEntity, id)
+  }
+
+  @Transaction() 
+  async findAndCount(params: EventsQuery) {
+    let query =
+      this.provider.get().createQueryBuilder(EventEntity, 'events')
+        .where('"events"."deletedAt" IS NULL')
+
+    if (params) {
+      if (params.userId) {
+        query = query.andWhere('"events"."userId" = :id', { id: params.userId })
+      }
+      if (params.isPublic) {
+        query = query.andWhere('"events"."isPublic" IS TRUE')
+      }
+      if (params.skip) {
+        query = query.skip(params.skip)
+      }
+      if (params.take) {
+        query = query.take(params.take)
+      }
+    }
+
+    return query.orderBy('"events"."createdAt"', 'DESC').getManyAndCount()
   }
 
   @Transaction()
