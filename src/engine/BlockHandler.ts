@@ -10,6 +10,7 @@ import { EventService } from '../events/EventService'
 import { transactionContextRunner } from '../transactions'
 import { Network } from 'ethers/utils';
 import { EthersProvider } from './EthersProvider';
+import { MatchHandler } from './MatchHandler'
 
 const debug = require('debug')('notus:engine:BlockHandler')
 
@@ -24,7 +25,8 @@ export class BlockHandler {
   constructor (
     private readonly ethersProvider: EthersProvider,
     private readonly eventsMatcher: EventsMatcher,
-    private readonly eventService: EventService
+    private readonly eventService: EventService,
+    protected readonly matchHandler: MatchHandler,
   ) {}
 
   handle = (networkName: string, blockNumber: number): Promise<any> => {
@@ -40,6 +42,7 @@ export class BlockHandler {
     this.transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION)
     this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
     const block: Block = await this.provider.getBlock(blockNumber)
+    await this.matchHandler.startBlock(blockNumber)
     debug(`Received block number ${block.number}`)
     if (this.blockEvents.length) {
       debug(`Checking events ${this.blockEvents.map(event => event.id).join(', ')} for block: ${blockNumber}`)
@@ -48,6 +51,7 @@ export class BlockHandler {
     await Promise.all(block.transactions.map(transactionHash => (
       this.handleTransaction(block, transactionHash)
     )))
+    await this.matchHandler.endBlock(blockNumber)
   }
 
   handleTransaction = async (block: Block, transactionHash: string) => {
