@@ -94,7 +94,7 @@ export class EventService {
     searchTerms.forEach((searchTerm, index) => {
       const variableTitle = `searchTerm${index}`
       if (!isFirst) {
-        searchQuery = `${searchQuery} AND `
+        searchQuery = `${searchQuery} OR `
       } else {
         isFirst = false
       }
