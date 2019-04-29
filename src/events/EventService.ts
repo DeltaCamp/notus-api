@@ -88,7 +88,7 @@ export class EventService {
   }
 
   static buildSearchQuery(searchTerms: string[]): string {
-    let searchQuery = ''
+    let searchQuery = '('
     let isFirst = true
 
     searchTerms.forEach((searchTerm, index) => {
@@ -102,7 +102,7 @@ export class EventService {
         `${searchQuery}("input"."name" ILIKE :${variableTitle} OR "abi"."name" ILIKE :${variableTitle} OR "abi_event"."name" ILIKE :${variableTitle} OR "events"."title" ILIKE :${variableTitle})`
     })
 
-    return searchQuery
+    return `${searchQuery})`
   }
 
   @Transaction()
