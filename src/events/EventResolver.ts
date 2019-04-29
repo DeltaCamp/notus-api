@@ -30,7 +30,6 @@ export class EventResolver {
   }
 
   @Query(returns => EventsQueryResponse)
-  @UseGuards(GqlAuthGuard)
   async events(
     @GqlAuthUser() user: UserEntity,
     @Args({ name: 'eventsQuery', type: () => EventsQuery, nullable: true }) eventsQuery: EventsQuery): Promise<EventsQueryResponse> {
