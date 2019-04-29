@@ -9,4 +9,7 @@ export class EventsQuery extends PagedQuery {
 
   @Field({ nullable: true })
   isPublic?: boolean
+
+  @Field({ nullable: true })
+  searchTerms: string;
 }

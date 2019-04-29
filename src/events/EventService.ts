@@ -15,6 +15,7 @@ import { Transaction, EntityManagerProvider } from '../transactions'
 import { AppService } from '../apps/AppService';
 import { AbiEventService } from '../abis/AbiEventService'
 import { EventsQuery } from './EventsQuery'
+import { SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class EventService {
@@ -37,11 +38,16 @@ export class EventService {
     return this.provider.get().findOneOrFail(EventEntity, id)
   }
 
-  @Transaction() 
+  @Transaction()
   async findAndCount(params: EventsQuery) {
-    let query =
-      this.provider.get().createQueryBuilder(EventEntity, 'events')
-        .where('"events"."deletedAt" IS NULL')
+    let query = await this.provider.get().createQueryBuilder(EventEntity, 'events')
+      .leftJoinAndSelect("events.user", "users")
+      .leftJoinAndSelect("events.matchers", "matchers")
+      .leftJoinAndSelect("matchers.abiEventInput", "input")
+      .leftJoinAndSelect("input.abiEvent", "abi_event")
+      .leftJoinAndSelect("abi_event.abi", "abi")
+
+    query = query.where('"events"."deletedAt" IS NULL')
 
     if (params) {
       if (params.userId) {
@@ -51,14 +57,52 @@ export class EventService {
         query = query.andWhere('"events"."isPublic" IS TRUE')
       }
       if (params.skip) {
-        query = query.skip(params.skip)
+        query = query.offset(params.skip)
       }
       if (params.take) {
-        query = query.take(params.take)
+        query = query.limit(params.take)
+      }
+
+      if (params.searchTerms) {
+        const searchTerms = params.searchTerms.split(/\s+/)
+        query = query.andWhere(EventService.buildSearchQuery(searchTerms), EventService.buildSearchParams(searchTerms))
       }
     }
 
-    return query.orderBy('"events"."createdAt"', 'DESC').getManyAndCount()
+    return query.printSql().orderBy('"events"."createdAt"', 'DESC').getManyAndCount()
+  }
+
+  // static joinSearchQuery<Entity>(query: SelectQueryBuilder<Entity>): SelectQueryBuilder<Entity> {
+  //   return query.leftJoinAndSelect("events.user", "users")
+  //     .leftJoinAndSelect("events.matchers", "matchers")
+  //     .leftJoinAndSelect("matchers.abiEventInput", "input")
+  //     .leftJoinAndSelect("input.abiEvent", "abi_event")
+  //     .leftJoinAndSelect("abi_event.abi", "abi")
+  // }
+
+  static buildSearchParams(searchTerms: string[]): any {
+    return searchTerms.reduce((params, searchTerm, index) => {
+      params[`searchTerm${index}`] = `%${searchTerm}%`
+      return params
+    }, {})
+  }
+
+  static buildSearchQuery(searchTerms: string[]): string {
+    let searchQuery = ''
+    let isFirst = true
+
+    searchTerms.forEach((searchTerm, index) => {
+      const variableTitle = `searchTerm${index}`
+      if (!isFirst) {
+        searchQuery = `${searchQuery} AND `
+      } else {
+        isFirst = false
+      }
+      searchQuery =
+        `${searchQuery}("input"."name" ILIKE :${variableTitle} OR "abi"."name" ILIKE :${variableTitle} OR "abi_event"."name" ILIKE :${variableTitle} OR "events"."title" ILIKE :${variableTitle})`
+    })
+
+    return searchQuery
   }
 
   @Transaction()

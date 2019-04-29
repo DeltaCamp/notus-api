@@ -85,6 +85,7 @@ input EventsQuery {
   take: Float
   userId: Float
   isPublic: Boolean
+  searchTerms: String
 }
 
 type EventsQueryResponse {
