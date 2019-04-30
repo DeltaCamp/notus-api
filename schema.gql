@@ -54,6 +54,7 @@ input EventDto {
   app: AppDto
   title: String
   scope: Float
+  runCount: Float
   abiEventId: Float
   isPublic: Boolean
   isActive: Boolean
@@ -75,6 +76,7 @@ type EventEntity {
   parent: EventEntity
   parentId: Float
   matchers: [MatcherEntity!]!
+  runCount: Float!
   createdAt: Date!
   updatedAt: Date!
   deletedAt: Date

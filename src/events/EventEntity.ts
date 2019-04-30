@@ -98,6 +98,10 @@ export class EventEntity {
   matchers: MatcherEntity[];
 
   @Field()
+  @Column({ type: 'int', default: -1, nullable: false })
+  runCount: number;
+
+  @Field()
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

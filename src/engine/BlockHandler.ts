@@ -43,7 +43,7 @@ export class BlockHandler {
     this.abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT)
     const block: Block = await this.provider.getBlock(blockNumber)
     await this.matchHandler.startBlock(blockNumber)
-    debug(`Received block number ${block.number}`)
+    debug(`Received block number ${block.number} for events [b,t,e] [${this.blockEvents.length}, ${this.transactionEvents.length}, ${this.abiEventEvents.length}]`)
     if (this.blockEvents.length) {
       debug(`Checking events ${this.blockEvents.map(event => event.id).join(', ')} for block: ${blockNumber}`)
       await this.eventsMatcher.match(this.blockEvents, this.network, block, undefined, undefined)

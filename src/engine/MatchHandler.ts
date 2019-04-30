@@ -10,6 +10,7 @@ import { Renderer } from './Renderer'
 import { MailJobPublisher } from '../jobs/MailJobPublisher'
 import { UserMailJobBuffers } from './UserMailJobBuffers'
 import { MailJob } from '../jobs/MailJob'
+import { EventService } from '../events/EventService'
 
 const debug = require('debug')('notus:engine:MatchHandler')
 const fs = require('fs');
@@ -23,6 +24,7 @@ export class MatchHandler {
   private blockBuffers: Map<number, UserMailJobBuffers>;
 
   constructor (
+    private readonly eventService: EventService,
     private readonly mailJobPublisher: MailJobPublisher,
     private readonly renderer: Renderer
   ) {
@@ -32,9 +34,11 @@ export class MatchHandler {
   }
 
   async handle(matchContext: MatchContext, event: EventEntity) {
+     // in case an event was previously deactivated, just bounce
+    if (!event.isActive) { return false }
+    debug(`!!!!!!!!!!!!! FIRING EVENT ${event.id} !!!!!!!!!!!!!`)
     const text = this.renderer.render(this.eventTemplateText, matchContext, event)
     const html = this.renderer.render(this.eventTemplateHtml, matchContext, event)
-    debug(`!!!!!!!!!!!!! FIRING EVENT ${event.id} !!!!!!!!!!!!!`)
     const mailJob = {
       to: event.user.email,
       subject: `${addArticle(event.formatTitle(), { an: 'An', a: 'A' })} occurred`,
@@ -42,6 +46,10 @@ export class MatchHandler {
       html 
     }
     this.addMailJob(matchContext.block.number, event.user, mailJob)
+    if (event.runCount !== -1) { //once the event is fired, deactivate it
+      await this.eventService.deactivateEvent(event)
+    }
+    return true
   }
 
   async startBlock(blockNumber: number) {

@@ -18,6 +18,9 @@ export class EventDto {
   scope: number;
 
   @Field({ nullable: true })
+  runCount: number;
+
+  @Field({ nullable: true })
   abiEventId: number;
 
   @Field({ nullable: true })

@@ -49,7 +49,7 @@ describe('UserMailJobBuffers', () => {
     expect(mailJobPublisher.sendMail).toHaveBeenCalledTimes(2)
     expect(mailJobPublisher.sendMail).toHaveBeenCalledWith(expect.objectContaining({
       to: 'user1@user1.com',
-      subject: 'Multiple events occurred',
+      subject: '2 events occurred',
       text: 
 `a1:
 a1text

@@ -189,6 +189,7 @@ export class EventService {
     event.title = eventDto.title
     event.scope = eventDto.scope
     event.isPublic = eventDto.isPublic
+    event.runCount = eventDto.runCount
 
     await this.validateEvent(event)
 
@@ -212,8 +213,8 @@ export class EventService {
       .leftJoinAndSelect('abiEventInputs.abiEvent', 'aei_abiEvents')
       .leftJoinAndSelect('aei_abiEvents.abi', 'aei_abis')
       .where('(events.scope = :scope)', { scope })
-      .andWhere('events.deletedAt IS NULL')
-      .andWhere('events.isActive IS TRUE')
+      .andWhere('"events"."deletedAt" IS NULL')
+      .andWhere('"events"."isActive" IS TRUE')
       .getMany()
   }
 
@@ -231,6 +232,10 @@ export class EventService {
         event[attr] = eventDto[attr]
       }
     })
+
+    if (eventDto.runCount !== undefined) {
+      event.runCount = eventDto.runCount
+    }
 
     if (eventDto.parentId !== undefined) {
       event.parent = await this.findOneOrFail(eventDto.parentId)
@@ -251,6 +256,13 @@ export class EventService {
     await this.provider.get().save(event)
 
     return event
+  }
+
+  @Transaction()
+  async deactivateEvent(event: EventEntity) {
+    event.isActive = false
+    await this.provider.get().save(event)
+    return true
   }
 
   @Transaction()
