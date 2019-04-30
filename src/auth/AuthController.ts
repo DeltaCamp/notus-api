@@ -11,7 +11,7 @@ import { UserService } from '../users/UserService'
 import { AuthJwtService } from './AuthJwtService'
 import { RollbarExceptionsFilter } from '../filters/RollbarExceptionsFilter';
 
-@UseFilters(new RollbarExceptionsFilter())
+@UseFilters(RollbarExceptionsFilter)
 @Controller()
 export class AuthController {
 
