@@ -4,7 +4,10 @@ export class PgBossProvider {
   private pgBoss: any;
 
   constructor () {
-    this.pgBoss = new PgBoss(process.env.DATABASE_URL)
+    this.pgBoss = new PgBoss({
+      connectionString: process.env.DATABASE_URL,
+      deleteArchivedJobsEvery: "4 hours"
+    })
   }
 
   get() {
