@@ -1,0 +1,3 @@
+Access Your Notus Account
+
+Login with the magic link {{notusNetworkUri}}/users/confirm?oneTimeKey={{oneTimeKey}}

@@ -1,12 +1,14 @@
 import { bigNumberify } from 'ethers/utils'
-import { Renderer } from '../Renderer'
+import { MatchTemplateView } from '../MatchTemplateView'
 import { MatchContext } from '../MatchContext';
 import {
   EventEntity
 } from '../../entities';
 
-describe('Renderer', () => {
-  let renderer: Renderer
+const Mustache = require('mustache')
+
+describe('MatchTemplateView', () => {
+  let view: MatchTemplateView
 
   let context
   let event: EventEntity
@@ -35,35 +37,35 @@ describe('Renderer', () => {
       block, transaction, log, network
     )
     event = new EventEntity()
-    renderer = new Renderer()
+    view = new MatchTemplateView(context, event)
   })
 
   it('should render an etherscan addres url', () => {
-    expect(renderer.render(
+    expect(Mustache.render(
       "{{#etherscanAddress}}{{transaction.from}}{{/etherscanAddress}}",
-      context, event
+      view
     )).toContain('https://etherscan.io/address/0xDe2279Ca2A4f408006EFaB5f2c35aBbFC458C4b4')
   })
 
   it('should render an etherscan transaction url', () => {
-    expect(renderer.render(
+    expect(Mustache.render(
       "{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}",
-      context, event
+      view
     )).toContain('https://etherscan.io/tx/0x0afd071dca071b824924d3c61a6b95ca8e576eb32330bfbbbe634b97a1644caf')
   })
 
   it('should render a tx url correctly for ropsten', () => {
     network.chainId = 3
-    expect(renderer.render(
+    expect(Mustache.render(
       "{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}",
-      context, event
+      view
     )).toContain('https://ropsten.etherscan.io/tx/0x0afd071dca071b824924d3c61a6b95ca8e576eb32330bfbbbe634b97a1644caf')
   })
 
   it('should render big numbers correctly', () => {
-    expect(renderer.render(
+    expect(Mustache.render(
       "{{transaction.value}}",
-      context, event
+      view
     )).toContain('1000')
   })
 })

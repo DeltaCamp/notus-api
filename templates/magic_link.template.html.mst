@@ -1,0 +1,11 @@
+<html>
+  <head>
+    <title>Access Your Notus Account</title>
+  </head>
+  <body>
+    {{> style }}
+    <h2>Use the magic link below to login</h2>
+    <a href='{{notusNetworkUri}}/users/confirm?oneTimeKey={{oneTimeKey}}'>Access your account</a>
+    {{> footer }}
+  </body>
+</html>

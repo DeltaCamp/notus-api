@@ -14,6 +14,7 @@ import { mailerModule } from './mailerModule'
 import { JobModule } from './jobs/JobModule'
 import { EngineModule } from './engine/EngineModule'
 import { MatcherModule } from './matchers';
+import { TemplateModule } from './templates/TemplateModule'
 import { AbiModule } from './abis/AbiModule';
 import { WorkLogModule } from './work-logs/WorkLogModule'
 
@@ -32,6 +33,7 @@ const isProduction = process.env.NODE_ENV === 'production'
     UserModule,
     MatcherModule,
     EventModule,
+    TemplateModule,
     JobModule,
     EngineModule,
     GraphQLModule.forRoot({

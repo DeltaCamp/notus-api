@@ -7,15 +7,19 @@ import { EthersProvider } from './EthersProvider';
 import { BlockListenerManager } from './BlockListenerManager';
 import { Matcher } from './Matcher';
 import { MatchHandler } from './MatchHandler';
-import { Renderer } from './Renderer'
+import { EmailsController } from './EmailsController'
 
 @Module({
   providers: [
-    EventsMatcher, BlockListener, BlockListenerManager, Matcher, MatchHandler, Renderer, BlockHandler, EthersProvider
+    EventsMatcher, BlockListener, BlockListenerManager, Matcher, MatchHandler, BlockHandler, EthersProvider
   ],
 
   exports: [
     BlockHandler
+  ],
+
+  controllers: [
+    EmailsController
   ]
 })
 export class EngineModule {}

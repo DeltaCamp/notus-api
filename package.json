@@ -61,6 +61,7 @@
     "graphql": "^14.2.1",
     "joi": "^14.3.1",
     "jsonschema": "^1.2.4",
+    "juice": "^5.2.0",
     "lodash": "^4.17.11",
     "mustache": "^3.0.1",
     "node-fetch": "^2.3.0",

@@ -41,7 +41,7 @@ describe('EventsMatcher', () => {
   })
 
   describe('handleEvent()', () => {
-    it('should exit if the abiEvent does not match', async () => {
+    it('should exit if the abiEvent does not match', () => {
       // Set so that all matchers are successful
       matcher.matches = jest.fn(() => true)
       event.scope = EventScope.CONTRACT_EVENT
@@ -52,18 +52,18 @@ describe('EventsMatcher', () => {
           '0x9999'
         ]
       }
-      await eventsMatcher.match(events, network, block, transaction, log)
+      eventsMatcher.match(events, network, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()
     })
 
-    it('should not call the match handler if a matcher fails', async () => {
-      await eventsMatcher.match(events, network, block, transaction, log)
+    it('should not call the match handler if a matcher fails', () => {
+      eventsMatcher.match(events, network, block, transaction, log)
       expect(matchHandler.handle).not.toHaveBeenCalled()
     })
 
-    it('should call the matcher when all matchers pass', async () => {
+    it('should call the matcher when all matchers pass', () => {
       matcher.matches = jest.fn(() => true)
-      await eventsMatcher.match(events, network, block, transaction, log)
+      eventsMatcher.match(events, network, block, transaction, log)
       expect(matchHandler.handle).toHaveBeenCalled()
     })
   })

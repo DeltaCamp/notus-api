@@ -11,6 +11,7 @@ import { AppModule } from './apps'
 import { EngineModule } from './engine/EngineModule'
 import { MatcherModule } from './matchers';
 import { mailerModule } from './mailerModule'
+import { TemplateModule } from './templates/TemplateModule'
 import { WorkLogModule } from './work-logs/WorkLogModule'
 import { JobModule } from './jobs/JobModule'
 import { EntityManagerProvider } from './transactions/EntityManagerProvider';
@@ -25,6 +26,7 @@ import { EntityManagerProvider } from './transactions/EntityManagerProvider';
     EventModule,
     MatcherModule,
     JobModule,
+    TemplateModule,
     WorkLogModule,
     AbiModule
   ],
