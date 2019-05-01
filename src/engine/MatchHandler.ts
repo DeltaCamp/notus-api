@@ -41,6 +41,6 @@ export class MatchHandler {
   }
 
   addActionContext(blockNumber: number, actionContext: ActionContext) {
-    this.actionContextBuffers[blockNumber].add(actionContext)
+    this.actionContextBuffers[blockNumber].push(actionContext)
   }
 }

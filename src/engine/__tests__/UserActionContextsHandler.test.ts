@@ -10,7 +10,8 @@ describe('UserActionContextsHandler', () => {
   
   beforeEach(() => {
     templateRenderer = {
-      render: jest.fn((templateName: string, view: any) => templateName)
+      renderTemplate: jest.fn((templateName: string, view: any) => templateName),
+      renderHtmlTemplate: jest.fn((templateName: string, view: any) => templateName)
     }
 
     mailJobPublisher = {
@@ -44,19 +45,16 @@ describe('UserActionContextsHandler', () => {
   
       await handler.handle(user, [actionContext])
 
-      expect(templateRenderer.render).toHaveBeenCalledWith('event.single.template.text.mst', expect.anything())
-      expect(templateRenderer.render).toHaveBeenCalledWith('event.single.template.html.mst', expect.anything())
-
-      expect(templateRenderer.render).toHaveBeenCalledWith('event.template.text.mst', expect.objectContaining({
-        events: ['event.single.template.text.mst']
+      expect(templateRenderer.renderTemplate).toHaveBeenCalledWith('event.template.text.mst', expect.objectContaining({
+        events: [expect.anything()]
       }))
-      expect(templateRenderer.render).toHaveBeenCalledWith('event.template.html.mst', expect.objectContaining({
-        events: ['event.single.template.html.mst']
+      expect(templateRenderer.renderHtmlTemplate).toHaveBeenCalledWith('event.template.html.mst', expect.objectContaining({
+        events: [expect.anything()]
       }))
 
       expect(mailJobPublisher.sendMail).toHaveBeenCalledWith({
         to: 'fake@fake.com',
-        subject: `${event.title}`,
+        subject: `${event.title} occurred in block ${block.number}`,
         text: 'event.template.text.mst',
         html: 'event.template.html.mst'
       })

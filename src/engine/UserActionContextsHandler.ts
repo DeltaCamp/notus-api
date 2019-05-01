@@ -7,6 +7,8 @@ import { EventTemplateView } from '../templates/EventTemplateView'
 import { TemplateRenderer } from '../templates/TemplateRenderer'
 import { UserEntity } from "src/users/UserEntity";
 
+const debug = require('debug')('notus:engine:UserActionContextsHandler')
+
 @Injectable()
 export class UserActionContextsHandler {
 
@@ -16,21 +18,16 @@ export class UserActionContextsHandler {
   ) {}
 
   async handle(user: UserEntity, actionContexts: ActionContext[]) {
-    const textEvents = []
-    const htmlEvents = []
+    debug(`handle received ${actionContexts.length} for user id ${user.id} and email ${user.email}`)
 
-    actionContexts.forEach(actionContext => {
-      const view = new SingleEventTemplateView(actionContext.matchContext, actionContext.event)
-      textEvents.push(this.templateRenderer.render('event.single.template.text.mst', view))
-      htmlEvents.push(this.templateRenderer.render('event.single.template.html.mst', view))
-    })
+    const events = actionContexts.map(actionContext => new SingleEventTemplateView(actionContext.matchContext, actionContext.event))
 
-    const text = this.templateRenderer.render('event.template.text.mst', new EventTemplateView(textEvents))
-    const html = this.templateRenderer.render('event.template.html.mst', new EventTemplateView(htmlEvents))
+    const text = this.templateRenderer.renderTemplate('event.template.text.mst', new EventTemplateView(events))
+    const html = this.templateRenderer.renderHtmlTemplate('event.template.html.mst', new EventTemplateView(events))
 
     let subject: string
     if (actionContexts.length === 1) {
-      subject = actionContexts[0].event.title
+      subject = `${actionContexts[0].event.title} occurred in block ${actionContexts[0].matchContext.block.number}`
     } else {
       subject = `${actionContexts.length} new events in block ${actionContexts[0].matchContext.block.number}`
     }
