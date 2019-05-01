@@ -4,6 +4,8 @@ import { MailerService } from '@nest-modules/mailer';
 import { PgBossProvider } from './PgBossProvider';
 import { JOB_NAME, MailJob } from './MailJob'
 
+const debug = require('debug')('notus:jobs:MailJobRunner')
+
 @Injectable()
 export class MailJobRunner {
 
@@ -18,6 +20,7 @@ export class MailJobRunner {
 
   handle = async (job) => {
     const mailJob: MailJob = job.data
+    debug('sendMail: ', mailJob)
     await this.mailerService.sendMail(mailJob)
   }
 }
