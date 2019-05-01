@@ -1,14 +1,14 @@
 import { bigNumberify } from 'ethers/utils'
-import { MatchTemplateView } from '../MatchTemplateView'
-import { MatchContext } from '../MatchContext';
+import { SingleEventTemplateView } from '../SingleEventTemplateView'
+import { MatchContext } from '../../engine/MatchContext';
 import {
   EventEntity
 } from '../../entities';
 
 const Mustache = require('mustache')
 
-describe('MatchTemplateView', () => {
-  let view: MatchTemplateView
+describe('SingleEventTemplateView', () => {
+  let view: SingleEventTemplateView
 
   let context
   let event: EventEntity
@@ -37,7 +37,7 @@ describe('MatchTemplateView', () => {
       block, transaction, log, network
     )
     event = new EventEntity()
-    view = new MatchTemplateView(context, event)
+    view = new SingleEventTemplateView(context, event)
   })
 
   it('should render an etherscan addres url', () => {

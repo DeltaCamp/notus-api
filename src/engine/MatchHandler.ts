@@ -2,44 +2,29 @@ import { Injectable } from '@nestjs/common';
 
 import { MatchContext } from './MatchContext'
 import {
-  EventEntity,
-  UserEntity
+  EventEntity
 } from '../entities'
-import { addArticle } from '../utils/addArticle'
-import { MailJobPublisher } from '../jobs/MailJobPublisher'
-import { UserMailJobBuffers } from './UserMailJobBuffers'
-import { MailJob } from '../jobs/MailJob'
+import { ActionContext } from './ActionContext'
 import { EventService } from '../events/EventService'
-import { TemplateRenderer } from '../templates/TemplateRenderer';
-import { MatchTemplateView } from './MatchTemplateView'
+import { ActionContextsHandler } from './ActionContextsHandler';
 
 const debug = require('debug')('notus:engine:MatchHandler')
 
 @Injectable()
 export class MatchHandler {
-  private blockBuffers: Map<number, UserMailJobBuffers>;
+  private actionContextBuffers: Map<number, ActionContext[]>;
 
   constructor (
     private readonly eventService: EventService,
-    private readonly mailJobPublisher: MailJobPublisher,
-    private readonly renderer: TemplateRenderer
+    private readonly actionContextsHandler: ActionContextsHandler
   ) {
-    this.blockBuffers = new Map<number, UserMailJobBuffers>()
+    this.actionContextBuffers = new Map<number, ActionContext[]>()
   }
 
   async handle(matchContext: MatchContext, event: EventEntity) {
      // in case an event was previously deactivated, just bounce
     if (!event.isActive) { return false }
-    debug(`!!!!!!!!!!!!! FIRING EVENT ${event.id} !!!!!!!!!!!!!`)
-    const text = this.renderer.renderTemplate('event.template.text.mst', new MatchTemplateView(matchContext, event))
-    const html = this.renderer.renderHtmlTemplate('event.template.html.mst', new MatchTemplateView(matchContext, event))
-    const mailJob = {
-      to: event.user.email,
-      subject: `${addArticle(event.formatTitle(), { an: 'An', a: 'A' })} occurred`,
-      text,
-      html 
-    }
-    this.addMailJob(matchContext.block.number, event.user, mailJob)
+    this.addActionContext(matchContext.block.number, new ActionContext(matchContext, event))
     if (event.runCount !== -1) { //once the event is fired, deactivate it
       await this.eventService.deactivateEvent(event)
     }
@@ -47,15 +32,15 @@ export class MatchHandler {
   }
 
   async startBlock(blockNumber: number) {
-    this.blockBuffers[blockNumber] = new UserMailJobBuffers(this.mailJobPublisher)
+    this.actionContextBuffers[blockNumber] = []
   }
 
   async endBlock(blockNumber: number) {
-    await this.blockBuffers[blockNumber].flush()
-    this.blockBuffers[blockNumber] = null
+    await this.actionContextsHandler.handle(this.actionContextBuffers[blockNumber])
+    delete this.actionContextBuffers[blockNumber]
   }
 
-  addMailJob(blockNumber: number, user: UserEntity, mailJob: MailJob) {
-    this.blockBuffers[blockNumber].add(user, mailJob)
+  addActionContext(blockNumber: number, actionContext: ActionContext) {
+    this.actionContextBuffers[blockNumber].add(actionContext)
   }
 }

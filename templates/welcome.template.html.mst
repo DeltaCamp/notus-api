@@ -1,0 +1,19 @@
+<html>
+  <head>
+    <title>Welcome to Notus</title>
+    {{> style }}
+  </head>
+  <body>
+    {{> header }}
+    <div class='content'>
+      <h2>Welcome to Notus!</h2>
+      <p>
+        You're almost there.  We just need you to confirm your email and then you can get started!
+      </p>
+      <p class='has-text-centered pb2 pt2'>
+        <a class='button' href='{{notusNetworkUri}}/users/confirm?oneTimeKey={{oneTimeKey}}'>Confirm Email</a>
+      </p>
+    </div>
+    {{> footer }}    
+  </body>
+</html>

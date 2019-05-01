@@ -5,7 +5,7 @@ describe('partialsFactory', () => {
     const result = partialsFactory(__dirname + '/../../../templates')
 
     expect(result['header']).toContain('Notus')
-    expect(result['footer']).toContain('Unsubscribe')
+    expect(result['footer']).toContain('About')
     expect(result['style']).toContain('<style>')
   })
 })

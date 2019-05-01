@@ -1,0 +1,5 @@
+Welcome to Notus!
+
+You're almost there.  We just need you to confirm your email and then you can get started!
+
+Confirm your email with the link {{notusNetworkUri}}/users/confirm?oneTimeKey={{oneTimeKey}}

@@ -1,7 +1,8 @@
-
 import { Block, Log } from 'ethers/providers';
 import { Network } from 'ethers/utils/networks';
+
 import { Transaction } from '../engine/Transaction'
+import { BaseView } from '../templates/BaseView'
 import { MatchContext } from '../engine/MatchContext'
 import {
   EventEntity,
@@ -10,7 +11,7 @@ import {
 import { formatEtherscanAddressUrl } from '../utils/formatEtherscanAddressUrl'
 import { formatEtherscanTransactionUrl } from '../utils/formatEtherscanTransactionUrl'
 
-export class MatchTemplateView {
+export class SingleEventTemplateView extends BaseView {
   public readonly event?: EventEntity;
   public readonly block?: Block
   public readonly transaction?: Transaction
@@ -20,6 +21,7 @@ export class MatchTemplateView {
   constructor (
     context: MatchContext, event: EventEntity
   ) {
+    super()
     this.event = event
     this.block = context.block
     this.transaction = context.transaction

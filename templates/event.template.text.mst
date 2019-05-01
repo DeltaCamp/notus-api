@@ -1,6 +1,3 @@
-{{title}} occurred at block {{block.number}}
-{{#matchers}}
-{{#isFirst}}where {{/isFirst}}{{description}}{{^isLast}} and{{/isLast}}
-{{/matchers}}
-
-View the transaction on Etherscan at {{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}
+{{#events}}
+  {{> single_event_text }}
+{{/events}}

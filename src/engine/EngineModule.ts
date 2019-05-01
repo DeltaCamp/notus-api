@@ -8,10 +8,20 @@ import { BlockListenerManager } from './BlockListenerManager';
 import { Matcher } from './Matcher';
 import { MatchHandler } from './MatchHandler';
 import { EmailsController } from './EmailsController'
+import { ActionContextsHandler } from './ActionContextsHandler'
+import { UserActionContextsHandler } from './UserActionContextsHandler'
 
 @Module({
   providers: [
-    EventsMatcher, BlockListener, BlockListenerManager, Matcher, MatchHandler, BlockHandler, EthersProvider
+    ActionContextsHandler,
+    BlockHandler,
+    BlockListener,
+    BlockListenerManager,
+    EthersProvider,
+    EventsMatcher,
+    Matcher,
+    MatchHandler,
+    UserActionContextsHandler
   ],
 
   exports: [

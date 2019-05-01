@@ -1,11 +1,20 @@
 <html>
   <head>
     <title>Access Your Notus Account</title>
+    {{> style }}
   </head>
   <body>
-    {{> style }}
-    <h2>Use the magic link below to login</h2>
-    <a href='{{notusNetworkUri}}/users/confirm?oneTimeKey={{oneTimeKey}}'>Access your account</a>
-    {{> footer }}
+    {{> header }}
+    <div class='content'>
+      <h2>Reset your account password</h2>
+      <p>
+        A request has been made to update your account password.  If you didn't make this request you
+        can safely ignore this email.
+      </p>
+      <p class='has-text-centered pb2 pt2'>
+        <a class='button' href='{{notusNetworkUri}}/users/confirm?oneTimeKey={{oneTimeKey}}'>Reset Password</a>
+      </p>
+    </div>
+    {{> footer }}    
   </body>
 </html>

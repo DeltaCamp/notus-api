@@ -1,8 +1,14 @@
-<h1>
-  {{title}} occurred at block {{block.number}} <br />
-  {{#matchers}}
-    {{#isFirst}} where{{/isFirst}} {{description}} {{^isLast}}and <br /> {{/isLast}}
-  {{/matchers}}
-</h1>
-
-<a href="{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}">View the transaction on Etherscan</a>
+<html>
+  <head>
+    {{> style }}
+  </head>
+  <body>
+    {{> header }}
+    <div class='content'>
+      {{#events}}
+        {{> single_event_html }}
+      {{/events}}
+    </div>
+    {{> footer }}
+  </body>
+</html>
