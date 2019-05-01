@@ -1,18 +1,21 @@
 import { Injectable } from '@nestjs/common';
 
+import { MagicLinkView } from '../templates/MagicLinkView'
 import { UserEntity } from '../entities';
 import { rollbar } from '../rollbar'
 import { MailJobPublisher } from '../jobs/MailJobPublisher'
 import { keyHashHex } from '../utils/keyHashHex'
 import { Transaction } from '../transactions/Transaction'
 import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
+import { TemplateRenderer } from '../templates/TemplateRenderer';
 
 @Injectable()
 export class UserService {
 
   constructor(
     private readonly provider: EntityManagerProvider,
-    private readonly mailJobPublisher: MailJobPublisher
+    private readonly mailJobPublisher: MailJobPublisher,
+    private readonly templateRenderer: TemplateRenderer
   ) { }
 
   @Transaction()
@@ -82,26 +85,22 @@ export class UserService {
   }
 
   public sendWelcome(user: UserEntity, oneTimeKey: string) {
+    const view = new MagicLinkView(oneTimeKey)
     this.mailJobPublisher.sendMail({
       to: user.email,
       subject: 'Welcome to Notus Network',
-      template: 'welcome.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
-      context: {
-        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        oneTimeKey
-      }
+      text: this.templateRenderer.renderTemplate('welcome.template.text.mst', view),
+      html: this.templateRenderer.renderHtmlTemplate('welcome.template.html.mst', view)
     }).catch(error => rollbar.error(error))
   }
 
   public sendMagicLink(user: UserEntity, oneTimeKey: string) {
+    const view = new MagicLinkView(oneTimeKey)
     this.mailJobPublisher.sendMail({
       to: user.email,
       subject: 'Your Magic Access Link',
-      template: 'magic_link.template.pug', // The `.pug` or `.hbs` extension is appended automatically.
-      context: {
-        notusNetworkUri: process.env.NOTUS_NETWORK_URI,
-        oneTimeKey
-      }
+      text: this.templateRenderer.renderTemplate('magic_link.template.text.mst', view),
+      html: this.templateRenderer.renderHtmlTemplate('magic_link.template.html.mst', view)
     }).catch(error => rollbar.error(error))
   }
 }
