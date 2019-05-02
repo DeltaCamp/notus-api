@@ -17,7 +17,7 @@ describe('TemplateLoader', () => {
 
   describe('load()', () => {
     it('should correctly load a template', () => {
-      expect(loader.load('magic_link.template.html.mst')).toContain('Use the magic link below to login')
+      expect(loader.load('magic_link.template.html.mst')).toContain('oneTimeKey=')
     })
   })
 })

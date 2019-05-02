@@ -6,7 +6,8 @@ describe('the test', () => {
   let userService
 
   let entityManager,
-      mailerService
+      mailerService,
+      templateRenderer
 
   let user
 
@@ -18,12 +19,17 @@ describe('the test', () => {
     mailerService = {
       sendMail: jest.fn(() => Promise.resolve())
     };
+    templateRenderer = {
+      renderTemplate: jest.fn(),
+      renderHtmlTemplate: jest.fn()
+    }
   })
 
   function newService() {
     return new UserService(
       { get: () => entityManager },
-      mailerService
+      mailerService,
+      templateRenderer
     )
   }
 
