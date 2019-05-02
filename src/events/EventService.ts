@@ -190,6 +190,8 @@ export class EventService {
     event.scope = eventDto.scope
     event.isPublic = eventDto.isPublic
     event.runCount = eventDto.runCount
+    event.webhookUrl = eventDto.webhookUrl
+    event.webhookBody = eventDto.webhookBody
 
     await this.validateEvent(event)
 
@@ -249,6 +251,14 @@ export class EventService {
       await Promise.all(eventDto.matchers.map(matcherDto => (
         this.matcherService.update(matcherDto)
       )))
+    }
+
+    if (eventDto.webhookUrl !== undefined) {
+      event.webhookUrl = eventDto.webhookUrl
+    }
+
+    if (eventDto.webhookBody !== undefined) {
+      event.webhookBody = eventDto.webhookBody
     }
       
     await this.validateEvent(event)

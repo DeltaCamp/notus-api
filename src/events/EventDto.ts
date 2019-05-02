@@ -35,6 +35,12 @@ export class EventDto {
   @Field({ nullable: true })
   deletedAt?: Date;
 
+  @Field({ nullable: true })
+  webhookUrl?: string;
+
+  @Field({ nullable: true })
+  webhookBody?: string;
+
   @Field(type => [MatcherDto], { nullable: true })
   matchers: MatcherDto[];
 }

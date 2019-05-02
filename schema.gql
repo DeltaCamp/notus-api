@@ -60,6 +60,8 @@ input EventDto {
   isActive: Boolean
   parentId: Float
   deletedAt: Date
+  webhookUrl: String
+  webhookBody: String
   matchers: [MatcherDto!]
 }
 
