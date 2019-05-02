@@ -1,6 +1,6 @@
 # You can automatically load this file using direnv: https://direnv.net/
 # or just `source .envrc`
-# Prod: https://api.notus.network (leave PORT out)
+# Prod: https://api.notus.events (leave PORT out)
 export PROTOCOL=http
 export HOST=localhost
 export PORT=4000

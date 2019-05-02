@@ -88,7 +88,7 @@ export class UserService {
     const view = new MagicLinkView(oneTimeKey)
     this.mailJobPublisher.sendMail({
       to: user.email,
-      subject: 'Welcome to Notus Network',
+      subject: 'Welcome to Notus',
       text: this.templateRenderer.renderTemplate('welcome.template.text.mst', view),
       html: this.templateRenderer.renderHtmlTemplate('welcome.template.html.mst', view)
     }).catch(error => rollbar.error(error))

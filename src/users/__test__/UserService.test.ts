@@ -40,7 +40,7 @@ describe('the test', () => {
       const user = await userService.createOrRequestMagicLink('foo@bar.com')
 
       expect(mailerService.sendMail).toHaveBeenCalledWith(
-        expect.objectContaining({ subject: 'Welcome to Notus Network' })
+        expect.objectContaining({ subject: 'Welcome to Notus' })
       )
 
       expect(user.one_time_key_hash).toBeDefined()
