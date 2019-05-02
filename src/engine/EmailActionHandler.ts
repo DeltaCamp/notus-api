@@ -2,15 +2,15 @@ import { Injectable } from "@nestjs/common";
 
 import { ActionContext } from './ActionContext'
 import { MailJobPublisher } from '../jobs/MailJobPublisher'
-import { SingleEventTemplateView } from '../templates/SingleEventTemplateView'
 import { EventTemplateView } from '../templates/EventTemplateView'
 import { TemplateRenderer } from '../templates/TemplateRenderer'
-import { UserEntity } from "src/users/UserEntity";
+import { UserEntity } from "../entities";
+import { SingleEventTemplateView } from "../templates/SingleEventTemplateView";
 
-const debug = require('debug')('notus:engine:UserActionContextsHandler')
+const debug = require('debug')('notus:engine:EmailActionHandler')
 
 @Injectable()
-export class UserActionContextsHandler {
+export class EmailActionHandler {
 
   constructor (
     private readonly templateRenderer: TemplateRenderer,
@@ -20,7 +20,12 @@ export class UserActionContextsHandler {
   async handle(user: UserEntity, actionContexts: ActionContext[]) {
     debug(`handle received ${actionContexts.length} for user id ${user.id} and email ${user.email}`)
 
-    const events = actionContexts.map(actionContext => new SingleEventTemplateView(actionContext.matchContext, actionContext.event))
+    const events = actionContexts.reduce((views: SingleEventTemplateView[], actionContext: ActionContext): SingleEventTemplateView[] => {
+      if (actionContext.event.hasEmailAction()) {
+        views.push(new SingleEventTemplateView(actionContext.matchContext, actionContext.event))
+      }
+      return views
+    }, [])
 
     const text = this.templateRenderer.renderTemplate('event.template.text.mst', new EventTemplateView(events))
     const html = this.templateRenderer.renderHtmlTemplate('event.template.html.mst', new EventTemplateView(events))

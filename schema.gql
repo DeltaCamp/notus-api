@@ -80,6 +80,8 @@ type EventEntity {
   createdAt: Date!
   updatedAt: Date!
   deletedAt: Date
+  webhookUrl: String
+  webhookBody: String
 }
 
 input EventsQuery {

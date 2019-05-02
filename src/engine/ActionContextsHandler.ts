@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 
 import { ActionContext } from './ActionContext'
-import { UserActionContextsHandler } from './UserActionContextsHandler';
+import { EmailActionHandler } from './EmailActionHandler';
+import { WebhookActionHandler } from './WebhookActionHandler';
 
 const debug = require('debug')('notus:engine:ActionContextsHandler')
 
@@ -9,14 +10,17 @@ const debug = require('debug')('notus:engine:ActionContextsHandler')
 export class ActionContextsHandler {
 
   constructor (
-    private readonly userActionContextsHandler: UserActionContextsHandler,
+    private readonly emailActionHandler: EmailActionHandler,
+    private readonly webhookActionHandler: WebhookActionHandler
   ) {}
 
   async handle(actionContexts: ActionContext[]) {
     // need to sort into users, 
+    await this.webhookActionHandler.handle(actionContexts)
+
     const userActionContexts = this.groupActionContextsByUser(actionContexts)
     await Promise.all(Object.values(userActionContexts).map(async (actionContexts: ActionContext[]) => {
-      await this.userActionContextsHandler.handle(actionContexts[0].event.user, actionContexts)
+      await this.emailActionHandler.handle(actionContexts[0].event.user, actionContexts)
     }))
   }
 

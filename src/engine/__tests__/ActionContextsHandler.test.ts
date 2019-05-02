@@ -5,14 +5,18 @@ describe('ActionContextsHandler', () => {
 
   let handler
 
-  let userActionContextsHandler
+  let emailActionHandler, webhookActionHandler
 
   beforeEach(() => {
-    userActionContextsHandler = {
+    emailActionHandler = {
       handle: jest.fn()
     }
 
-    handler = new ActionContextsHandler(userActionContextsHandler)
+    webhookActionHandler = {
+      handle: jest.fn()
+    }
+
+    handler = new ActionContextsHandler(emailActionHandler, webhookActionHandler)
   })
 
   describe('handle()', () => {
@@ -31,6 +35,7 @@ describe('ActionContextsHandler', () => {
       let actionContext1 = {
         matchContext,
         event: {
+          hasEmailAction: jest.fn(() => true),
           user: user1
         }
       }
@@ -38,6 +43,7 @@ describe('ActionContextsHandler', () => {
       let actionContext2 = {
         matchContext,
         event: {
+          hasEmailAction: jest.fn(() => true),
           user: user2
         }
       }
@@ -45,6 +51,7 @@ describe('ActionContextsHandler', () => {
       let actionContext3 = {
         matchContext,
         event: {
+          hasEmailAction: jest.fn(() => true),
           user: user1
         }
       }
@@ -55,8 +62,10 @@ describe('ActionContextsHandler', () => {
       
       await handler.handle(actionContexts)
 
-      expect(userActionContextsHandler.handle).toHaveBeenCalledWith(user1, [actionContext1, actionContext3])
-      expect(userActionContextsHandler.handle).toHaveBeenCalledWith(user2, [actionContext2])
+      expect(emailActionHandler.handle).toHaveBeenCalledWith(user1, [actionContext1, actionContext3])
+      expect(emailActionHandler.handle).toHaveBeenCalledWith(user2, [actionContext2])
+
+      expect(webhookActionHandler.handle).toHaveBeenCalledWith(actionContexts)
     })
   })
 })

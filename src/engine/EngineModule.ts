@@ -9,7 +9,8 @@ import { Matcher } from './Matcher';
 import { MatchHandler } from './MatchHandler';
 import { EmailsController } from './EmailsController'
 import { ActionContextsHandler } from './ActionContextsHandler'
-import { UserActionContextsHandler } from './UserActionContextsHandler'
+import { EmailActionHandler } from './EmailActionHandler'
+import { WebhookActionHandler } from './WebhookActionHandler'
 
 @Module({
   providers: [
@@ -21,7 +22,8 @@ import { UserActionContextsHandler } from './UserActionContextsHandler'
     EventsMatcher,
     Matcher,
     MatchHandler,
-    UserActionContextsHandler
+    EmailActionHandler,
+    WebhookActionHandler
   ],
 
   exports: [

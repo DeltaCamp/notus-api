@@ -10,7 +10,7 @@ import {
   RelationId
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
-import { MinLength } from 'class-validator'
+import { MinLength, IsJSON, IsOptional, IsUrl } from 'class-validator'
 
 import {
   UserEntity,
@@ -113,6 +113,22 @@ export class EventEntity {
   @Column({ type: 'timestamp', default: null, nullable: true })
   deletedAt?: Date;
 
+  @IsOptional()
+  @IsUrl()
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
+  webhookUrl: string;
+
+  @IsOptional()
+  @IsJSON()
+  @Field({ nullable: true })
+  @Column({ type: 'text', nullable: true })
+  webhookBody: string;
+
+  hasEmailAction(): boolean {
+    return !this.webhookUrl
+  }
+
   formatTitle(): string {
     let title: string
 
@@ -129,4 +145,3 @@ export class EventEntity {
     return title
   }
 }
-  

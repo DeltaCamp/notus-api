@@ -1,8 +1,8 @@
-import { UserActionContextsHandler } from '../UserActionContextsHandler'
+import { EmailActionHandler } from '../EmailActionHandler'
 import { MatchContext } from '../MatchContext';
 import { ActionContext } from '../ActionContext';
 
-describe('UserActionContextsHandler', () => {
+describe('EmailActionHandler', () => {
 
   let handler
 
@@ -18,7 +18,7 @@ describe('UserActionContextsHandler', () => {
       sendMail: jest.fn()
     }
 
-    handler = new UserActionContextsHandler(templateRenderer, mailJobPublisher)
+    handler = new EmailActionHandler(templateRenderer, mailJobPublisher)
   })
 
   describe('handle()', () => {
@@ -38,7 +38,8 @@ describe('UserActionContextsHandler', () => {
 
       event = {
         title: 'custom event title',
-        user
+        user,
+        hasEmailAction: jest.fn(() => true)
       }
 
       let actionContext = new ActionContext(matchContext, event)
