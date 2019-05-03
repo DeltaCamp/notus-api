@@ -264,11 +264,19 @@ export class EventService {
     }
 
     if (eventDto.webhookUrl !== undefined) {
-      event.webhookUrl = eventDto.webhookUrl
+      if (eventDto.webhookUrl) {
+        event.webhookUrl = eventDto.webhookUrl
+      } else {
+        event.webhookUrl = null
+      }
     }
 
     if (eventDto.webhookBody !== undefined) {
-      event.webhookBody = eventDto.webhookBody
+      if (eventDto.webhookBody) { // if not null or empty string
+        event.webhookBody = eventDto.webhookBody
+      } else {
+        event.webhookBody = null
+      }
     }
       
     await this.validateEvent(event)
