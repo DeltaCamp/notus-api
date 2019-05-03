@@ -67,8 +67,12 @@ export class MatcherService {
       }
     })
 
-    if (matcherDto.abiEventInputId) {
-      matcher.abiEventInput = await this.abiEventInputService.findOneOrFail(matcherDto.abiEventInputId)
+    if (matcherDto.abiEventInputId !== undefined) {
+      if (matcherDto.abiEventInputId !== null) {
+        matcher.abiEventInput = await this.abiEventInputService.findOneOrFail(matcherDto.abiEventInputId)
+      } else {
+        matcher.abiEventInput = null
+      }
     }
 
     await this.validateMatcher(matcher)

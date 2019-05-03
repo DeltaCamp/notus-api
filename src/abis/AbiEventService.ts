@@ -34,7 +34,9 @@ export class AbiEventService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<AbiEventEntity> {
-    if (notDefined(id)) { throw new Error('id must be defined') }
+    if (notDefined(id)) {
+      throw new Error('id must be defined')
+    }
     return await this.provider.get().findOneOrFail(AbiEventEntity, id)
   }
 

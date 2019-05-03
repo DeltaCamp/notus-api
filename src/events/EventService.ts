@@ -37,7 +37,9 @@ export class EventService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<EventEntity> {
-    if (notDefined(id)) { throw new Error(`id must be defined`) }
+    if (notDefined(id)) {
+      throw new Error(`id must be defined`)
+    }
     return this.provider.get().findOneOrFail(EventEntity, id)
   }
 
@@ -248,7 +250,11 @@ export class EventService {
     }
 
     if (eventDto.abiEventId !== undefined) {
-      event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
+      if (eventDto.abiEventId !== null) {
+        event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
+      } else {
+        event.abiEvent = null
+      }
     }
 
     if (eventDto.matchers !== undefined) {
