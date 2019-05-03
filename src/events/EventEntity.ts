@@ -10,7 +10,7 @@ import {
   RelationId
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
-import { MinLength, IsJSON, IsOptional, IsUrl } from 'class-validator'
+import { MinLength, IsJSON, IsOptional, IsUrl, IsHexColor } from 'class-validator'
 
 import {
   UserEntity,
@@ -125,8 +125,18 @@ export class EventEntity {
   @Column({ type: 'text', nullable: true })
   webhookBody: string;
 
+  @IsOptional()
+  @IsHexColor()
+  @Field()
+  @Column({ type: 'text', default: '#efefef' })
+  color: string;
+
+  @Field()
+  @Column({ type: 'boolean', default: true, nullable: false })
+  sendEmail: boolean;
+
   hasEmailAction(): boolean {
-    return !this.webhookUrl
+    return this.sendEmail
   }
 
   formatTitle(): string {

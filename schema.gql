@@ -62,6 +62,8 @@ input EventDto {
   deletedAt: Date
   webhookUrl: String
   webhookBody: String
+  color: String
+  sendEmail: Boolean
   matchers: [MatcherDto!]
 }
 
@@ -84,6 +86,8 @@ type EventEntity {
   deletedAt: Date
   webhookUrl: String
   webhookBody: String
+  color: String!
+  sendEmail: Boolean!
 }
 
 input EventsQuery {

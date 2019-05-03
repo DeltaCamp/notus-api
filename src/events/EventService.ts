@@ -77,14 +77,6 @@ export class EventService {
     return query.printSql().orderBy('"events"."createdAt"', 'DESC').getManyAndCount()
   }
 
-  // static joinSearchQuery<Entity>(query: SelectQueryBuilder<Entity>): SelectQueryBuilder<Entity> {
-  //   return query.leftJoinAndSelect("events.user", "users")
-  //     .leftJoinAndSelect("events.matchers", "matchers")
-  //     .leftJoinAndSelect("matchers.abiEventInput", "input")
-  //     .leftJoinAndSelect("input.abiEvent", "abi_event")
-  //     .leftJoinAndSelect("abi_event.abi", "abi")
-  // }
-
   static buildSearchParams(searchTerms: string[]): any {
     return searchTerms.reduce((params, searchTerm, index) => {
       params[`searchTerm${index}`] = `%${searchTerm}%`
@@ -199,6 +191,15 @@ export class EventService {
     event.webhookUrl = eventDto.webhookUrl
     event.webhookBody = eventDto.webhookBody
 
+    debug(eventDto)
+
+    if (eventDto.color !== undefined) {
+      event.color = eventDto.color
+    }
+    if (eventDto.sendEmail !== undefined) {
+      event.sendEmail = eventDto.sendEmail
+    }
+
     await this.validateEvent(event)
 
     await em.save(event)
@@ -247,6 +248,14 @@ export class EventService {
 
     if (eventDto.parentId !== undefined) {
       event.parent = await this.findOneOrFail(eventDto.parentId)
+    }
+
+    if (eventDto.color !== undefined) {
+      event.color = eventDto.color
+    }
+
+    if (eventDto.sendEmail !== undefined) {
+      event.sendEmail = eventDto.sendEmail
     }
 
     if (eventDto.abiEventId !== undefined) {
