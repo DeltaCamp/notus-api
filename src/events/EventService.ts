@@ -165,6 +165,7 @@ export class EventService {
       .from(MatcherEntity, 'matchers')
       .innerJoin('matchers.event', 'events')
       .where('"events"."id" = :id', { id: event.id })
+      .addOrderBy("matchers.order", "ASC")
       .getMany()
   }
 
