@@ -2,6 +2,7 @@ import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { validate } from 'class-validator'
 import { ValidationException } from '../common/ValidationException'
 
+import { notDefined } from '../utils/notDefined'
 import {
   UserEntity,
   EventEntity,
@@ -15,7 +16,8 @@ import { Transaction, EntityManagerProvider } from '../transactions'
 import { AppService } from '../apps/AppService';
 import { AbiEventService } from '../abis/AbiEventService'
 import { EventsQuery } from './EventsQuery'
-import { SelectQueryBuilder } from 'typeorm';
+
+const debug = require('debug')('notus:events:EventService')
 
 @Injectable()
 export class EventService {
@@ -35,6 +37,7 @@ export class EventService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<EventEntity> {
+    if (notDefined(id)) { throw new Error(`id must be defined`) }
     return this.provider.get().findOneOrFail(EventEntity, id)
   }
 

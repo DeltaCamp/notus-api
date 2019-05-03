@@ -6,6 +6,7 @@ import { rollbar } from '../rollbar'
 import { Transaction } from '../transactions/Transaction'
 import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 import { EventService } from '../events/EventService'
+import { notDefined } from '../utils/notDefined';
 
 @Injectable()
 export class AppService {
@@ -27,6 +28,7 @@ export class AppService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<AppEntity> {
+    if (notDefined(id)) { throw new Error('id must be defined') }
     return this.provider.get().findOneOrFail(AppEntity, id);
   }
 

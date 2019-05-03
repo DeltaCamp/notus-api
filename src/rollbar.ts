@@ -14,6 +14,7 @@ if (process.env.ROLLBAR_ACCESS_TOKEN) {
 
 export const rollbar = {
   error: function (...any) {
+    console.error.call(console, arguments)
     debug.call(undefined, arguments)
     if (instance) {
       instance.error.call(instance, arguments)

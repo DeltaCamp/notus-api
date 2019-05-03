@@ -6,6 +6,7 @@ import {
   AbiEventInputEntity
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
+import { notDefined } from '../utils/notDefined';
 
 @Injectable()
 export class AbiEventService {
@@ -33,6 +34,7 @@ export class AbiEventService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<AbiEventEntity> {
+    if (notDefined(id)) { throw new Error('id must be defined') }
     return await this.provider.get().findOneOrFail(AbiEventEntity, id)
   }
 

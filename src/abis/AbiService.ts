@@ -12,6 +12,7 @@ import {
   UserEntity
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
+import { notDefined } from '../utils/notDefined';
 
 const schema = require('../../abi.spec.json')
 
@@ -35,6 +36,7 @@ export class AbiService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<AbiEntity> {
+    if (notDefined(id)) { throw new Error('id must be defined') }
     return await this.provider.get().findOneOrFail(AbiEntity, id)
   }
 

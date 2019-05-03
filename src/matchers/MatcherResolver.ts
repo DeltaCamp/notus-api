@@ -48,6 +48,7 @@ export class MatcherResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('matcher') matcherDto: MatcherDto
   ): Promise<MatcherEntity> {
+    debug('updateMatcher: ', matcherDto)
     const event = await this.getEvent(user, matcherDto.eventId)
     return await this.matcherService.update(matcherDto)
   }

@@ -20,6 +20,7 @@ import { SourceDataType } from './SourceDataType';
 import { validateOperand } from './validateOperand'
 import { ValidationException } from '../common/ValidationException'
 import { validate } from 'class-validator'
+import { notDefined } from '../utils/notDefined';
 
 @Injectable()
 export class MatcherService {
@@ -121,6 +122,7 @@ export class MatcherService {
 
   @Transaction()
   async findOneOrFail(matcherId: number): Promise<MatcherEntity> {
+    if (notDefined(matcherId)) { throw new Error(`id must be defined`) }
     return await this.provider.get().findOneOrFail(MatcherEntity, matcherId)
   }
 

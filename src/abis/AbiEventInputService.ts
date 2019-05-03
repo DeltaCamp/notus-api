@@ -1,16 +1,10 @@
 import { Injectable } from '@nestjs/common'
-import { validate, Validator } from 'jsonschema'
-import { Like } from 'typeorm'
-
-import { AbiDto } from './AbiDto'
 import {
-  AbiEntity,
   AbiEventInputEntity
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
-import { description } from 'joi';
 
-const schema = require('../../abi.spec.json')
+import { notDefined } from '../utils/notDefined'
 
 @Injectable()
 export class AbiEventInputService {
@@ -21,6 +15,7 @@ export class AbiEventInputService {
 
   @Transaction()
   async findOneOrFail(id: number): Promise<AbiEventInputEntity> {
+    if (notDefined(id)) { throw new Error('id must be defined') }
     return await this.provider.get().findOneOrFail(AbiEventInputEntity, id)
   }
 
