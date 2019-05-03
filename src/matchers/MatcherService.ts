@@ -31,6 +31,15 @@ export class MatcherService {
   ) {}
 
   @Transaction()
+  async createOrUpdate(event: EventEntity, matcherDto: MatcherDto): Promise<MatcherEntity> {
+    if (matcherDto.id) {
+      return await this.update(matcherDto)
+    } else {
+      return await this.createMatcher(event, matcherDto)
+    }
+  }
+
+  @Transaction()
   async createMatcher(event: EventEntity, matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 

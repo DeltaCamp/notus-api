@@ -257,12 +257,6 @@ export class EventService {
       }
     }
 
-    if (eventDto.matchers !== undefined) {
-      await Promise.all(eventDto.matchers.map(matcherDto => (
-        this.matcherService.update(matcherDto)
-      )))
-    }
-
     if (eventDto.webhookUrl !== undefined) {
       if (eventDto.webhookUrl) {
         event.webhookUrl = eventDto.webhookUrl
@@ -282,6 +276,12 @@ export class EventService {
     await this.validateEvent(event)
 
     await this.provider.get().save(event)
+
+    if (eventDto.matchers !== undefined) {
+      await Promise.all(eventDto.matchers.map(matcherDto => (
+        this.matcherService.createOrUpdate(event, matcherDto)
+      )))
+    }
 
     return event
   }
