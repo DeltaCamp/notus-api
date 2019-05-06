@@ -182,6 +182,7 @@ type UserEntity {
   id: ID!
   name: String!
   email: String!
+  isAdmin: Boolean!
 }
 
 type WorkLogEntity {

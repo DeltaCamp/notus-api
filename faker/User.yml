@@ -3,10 +3,12 @@ items:
   user0:
     name: 'Chuck Bergeron'
     email: 'chuck@delta.camp'
+    isAdmin: true
     password_hash: '1718c24b10aeb8099e3fc44960ab6949ab76a267352459f203ea1036bec382c2'
   user1:
     name: 'Brendan Asselstine'
     email: 'brendan@delta.camp'
+    isAdmin: true
     password_hash: '1718c24b10aeb8099e3fc44960ab6949ab76a267352459f203ea1036bec382c2'
   user2:
     name: '{{name.firstName}} {{name.lastName}}'

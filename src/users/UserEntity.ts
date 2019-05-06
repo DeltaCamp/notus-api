@@ -61,6 +61,10 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
+  @Field()
+  @Column({ type: 'boolean', default: false, nullable: false })
+  isAdmin: boolean;
+
   public clearOneTimeKey(): void {
     this.confirmed = true
     this.one_time_key_hash = null
