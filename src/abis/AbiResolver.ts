@@ -30,8 +30,7 @@ export class AbiResolver {
 
   @Query(returns => [AbiEntity])
   async abis(
-    @Args({ name: 'name', type: () => String, nullable: true }) name: string,
-    @Args({ name: 'address', type: () => String, nullable: true }) address: string) {
+    @Args({ name: 'name', type: () => String, nullable: true }) name: string) {
     return await this.abiService.find(name)
   }
 

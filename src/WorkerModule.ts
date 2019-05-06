@@ -6,6 +6,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Connection } from 'typeorm';
 
 import { AbiModule } from './abis/AbiModule'
+import { ContractModule } from './contracts/ContractModule';
 import { EventModule } from './events'
 import { AppModule } from './apps'
 import { EngineModule } from './engine/EngineModule'
@@ -20,6 +21,7 @@ import { EntityManagerProvider } from './transactions/EntityManagerProvider';
 @Module({
   imports: [
     TypeOrmModule.forRoot(),
+    ContractModule,
     EngineModule,
     AppModule,
     mailerModule,

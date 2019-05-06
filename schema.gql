@@ -46,6 +46,41 @@ type AppEntity {
   name: String!
 }
 
+input ContractDto {
+  id: ID
+  name: String
+  address: String
+  abi: AbiDto
+}
+
+type ContractEntity {
+  id: ID!
+  owner: UserEntity!
+  ownerId: Float!
+  name: String!
+  abi: AbiEntity!
+  abiId: Float!
+  address: String!
+  createdAt: Date!
+  updatedAt: Date!
+  deletedAt: Date
+}
+
+input ContractsQuery {
+  skip: Float
+  take: Float
+  userId: Float
+  address: String
+  name: String
+}
+
+type ContractsQueryResponse {
+  totalCount: Float!
+  skip: Float
+  take: Float
+  contracts: [ContractEntity!]!
+}
+
 """Date custom scalar type"""
 scalar Date
 
@@ -142,6 +177,9 @@ type Mutation {
   createAbi(abi: AbiDto!): AbiEntity!
   updateAbi(abi: AbiDto!): AbiEntity!
   destroyAbi(id: Float!): AbiEntity!
+  createContract(contract: ContractDto!): ContractEntity!
+  updateContract(contract: ContractDto!): ContractEntity!
+  destroyContract(id: Float!): ContractEntity!
 }
 
 input PagedQuery {
@@ -165,11 +203,13 @@ type Query {
   source(source: String!): SourceEntity!
   sources: [SourceEntity!]!
   abi(id: Float!): AbiEntity!
-  abis(address: String, name: String): [AbiEntity!]!
+  abis(name: String): [AbiEntity!]!
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
   abiEventInput(id: Float!): AbiEventInputEntity!
   abiEvent(id: Float!): AbiEventEntity!
   abiEvents(topic: String, name: String): [AbiEventEntity!]!
+  contract(id: Float!): ContractEntity!
+  contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
 }
 
 type SourceEntity {

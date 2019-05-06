@@ -15,7 +15,8 @@ import { Field, ObjectType, ID } from 'type-graphql';
 
 import {
   AbiEventEntity,
-  UserEntity
+  UserEntity,
+  ContractEntity
 } from '../entities';
 
 @ObjectType()
@@ -45,6 +46,9 @@ export class AbiEntity {
     cascade: true
   })
   abiEvents: AbiEventEntity[];
+
+  @OneToMany(type => ContractEntity, contract => contract.abi)
+  contracts: ContractEntity[];
 
   @ManyToOne(type => UserEntity, user => user.abis)
   owner: UserEntity;

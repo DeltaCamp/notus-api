@@ -41,6 +41,15 @@ export class AbiService {
   }
 
   @Transaction()
+  async findOrCreate(user: UserEntity, abiDto: AbiDto): Promise<AbiEntity> {
+    if (abiDto.id) {
+      return this.findOneOrFail(abiDto.id)
+    } else {
+      return this.createAndSave(user, abiDto)
+    }
+  }
+
+  @Transaction()
   async createAndSave(user: UserEntity, abiDto: AbiDto): Promise<AbiEntity> {
     const abi = await this.createAbi(abiDto)
     abi.owner = user

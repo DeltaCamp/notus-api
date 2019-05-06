@@ -12,6 +12,7 @@ import { Field, ObjectType, ID } from 'type-graphql';
 import {
   AppEntity,
   EventEntity,
+  ContractEntity,
   AbiEntity
 } from '../entities'
 
@@ -34,6 +35,9 @@ export class UserEntity {
 
   @OneToMany(type => AbiEntity, abi => abi.owner)
   abis: AbiEntity[];
+
+  @OneToMany(type => ContractEntity, contract => contract.owner)
+  contracts: ContractEntity[];
 
   @Field()
   @Column({ type: 'text' })
