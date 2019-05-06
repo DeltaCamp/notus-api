@@ -1,5 +1,17 @@
-import { UseGuards, UnauthorizedException, UseFilters, HttpException } from '@nestjs/common'
-import { Mutation, Resolver, Query, Args, ResolveProperty, Parent } from '@nestjs/graphql'
+import {
+  NotFoundException,
+  UseGuards,
+  UnauthorizedException,
+  UseFilters
+} from '@nestjs/common'
+import {
+  Mutation,
+  Resolver,
+  Query,
+  Args,
+  ResolveProperty,
+  Parent
+} from '@nestjs/graphql'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 import { OptionalGqlAuthGuard } from '../auth/OptionalGqlAuthGuard'
 
@@ -35,7 +47,9 @@ export class EventResolver {
     @Args('id') id: number
   ): Promise<EventEntity> {
     const event = await this.eventService.findOne(id);
-    if (
+    if (event.deletedAt) {
+      throw new NotFoundException()
+    } else if (
       event.isPublic
       || (user && user.id === event.userId)
     ) {
