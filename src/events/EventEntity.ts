@@ -137,7 +137,7 @@ export class EventEntity {
   @IsOptional()
   @IsHexColor()
   @Field()
-  @Column({ type: 'text', default: '#efefef' })
+  @Column({ type: 'text', default: '#2a083f' })
   color: string;
 
   @Field()
