@@ -28,10 +28,16 @@ type AbiEventEntity {
   abiEventInputs: [AbiEventInputEntity!]!
 }
 
+input AbiEventInputDto {
+  id: ID
+  metaType: Float
+}
+
 type AbiEventInputEntity {
   id: ID!
   name: String!
   type: String!
+  metaType: Float
   abiEvent: AbiEventEntity!
   abiEventId: Float!
 }
@@ -180,6 +186,7 @@ type Mutation {
   createAbi(abi: AbiDto!): AbiEntity!
   updateAbi(abi: AbiDto!): AbiEntity!
   destroyAbi(id: Float!): AbiEntity!
+  updateAbiEventInput(abiEventInput: AbiEventInputDto!): AbiEventInputEntity!
   createContract(contract: ContractDto!): ContractEntity!
   updateContract(contract: ContractDto!): ContractEntity!
   destroyContract(id: Float!): ContractEntity!
@@ -219,6 +226,7 @@ type SourceEntity {
   source: ID!
   title: String!
   dataType: String!
+  metaDataType: Float
 }
 
 type UserEntity {

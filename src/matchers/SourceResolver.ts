@@ -1,10 +1,11 @@
-import { UseGuards, UnauthorizedException, Inject, forwardRef, NotFoundException, UseFilters } from '@nestjs/common'
+import { NotFoundException, UseFilters } from '@nestjs/common'
 import { Resolver, Query, Args } from '@nestjs/graphql'
 
 import * as Source from './Source'
 import { SourceDataType } from './SourceDataType'
 import { SourceTitle } from './SourceTitle'
 import { SourceEntity } from './SourceEntity'
+import { SourceMetaDataType } from './SourceMetaDataType'
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 
 @UseFilters(new GqlRollbarExceptionFilter())
@@ -13,10 +14,7 @@ export class SourceResolver {
 
   @Query(returns => SourceEntity)
   source(@Args('source') source: string): SourceEntity {
-    const sourceEntity = new SourceEntity()
-    sourceEntity.source = source
-    sourceEntity.title = SourceTitle[source]
-    sourceEntity.dataType = SourceDataType[source]
+    const sourceEntity = this.buildSourceEntity(source)
     if (!sourceEntity.title) {
       throw new NotFoundException()
     }
@@ -25,13 +23,15 @@ export class SourceResolver {
 
   @Query(returns => [SourceEntity])
   sources(): SourceEntity[] {
-    return Object.values(Source).map(source => {
-      const sourceEntity = new SourceEntity()
-      sourceEntity.source = source;
-      sourceEntity.title = SourceTitle[source];
-      sourceEntity.dataType = SourceDataType[source];
-      return sourceEntity
-    })
+    return Object.values(Source).map(source => this.buildSourceEntity(source))
   }
 
+  buildSourceEntity(source: string): SourceEntity {
+    const sourceEntity = new SourceEntity()
+    sourceEntity.source = source;
+    sourceEntity.title = SourceTitle[source];
+    sourceEntity.dataType = SourceDataType[source];
+    sourceEntity.metaDataType = SourceMetaDataType[source]
+    return sourceEntity
+  }
 }

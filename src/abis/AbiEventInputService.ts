@@ -5,6 +5,7 @@ import {
 import { Transaction, EntityManagerProvider } from '../transactions'
 
 import { notDefined } from '../utils/notDefined'
+import { AbiEventInputDto } from './AbiEventInputDto';
 
 @Injectable()
 export class AbiEventInputService {
@@ -16,7 +17,7 @@ export class AbiEventInputService {
   @Transaction()
   async findOneOrFail(id: number): Promise<AbiEventInputEntity> {
     if (notDefined(id)) { throw new Error('id must be defined') }
-    return await this.provider.get().findOneOrFail(AbiEventInputEntity, id)
+    return await this.provider.get().findOneOrFail(AbiEventInputEntity, id, { relations: ['abiEvent', 'abiEvent.abi' ]})
   }
 
   @Transaction()
@@ -32,5 +33,14 @@ export class AbiEventInputService {
     }
 
     return query.getMany()
+  }
+
+  @Transaction()
+  async update(abiEventInput: AbiEventInputEntity, abiEventInputDto: AbiEventInputDto): Promise<AbiEventInputEntity> {
+    if (abiEventInputDto.metaType !== undefined) {
+      abiEventInput.metaType = abiEventInputDto.metaType
+    }
+    await this.provider.get().save(abiEventInput)
+    return abiEventInput
   }
 }

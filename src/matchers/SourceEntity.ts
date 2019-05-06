@@ -1,6 +1,7 @@
 import { Field, Int, ObjectType, ID } from 'type-graphql';
 
 import { SolidityDataType } from '../common/SolidityDataType'
+import { MetaDataType } from './MetaDataType'
 
 @ObjectType()
 export class SourceEntity {
@@ -12,4 +13,7 @@ export class SourceEntity {
 
   @Field()
   dataType: SolidityDataType;
+
+  @Field({ nullable: true })
+  metaDataType: MetaDataType;
 }
