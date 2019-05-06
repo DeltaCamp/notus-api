@@ -30,6 +30,7 @@ type AbiEventEntity {
 
 input AbiEventInputDto {
   id: ID
+  isPublic: Boolean
   metaType: Float
 }
 
@@ -40,6 +41,7 @@ type AbiEventInputEntity {
   metaType: Float
   abiEvent: AbiEventEntity!
   abiEventId: Float!
+  isPublic: Boolean!
 }
 
 input AppDto {

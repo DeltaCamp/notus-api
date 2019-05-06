@@ -23,13 +23,14 @@ export class AbiEventInputService {
   @Transaction()
   async findByNameAndAbiEventId(name: String, abiEventId: number): Promise<AbiEventInputEntity[]> {
     let query = await this.provider.get().createQueryBuilder(AbiEventInputEntity, 'abiEventInput')
+      .where('"abiEventInput"."createdAt" IS NOT NULL')
 
     if (name !== undefined) {
-      query = query.where('"abiEventInput"."name" = :name', { name })
+      query = query.andWhere('"abiEventInput"."name" = :name', { name })
     }
 
     if (abiEventId !== undefined) {
-      query = query.where('"abiEventInput"."abiEventId" = :abiEventId', { abiEventId })
+      query = query.andWhere('"abiEventInput"."abiEventId" = :abiEventId', { abiEventId })
     }
 
     return query.getMany()
@@ -39,6 +40,9 @@ export class AbiEventInputService {
   async update(abiEventInput: AbiEventInputEntity, abiEventInputDto: AbiEventInputDto): Promise<AbiEventInputEntity> {
     if (abiEventInputDto.metaType !== undefined) {
       abiEventInput.metaType = abiEventInputDto.metaType
+    }
+    if (abiEventInputDto.isPublic !== undefined) {
+      abiEventInput.isPublic = abiEventInputDto.isPublic
     }
     await this.provider.get().save(abiEventInput)
     return abiEventInput

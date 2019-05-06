@@ -40,6 +40,10 @@ export class AbiEventInputEntity {
   @RelationId((abiEventInput: AbiEventInputEntity) => abiEventInput.abiEvent)
   abiEventId: number;
 
+  @Field()
+  @Column({ type: 'boolean', default: true, nullable: false })
+  isPublic: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 
