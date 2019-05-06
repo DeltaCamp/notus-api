@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Block, Log } from 'ethers/providers'
-import { Network } from 'ethers/utils';
+import { Network, getAddress } from 'ethers/utils';
 
 import { rollbar } from '../rollbar'
 import { EventScope } from '../events/EventScope'
@@ -44,9 +44,11 @@ export class EventsMatcher {
     let i: number;
     debug(`Checking event ${event.id}`, event.scope)
 
-    if (
-      this.abiEventScopeDoesNotMatch(matchContext, event)
-    ) {
+    if (this.abiEventScopeDoesNotMatch(matchContext, event)) {
+      return false
+    }
+
+    if (this.contractDoesNotMatch(matchContext, event)) {
       return false
     }
 
@@ -60,6 +62,12 @@ export class EventsMatcher {
   abiEventScopeDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
     debug(`abiEventScopeDoesNotMatch: ${event.scope} ${EventScope.CONTRACT_EVENT} for ${event.id}`)
     return event.scope === EventScope.CONTRACT_EVENT && matchContext.log.topics[0] !== event.abiEvent.topic
+  }
+
+  contractDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
+    debug('contractDoesNotMatch: ', matchContext, event)
+    if (!event.contract) { return false }
+    return getAddress(matchContext.transaction.to) !== getAddress(event.contract.address)
   }
 
   matchersSucceed(matchContext: MatchContext, event: EventEntity): Boolean {

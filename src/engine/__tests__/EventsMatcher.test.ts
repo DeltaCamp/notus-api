@@ -41,6 +41,17 @@ describe('EventsMatcher', () => {
   })
 
   describe('handleEvent()', () => {
+    it('should return false if the event contract is defined and does not match', () => {
+      event.contract = {
+        address: '0xDf9DCa14E092998b2b246486D935A20b3A5749BE'
+      }
+      transaction.to = '0x9eA4826Ba5d0C2019f640CE9Bf08D5aB5870c8fa'
+      matcher.matches = jest.fn(() => true)
+
+      eventsMatcher.match([event], network, block, transaction, log)
+      expect(matchHandler.handle).not.toHaveBeenCalled()
+    })
+
     it('should exit if the abiEvent does not match', () => {
       // Set so that all matchers are successful
       matcher.matches = jest.fn(() => true)

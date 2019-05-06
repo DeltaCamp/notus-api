@@ -91,6 +91,7 @@ input EventDto {
   scope: Float
   runCount: Float
   abiEventId: Float
+  contractId: Float
   isPublic: Boolean
   isActive: Boolean
   parentId: Float
@@ -109,6 +110,8 @@ type EventEntity {
   abiEvent: AbiEventEntity
   abiEventId: Float
   app: AppEntity
+  contract: ContractEntity
+  contractId: Float
   title: String!
   isPublic: Boolean!
   isActive: Boolean!

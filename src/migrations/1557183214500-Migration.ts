@@ -1,10 +1,10 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class Migration1557181169364 implements MigrationInterface {
+export class Migration1557183214500 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`CREATE TYPE "events_scope_enum" AS ENUM('0', '1', '2')`);
-        await queryRunner.query(`CREATE TABLE "events" ("id" SERIAL NOT NULL, "scope" "events_scope_enum" NOT NULL DEFAULT '0', "title" text NOT NULL, "isPublic" boolean NOT NULL DEFAULT false, "isActive" boolean NOT NULL DEFAULT true, "runCount" integer NOT NULL DEFAULT -1, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP DEFAULT null, "webhookUrl" text, "webhookBody" text, "color" text NOT NULL DEFAULT '#efefef', "sendEmail" boolean NOT NULL DEFAULT true, "userId" integer NOT NULL, "abiEventId" integer, "appId" integer, "parentId" integer, CONSTRAINT "PK_40731c7151fe4be3116e45ddf73" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "events" ("id" SERIAL NOT NULL, "scope" "events_scope_enum" NOT NULL DEFAULT '0', "title" text NOT NULL, "isPublic" boolean NOT NULL DEFAULT false, "isActive" boolean NOT NULL DEFAULT true, "runCount" integer NOT NULL DEFAULT -1, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP DEFAULT null, "webhookUrl" text, "webhookBody" text, "color" text NOT NULL DEFAULT '#efefef', "sendEmail" boolean NOT NULL DEFAULT true, "userId" integer NOT NULL, "abiEventId" integer, "appId" integer, "contractId" integer, "parentId" integer, CONSTRAINT "PK_40731c7151fe4be3116e45ddf73" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "users" ("id" SERIAL NOT NULL, "name" text NOT NULL, "email" text NOT NULL, "confirmed" boolean NOT NULL, "one_time_key_hash" text, "one_time_key_expires_at" TIMESTAMP WITH TIME ZONE, "password_hash" text, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "isAdmin" boolean NOT NULL DEFAULT false, CONSTRAINT "PK_a3ffb1c0c8416b9fc6f907b7433" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "apps" ("id" SERIAL NOT NULL, "name" text NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "ownerId" integer, CONSTRAINT "PK_c5121fda0f8268f1f7f84134e19" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TYPE "matchers_source_enum" AS ENUM('block.number', 'block.difficulty', 'block.timestamp', 'block.gasLimit', 'block.gasUsed', 'miner', 'transaction.creates', 'transaction.to', 'transaction.data', 'transaction.from', 'transaction.gasLimit', 'transaction.gasPrice', 'transaction.value', 'transaction.gasUsed', 'log.address', 'log.topics[0]', 'log.topics[1]', 'log.topics[2]', 'log.topics[3]', 'log.data', 'abiEventInput')`);
@@ -19,6 +19,7 @@ export class Migration1557181169364 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_9929fa8516afa13f87b41abb263" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_50180127b5727e1b8d434230064" FOREIGN KEY ("abiEventId") REFERENCES "abi_events"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_603e041f034ae7bece6e7a14fab" FOREIGN KEY ("appId") REFERENCES "apps"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_97a0144f68f706ece9a06541d86" FOREIGN KEY ("contractId") REFERENCES "contracts"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_b06421b4144772e37880b02ac3d" FOREIGN KEY ("parentId") REFERENCES "events"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "apps" ADD CONSTRAINT "FK_fab1152a80b90058626ba4b5911" FOREIGN KEY ("ownerId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "matchers" ADD CONSTRAINT "FK_f6890910558f2c879eb1e1dd174" FOREIGN KEY ("eventId") REFERENCES "events"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -40,6 +41,7 @@ export class Migration1557181169364 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "matchers" DROP CONSTRAINT "FK_f6890910558f2c879eb1e1dd174"`);
         await queryRunner.query(`ALTER TABLE "apps" DROP CONSTRAINT "FK_fab1152a80b90058626ba4b5911"`);
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_b06421b4144772e37880b02ac3d"`);
+        await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_97a0144f68f706ece9a06541d86"`);
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_603e041f034ae7bece6e7a14fab"`);
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_50180127b5727e1b8d434230064"`);
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_9929fa8516afa13f87b41abb263"`);

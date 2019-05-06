@@ -16,6 +16,7 @@ import { Transaction, EntityManagerProvider } from '../transactions'
 import { AppService } from '../apps/AppService';
 import { AbiEventService } from '../abis/AbiEventService'
 import { EventsQuery } from './EventsQuery'
+import { ContractService } from '../contracts/ContractService'
 
 const debug = require('debug')('notus:events:EventService')
 
@@ -27,7 +28,8 @@ export class EventService {
     private readonly matcherService: MatcherService,
     @Inject(forwardRef(() => AppService))
     private readonly appService: AppService,
-    private readonly abiEventService: AbiEventService
+    private readonly abiEventService: AbiEventService,
+    private readonly contractService: ContractService
   ) {}
 
   @Transaction()
@@ -183,6 +185,10 @@ export class EventService {
       event.abiEvent = await this.abiEventService.findOneOrFail(eventDto.abiEventId)
     }
 
+    if (eventDto.contractId) {
+      event.contract = await this.contractService.findOneOrFail(eventDto.contractId)
+    }
+
     event.user = user;
     event.title = eventDto.title
     event.scope = eventDto.scope
@@ -214,6 +220,7 @@ export class EventService {
   @Transaction()
   async findByScope(scope: EventScope): Promise<EventEntity[]> {
     return await this.provider.get().createQueryBuilder(EventEntity, 'events')
+      .leftJoinAndSelect('events.contract', 'contracts')
       .leftJoinAndSelect('events.user', 'users')
       .leftJoinAndSelect('events.abiEvent', 'abiEvents')
       .leftJoinAndSelect('abiEvents.abi', 'abis')
@@ -248,6 +255,14 @@ export class EventService {
 
     if (eventDto.parentId !== undefined) {
       event.parent = await this.findOneOrFail(eventDto.parentId)
+    }
+
+    if (eventDto.contractId !== undefined) {
+      if (eventDto.contractId !== null) {
+        event.contract = await this.contractService.findOneOrFail(eventDto.contractId)
+      } else {
+        event.contract = null
+      }
     }
 
     if (eventDto.color !== undefined) {

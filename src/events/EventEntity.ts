@@ -16,7 +16,8 @@ import {
   UserEntity,
   AppEntity,
   AbiEventEntity,
-  MatcherEntity
+  MatcherEntity,
+  ContractEntity
 } from '../entities'
 import { EventScope } from './EventScope';
 import { EventScopeTitle } from './EventScopeTitle'
@@ -61,6 +62,14 @@ export class EventEntity {
 
   @RelationId((event: EventEntity) => event.app)
   appId: number;
+
+  @Field(type => ContractEntity, { nullable: true })
+  @ManyToOne(type => ContractEntity, contract => contract.events)
+  contract: ContractEntity
+
+  @Field({ nullable: true })
+  @RelationId((event: EventEntity) => event.contract)
+  contractId: number;
 
   @MinLength(8, {
     message: "Title must be longer than $constraint1 characters"

@@ -5,12 +5,14 @@ import {
   UpdateDateColumn,
   PrimaryGeneratedColumn,
   ManyToOne,
-  RelationId
+  RelationId,
+  OneToMany
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
 
 import {
   AbiEntity,
+  EventEntity,
   UserEntity
 } from '../entities'
 
@@ -47,6 +49,9 @@ export class ContractEntity {
   @Field()
   @Column({ type: 'text' })
   address: string = '';
+
+  @OneToMany(type => EventEntity, event => event.contract)
+  events: EventEntity[];
 
   @Field()
   @CreateDateColumn({ type: 'timestamp' })

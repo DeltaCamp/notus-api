@@ -24,6 +24,9 @@ export class EventDto {
   abiEventId: number;
 
   @Field({ nullable: true })
+  contractId: number;
+
+  @Field({ nullable: true })
   isPublic: boolean;
 
   @Field({ nullable: true })

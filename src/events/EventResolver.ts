@@ -4,6 +4,7 @@ import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
+  ContractEntity,
   UserEntity,
   EventEntity,
   AbiEventEntity,
@@ -15,13 +16,15 @@ import { EventDto } from './EventDto'
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 import { EventsQuery } from './EventsQuery'
 import { EventsQueryResponse } from './EventsQueryResponse';
+import { ContractService } from '../contracts/ContractService';
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => EventEntity)
 export class EventResolver {
 
   constructor(
-    private readonly eventService: EventService
+    private readonly eventService: EventService,
+    private readonly contractService: ContractService
   ) {}
 
   @Query(returns => EventEntity, { nullable: true })
@@ -47,6 +50,13 @@ export class EventResolver {
   @ResolveProperty('abiEvent')
   async abiEvent(@Parent() event: EventEntity): Promise<AbiEventEntity> {
     return await this.eventService.getAbiEvent(event)
+  }
+
+  @ResolveProperty('contract')
+  async contract(@Parent() event: EventEntity): Promise<ContractEntity> {
+    if (event.contractId) {
+      return await this.contractService.findOneOrFail(event.contractId)
+    }
   }
 
   @ResolveProperty('user')
