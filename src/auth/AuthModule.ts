@@ -7,6 +7,7 @@ import { AuthJwtStrategy } from './AuthJwtStrategy';
 import { AuthController } from './AuthController'
 import { AuthOneTimeKeyStrategy } from './AuthOneTimeKeyStrategy';
 import { AuthResolver } from './AuthResolver'
+import { OptionalAuthJWTStrategy } from './OptionalAuthJWTStrategy';
 
 @Module({
   imports: [
@@ -19,7 +20,11 @@ import { AuthResolver } from './AuthResolver'
     }),
   ],
   providers: [
-    AuthJwtService, AuthJwtStrategy, AuthOneTimeKeyStrategy, AuthResolver
+    AuthJwtService,
+    AuthJwtStrategy,
+    AuthOneTimeKeyStrategy,
+    AuthResolver,
+    OptionalAuthJWTStrategy
   ],
   controllers: [
     AuthController

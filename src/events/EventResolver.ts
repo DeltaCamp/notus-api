@@ -1,6 +1,7 @@
 import { UseGuards, UnauthorizedException, UseFilters, HttpException } from '@nestjs/common'
 import { Mutation, Resolver, Query, Args, ResolveProperty, Parent } from '@nestjs/graphql'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
+import { OptionalGqlAuthGuard } from '../auth/OptionalGqlAuthGuard'
 
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
@@ -24,14 +25,25 @@ export class EventResolver {
     private readonly eventService: EventService
   ) {}
 
+  @UseGuards(OptionalGqlAuthGuard)
   @Query(returns => EventEntity, { nullable: true })
-  async event(@Args('id') id: number): Promise<EventEntity> {
-    return await this.eventService.findOne(id);
+  async event(
+    @GqlAuthUser() user: UserEntity,
+    @Args('id') id: number
+  ): Promise<EventEntity> {
+    const event = await this.eventService.findOne(id);
+    if (
+      event.isPublic
+      || (user && user.id === event.userId)
+    ) {
+      return event
+    } else {
+      throw new UnauthorizedException()
+    }
   }
 
   @Query(returns => EventsQueryResponse)
   async events(
-    @GqlAuthUser() user: UserEntity,
     @Args({ name: 'eventsQuery', type: () => EventsQuery, nullable: true }) eventsQuery: EventsQuery): Promise<EventsQueryResponse> {
     const result = new EventsQueryResponse()
     const [events, totalCount] = await this.eventService.findAndCount(eventsQuery);
