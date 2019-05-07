@@ -57,6 +57,9 @@ export class AbiResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('abi') abiDto: AbiDto
   ): Promise<AbiEntity> {
+    if (!user.isAdmin) {
+      throw new UnauthorizedException()
+    }
     return await this.abiService.createAndSave(user, abiDto)
   }
 
@@ -66,6 +69,9 @@ export class AbiResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('abi') abiDto: AbiDto
   ): Promise<AbiEntity> {
+    if (!user.isAdmin) {
+      throw new UnauthorizedException()
+    }
     const abi = await this.abiService.findOneOrFail(abiDto.id)
     if (abi.ownerId !== user.id) {
       throw new UnauthorizedException()
@@ -79,6 +85,9 @@ export class AbiResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('id') id: number
   ): Promise<AbiEntity> {
+    if (!user.isAdmin) {
+      throw new UnauthorizedException()
+    }
     const abi = await this.abiService.findOneOrFail(id)
     if (abi.ownerId !== user.id) {
       throw new UnauthorizedException()

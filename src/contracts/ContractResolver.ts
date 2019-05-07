@@ -53,6 +53,9 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
+    if (!user.isAdmin) {
+      throw new UnauthorizedException()
+    }
     return await this.contractService.createContract(user, contractDto)
   }
 
@@ -69,6 +72,9 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
+    if (!user.isAdmin) {
+      throw new UnauthorizedException()
+    }
     const contract = await this.contractService.findOneOrFail(contractDto.id)
     if (contract.ownerId !== user.id) {
       throw new UnauthorizedException()
@@ -82,6 +88,9 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('id') id: number
   ): Promise<ContractEntity> {
+    if (!user.isAdmin) {
+      throw new UnauthorizedException()
+    }
     const contract = await this.contractService.findOneOrFail(id)
     if (contract.ownerId !== user.id) {
       throw new UnauthorizedException()
