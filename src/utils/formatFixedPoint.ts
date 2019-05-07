@@ -10,7 +10,10 @@ export function formatFixedPoint(value, metaDataType: MetaDataType) {
     return '0'
   }
   let valueStr = value.toString()
+  if (valueStr.length < decimals) {
+    valueStr = Array(decimals).join('0') + valueStr
+  }
   let remainder = valueStr.substring(valueStr.length - decimals, valueStr.length)
-  let whole = valueStr.substring(0, valueStr.length - decimals)
+  let whole = bigNumberify(valueStr.substring(0, valueStr.length - decimals)).toString()
   return whole + '.' + remainder
 }

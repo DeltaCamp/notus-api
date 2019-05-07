@@ -8,6 +8,8 @@ import { keyHashHex } from '../utils/keyHashHex'
 import { Transaction } from '../transactions/Transaction'
 import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 import { TemplateRenderer } from '../templates/TemplateRenderer';
+import { ValidationException } from '../common/ValidationException';
+import { validate } from 'class-validator';
 
 @Injectable()
 export class UserService {
@@ -46,6 +48,8 @@ export class UserService {
 
     const oneTimeKey = user.generateOneTimeKey()
 
+    await this.validateUser(user)
+
     this.provider.get().save(user)
 
     if (newUser) {
@@ -64,6 +68,8 @@ export class UserService {
     if (user) {
       const oneTimeKey = user.generateOneTimeKey()
 
+      await this.validateUser(user)
+
       await this.provider.get().save(user)
 
       this.sendMagicLink(user, oneTimeKey)
@@ -76,6 +82,7 @@ export class UserService {
   public async confirm(user: UserEntity, password: string): Promise<void> {
     user.clearOneTimeKey()
     user.password_hash = keyHashHex(password)
+    await this.validateUser(user)
     await this.provider.get().save(user)
   }
 
@@ -102,5 +109,12 @@ export class UserService {
       text: this.templateRenderer.renderTemplate('magic_link.template.text.mst', view),
       html: this.templateRenderer.renderHtmlTemplate('magic_link.template.html.mst', view)
     }).catch(error => rollbar.error(error))
+  }
+
+  async validateUser(user: UserEntity) {
+    let errors = await validate(user)
+    if (errors.length > 0) {
+      throw new ValidationException(`User is invalid`, errors)
+    }
   }
 }

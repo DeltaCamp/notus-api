@@ -4,8 +4,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne
+  OneToMany
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
 
@@ -19,6 +18,7 @@ import {
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
 import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
+import { IsEmail } from 'class-validator';
 
 @Entity({ name: 'users' })
 @ObjectType()
@@ -43,6 +43,7 @@ export class UserEntity {
   @Column({ type: 'text' })
   name: string = '';
 
+  @IsEmail()
   @Field()
   @Column({ type: 'text' })
   email: string = '';

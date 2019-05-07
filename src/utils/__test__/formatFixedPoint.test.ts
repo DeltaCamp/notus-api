@@ -14,4 +14,8 @@ describe('formatFixedPoint', () => {
   it('should handle zero', () => {
     expect(formatFixedPoint('0', MetaDataType.FIXED_POINT_5)).toEqual('0')
   })
+
+  it('should handle less than zero', () => {
+    expect(formatFixedPoint('4', MetaDataType.FIXED_POINT_2)).toEqual('0.04')
+  })
 })

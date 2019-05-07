@@ -117,6 +117,7 @@ describe('the test', () => {
   describe('confirm()', () => {
     it('should set the password', async () => {
       user = new UserEntity()
+      user.email = 'fake@fake.com'
       user.generateOneTimeKey()
       let password = 'hello'
       entityManager = {
