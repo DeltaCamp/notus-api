@@ -207,5 +207,26 @@ describe('MatchContext', () => {
         expect(matcher.matches(matchContext, matcherEntity)).toBeTruthy()
       })
     })
+
+    describe('with string', () => {
+      beforeEach(() => {
+        matcherEntity.source = Source.TRANSACTION_DATA
+        transaction.data = '183765779077962'
+      })      
+
+      it('contains should pass', () => {
+        matcherEntity.operator = Operator.CONTAINS
+        matcherEntity.operand = '779'
+
+        expect(matcher.matches(matchContext, matcherEntity)).toBeTruthy()
+      })
+
+      it('contains should fail if wrong', () => {
+        matcherEntity.operator = Operator.CONTAINS
+        matcherEntity.operand = '777'
+
+        expect(matcher.matches(matchContext, matcherEntity)).toBeFalsy()
+      })
+    })
   })
 })

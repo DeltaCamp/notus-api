@@ -4,5 +4,6 @@ export enum Operator {
   LT,
   GT,
   LTE,
-  GTE
+  GTE,
+  CONTAINS
 }

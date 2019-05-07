@@ -5,5 +5,6 @@ export const OperatorTitle = {
   [Operator.GT]: 'greater than',
   [Operator.GTE]: 'greater than or equal to',
   [Operator.LT]: 'less than',
-  [Operator.LTE]: 'less than or equal to'
+  [Operator.LTE]: 'less than or equal to',
+  [Operator.CONTAINS]: 'contains'
 }

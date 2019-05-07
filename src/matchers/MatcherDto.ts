@@ -1,6 +1,5 @@
 import { Field, InputType, ID } from 'type-graphql';
 import { Operator } from './Operator'
-import { OperandDataType } from './OperandDataType'
 
 @InputType()
 export class MatcherDto {

@@ -31,6 +31,8 @@ export class Matcher {
       case Operator.GTE:
         return this.gte(matchContext, matcher)
         break;
+      case Operator.CONTAINS:
+        return this.contains(matchContext, matcher)
       default:
         debug(`MatchContext: Unknown matcher type ${matcher.operator}`)
     }
@@ -98,6 +100,12 @@ export class Matcher {
     } else {
       return value >= Number(operand)
     }
+  }
+
+  contains(matchContext: MatchContext, matcher: MatcherEntity): boolean {
+    const { operand } = matcher
+    const value = this.getSourceValue(matchContext, matcher).toString()
+    return value.indexOf(operand) !== -1
   }
 
   getSourceValue(matchContext: MatchContext, matcher: MatcherEntity) {
