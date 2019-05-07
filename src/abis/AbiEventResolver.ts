@@ -1,14 +1,19 @@
-import { UseFilters } from '@nestjs/common';
+import { UseFilters, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { Resolver, ResolveProperty, Parent, Args, Query } from '@nestjs/graphql'
 
 import {
   AbiEntity,
   AbiEventEntity,
-  AbiEventInputEntity
+  AbiEventInputEntity,
+  UserEntity
 } from '../entities'
 import { AbiEventService } from './AbiEventService';
 import { AbiService } from './AbiService';
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+import { GqlAuthGuard } from '../auth/GqlAuthGuard';
+import { Mutation } from 'type-graphql';
+import { GqlAuthUser } from '../decorators/GqlAuthUser';
+import { AbiEventDto } from './AbiEventDto'
 
 const debug = require('debug')('notus:AbiEventResolver')
 
@@ -45,5 +50,20 @@ export class AbiEventResolver {
     const result = await this.abiEventService.findAbiEventInputs(abiEvent)
     debug(`abiEventInputs: ${abiEvent.id}: `, result.length)
     return result
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => AbiEventEntity)
+  @UseFilters(new GqlRollbarExceptionFilter())
+  async updateAbiEvent(
+    @GqlAuthUser() user: UserEntity,
+    @Args('abiEvent') abiEventDto: AbiEventDto
+  ): Promise<AbiEventEntity> {
+    const abiEvent = await this.abiEventService.findOneOrFail(abiEventDto.id)
+    if (abiEvent.abi.ownerId !== user.id) {
+      throw new UnauthorizedException()
+    }
+    const event = await this.abiEventService.update(abiEvent, abiEventDto)
+    return event
   }
 }

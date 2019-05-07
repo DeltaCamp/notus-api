@@ -41,9 +41,6 @@ export class AbiEventInputService {
     if (abiEventInputDto.metaType !== undefined) {
       abiEventInput.metaType = abiEventInputDto.metaType
     }
-    if (abiEventInputDto.isPublic !== undefined) {
-      abiEventInput.isPublic = abiEventInputDto.isPublic
-    }
     await this.provider.get().save(abiEventInput)
     return abiEventInput
   }

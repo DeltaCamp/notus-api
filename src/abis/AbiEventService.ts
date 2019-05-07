@@ -7,6 +7,7 @@ import {
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
+import { AbiEventDto } from './AbiEventDto'
 
 @Injectable()
 export class AbiEventService {
@@ -53,5 +54,14 @@ export class AbiEventService {
       .innerJoin('abiEventInputs.abiEvent', 'abiEvents')
       .where('"abiEvents"."id" = :id', { id: abiEvent.id })
       .getMany()
+  }
+
+  @Transaction()
+  async update(abiEvent: AbiEventEntity, abiEventDto: AbiEventDto): Promise<AbiEventEntity> {
+    if (abiEventDto.isPublic !== undefined) {
+      abiEvent.isPublic = abiEventDto.isPublic
+    }
+    await this.provider.get().save(abiEvent)
+    return abiEvent
   }
 }

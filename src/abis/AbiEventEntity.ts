@@ -49,6 +49,10 @@ export class AbiEventEntity {
   })
   abiEventInputs: AbiEventInputEntity[];
 
+  @Field()
+  @Column({ type: 'boolean', default: true, nullable: false })
+  isPublic: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
 

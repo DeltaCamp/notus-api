@@ -18,6 +18,11 @@ type AbiEntity {
   abiEvents: [AbiEventEntity!]!
 }
 
+input AbiEventDto {
+  id: ID
+  isPublic: Boolean
+}
+
 type AbiEventEntity {
   id: ID!
   name: String!
@@ -26,11 +31,11 @@ type AbiEventEntity {
   abi: AbiEntity!
   abiId: Float!
   abiEventInputs: [AbiEventInputEntity!]!
+  isPublic: Boolean!
 }
 
 input AbiEventInputDto {
   id: ID
-  isPublic: Boolean
   metaType: Float
 }
 
@@ -41,7 +46,6 @@ type AbiEventInputEntity {
   metaType: Float
   abiEvent: AbiEventEntity!
   abiEventId: Float!
-  isPublic: Boolean!
 }
 
 input AppDto {
@@ -189,6 +193,7 @@ type Mutation {
   updateAbi(abi: AbiDto!): AbiEntity!
   destroyAbi(id: Float!): AbiEntity!
   updateAbiEventInput(abiEventInput: AbiEventInputDto!): AbiEventInputEntity!
+  updateAbiEvent(abiEvent: AbiEventDto!): AbiEventEntity!
   createContract(contract: ContractDto!): ContractEntity!
   updateContract(contract: ContractDto!): ContractEntity!
   destroyContract(id: Float!): ContractEntity!
