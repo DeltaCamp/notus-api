@@ -5,6 +5,7 @@ import { MatcherEntity } from '../entities'
 import { MatcherService } from './MatcherService'
 import { MatcherResolver } from './MatcherResolver'
 import { SourceResolver } from './SourceResolver'
+import { MetaDataTypeResolver } from './MetaDataTypeResolver'
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { SourceResolver } from './SourceResolver'
   ],
 
   providers: [
-    MatcherService, SourceResolver, MatcherResolver
+    MatcherService, SourceResolver, MatcherResolver, MetaDataTypeResolver
   ],
 
   exports: [

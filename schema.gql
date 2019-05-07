@@ -179,6 +179,11 @@ type MatcherEntity {
   updatedAt: Date!
 }
 
+type MetaDataTypeEntity {
+  metaDataType: ID!
+  title: String!
+}
+
 type Mutation {
   createApp(app: AppDto!): AppEntity!
   updateApp(app: AppDto!): AppEntity!
@@ -219,6 +224,8 @@ type Query {
   events(eventsQuery: EventsQuery): EventsQueryResponse!
   source(source: String!): SourceEntity!
   sources: [SourceEntity!]!
+  metaDataType(metaDataType: String!): MetaDataTypeEntity!
+  metaDataTypes: [MetaDataTypeEntity!]!
   abi(id: Float!): AbiEntity!
   abis(name: String): [AbiEntity!]!
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
