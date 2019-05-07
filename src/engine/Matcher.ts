@@ -105,7 +105,15 @@ export class Matcher {
   contains(matchContext: MatchContext, matcher: MatcherEntity): boolean {
     const { operand } = matcher
     const value = this.getSourceValue(matchContext, matcher).toString()
-    return value.indexOf(operand) !== -1
+
+    const match = /0x(\w+)/.exec(operand)
+    if (match) {
+      debug('contains: checking hex ', value, match[1])
+      return value.indexOf(match[1]) !== -1
+    } else {
+      debug('contains: checking string: ', value, operand)
+      return value.indexOf(operand) !== -1
+    }
   }
 
   getSourceValue(matchContext: MatchContext, matcher: MatcherEntity) {

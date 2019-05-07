@@ -65,7 +65,6 @@ export class EventsMatcher {
   }
 
   contractDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
-    debug('contractDoesNotMatch: ', matchContext, event)
     if (!event.contract) { return false }
     return getAddress(matchContext.transaction.to) !== getAddress(event.contract.address)
   }
