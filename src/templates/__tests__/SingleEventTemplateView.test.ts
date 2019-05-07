@@ -4,6 +4,7 @@ import { MatchContext } from '../../engine/MatchContext';
 import {
   EventEntity
 } from '../../entities';
+import { ethers } from 'ethers'
 
 const Mustache = require('mustache')
 
@@ -27,7 +28,7 @@ describe('SingleEventTemplateView', () => {
     transaction = {
       hash: '0x0afd071dca071b824924d3c61a6b95ca8e576eb32330bfbbbe634b97a1644caf',
       from: '0xDe2279Ca2A4f408006EFaB5f2c35aBbFC458C4b4',
-      value: bigNumberify('1000')
+      value: ethers.utils.parseUnits('0.8', 'gwei')
     }
     log = {}
     network = {
@@ -66,6 +67,6 @@ describe('SingleEventTemplateView', () => {
     expect(Mustache.render(
       "{{transaction.value}}",
       view
-    )).toContain('1000')
+    )).toContain('0.8 gwei')
   })
 })

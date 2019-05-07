@@ -17,7 +17,7 @@ export class PartialsProvider {
   get(): Map<string, string> {
     if (!this.partials || !isProduction()) {
       this.partials = partialsFactory(this.templateLoader.templatesBaseDir())
-      debug('Loaded partials ', this.partials)
+      debug('Loaded partials ', Object.keys(this.partials))
     }
     return this.partials
   }

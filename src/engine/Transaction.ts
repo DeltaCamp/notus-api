@@ -9,6 +9,8 @@ export interface Transaction {
   transactionIndex?: number;
   root?: string;
   gasUsed?: BigNumber;
+  gasLimit?: BigNumber;
+  gasPrice?: BigNumber;
   logsBloom?: string;
   blockHash?: string;
   transactionHash?: string;
@@ -20,6 +22,9 @@ export interface Transaction {
   status?: number;
   timestamp?: number;
   raw?: string;
+  nonce?: number;
+  creates?: string;
   value: BigNumber;
   chainId: number;
+  hash?: string;
 }

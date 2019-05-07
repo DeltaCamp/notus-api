@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { MailerService } from '@nest-modules/mailer';
+import { pick } from 'lodash'
 
 import { PgBossProvider } from './PgBossProvider';
 import { JOB_NAME, MailJob } from './MailJob'
@@ -20,7 +21,7 @@ export class MailJobRunner {
 
   handle = async (job) => {
     const mailJob: MailJob = job.data
-    debug('sendMail: ', mailJob)
+    debug('sendMail: ', pick(mailJob, ['to', 'subject']))
     await this.mailerService.sendMail(mailJob)
   }
 }

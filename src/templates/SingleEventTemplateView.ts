@@ -2,7 +2,7 @@ import { Block, Log } from 'ethers/providers';
 import { Network } from 'ethers/utils/networks';
 
 import { Transaction } from '../engine/Transaction'
-import { BaseView } from '../templates/BaseView'
+import { BaseTemplateView } from '../templates/BaseTemplateView'
 import { MatchContext } from '../engine/MatchContext'
 import {
   EventEntity,
@@ -10,35 +10,42 @@ import {
 } from '../entities'
 import { formatEtherscanAddressUrl } from '../utils/formatEtherscanAddressUrl'
 import { formatEtherscanTransactionUrl } from '../utils/formatEtherscanTransactionUrl'
+import { BlockView } from './BlockView'
+import { TransactionView } from './TransactionView'
+import { AbiEventView } from './AbiEventView';
+import { MatcherView } from './MatcherView';
 
-export class SingleEventTemplateView extends BaseView {
+export class SingleEventTemplateView extends BaseTemplateView {
   public readonly event?: EventEntity;
-  public readonly block?: Block
-  public readonly transaction?: Transaction
+  public readonly block?: BlockView
+  public readonly transaction?: TransactionView
   public readonly log?: Log
   public readonly network?: Network
+  public readonly matchers: MatcherView[]
 
   constructor (
     context: MatchContext, event: EventEntity
   ) {
     super()
     this.event = event
-    this.block = context.block
-    this.transaction = context.transaction
+    this.block = new BlockView(context.block)
+    this.transaction = new TransactionView(context.transaction)
     this.log = context.log
     this.network = context.network
+
+    const logDescriptions = Object.values(context.event)
+    if (logDescriptions.length) {
+      const abiEventView = new AbiEventView(logDescriptions[0], event.matchers)
+      this[abiEventView.name] = abiEventView
+    }
+
+    this.matchers = (event.matchers || []).map((matcher, index) => (
+      new MatcherView(matcher, index === 0, index === (this.event.matchers.length - 1))
+    ))
   }
 
-  title () {
+  title = () => {
     return this.event.formatTitle()
-  }
-
-  matchers () {
-    return this.event.matchers.map((matcher: MatcherEntity, index) => ({
-      description: matcher.description(),
-      isFirst: index === 0,
-      isLast: index === (this.event.matchers.length - 1)
-    }))
   }
 
   etherscanAddress  = () => {

@@ -18,6 +18,7 @@ import {
   EventEntity,
   AbiEventInputEntity
 } from '../entities';
+import { MetaDataType } from './MetaDataType';
 
 @Entity({ name: 'matchers' })
 @ObjectType()
@@ -70,15 +71,11 @@ export class MatcherEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  description(): string {
-    return `${this.formatSource()} is ${OperatorTitle[this.operator]} ${this.operand}`
-  }
-
-  formatSource(): string {
-    if (this.source === Source.CONTRACT_EVENT_INPUT) {
-      return this.abiEventInput.description()
+  getMetaDataType(): MetaDataType {
+    if (this.source === Source.CONTRACT_EVENT_INPUT && this.abiEventInput) {
+      return this.abiEventInput.metaType
     } else {
-      return SourceTitle[this.source]
+      return null
     }
   }
 }

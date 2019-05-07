@@ -1,3 +1,4 @@
+import { MatcherView } from '../MatcherView'
 import {
   AbiEventEntity,
   AbiEntity,
@@ -8,7 +9,7 @@ import * as Source from '../../matchers/Source'
 import { Operator } from '../../matchers/Operator'
 import { SolidityDataType } from '../../common/SolidityDataType';
 
-describe('MatcherEntity', () => {
+describe('MatcherView', () => {
   describe('description()', () => {
     it('should correctly format standard sources', () => {
       let matcher1 = new MatcherEntity()
@@ -17,7 +18,9 @@ describe('MatcherEntity', () => {
       matcher1.operator = Operator.EQ
       matcher1.operand = '0x4321'
 
-      expect(matcher1.description()).toContain(`transaction from address is equal to 0x4321`)
+      let matcher = new MatcherView(matcher1, true, true)
+
+      expect(matcher.description()).toContain(`transaction from address is equal to 0x4321`)
     })
 
     it('should correctly format custom abi event inputs', () => {
@@ -42,7 +45,9 @@ describe('MatcherEntity', () => {
       matcher2.operator = Operator.GT
       matcher2.operand = '1000'
 
-      expect(matcher2.description()).toContain(`transfer value is greater than 1000`)
+      let matcher = new MatcherView(matcher2, true, true)
+
+      expect(matcher.description()).toContain(`transfer value is greater than 1000`)
     })  
   })
 })

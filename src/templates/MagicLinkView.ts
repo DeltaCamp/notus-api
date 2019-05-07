@@ -1,6 +1,6 @@
-import { BaseView } from './BaseView'
+import { BaseTemplateView } from './BaseTemplateView'
 
-export class MagicLinkView extends BaseView {
+export class MagicLinkView extends BaseTemplateView {
 
   constructor (
     public readonly oneTimeKey: string

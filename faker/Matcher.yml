@@ -4,11 +4,11 @@ items:
     event: '@event0'
     source: 'transaction.value'
     operator: '3' # Greater than
-    operand: '1000'
+    operand: '100000000000000000000' # 100 Ether
     order: 1
   matcher1:
     event: '@event1'
     source: 'transaction.value' # 'Abi Address'
     operator: '2' # less than
-    operand: '1000'
+    operand: '1' # 1 wei
     order: 1

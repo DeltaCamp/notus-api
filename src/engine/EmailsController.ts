@@ -3,7 +3,7 @@ import {
   Get
 } from '@nestjs/common'
 
-import { BaseView } from '../templates/BaseView'
+import { BaseTemplateView } from '../templates/BaseTemplateView'
 import { TemplateRenderer } from '../templates/TemplateRenderer'
 
 const debug = require('debug')('notus:engine:EmailsController')
@@ -75,7 +75,7 @@ export class EmailsController {
   }
     
   private newView(extraView) {
-    const view = new BaseView()
+    const view = new BaseTemplateView()
     Object.assign(view, extraView)
     return view
   }

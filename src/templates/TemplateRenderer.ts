@@ -18,11 +18,11 @@ export class TemplateRenderer {
 
   render(template: string, view: any): string {
     const partials = this.partialsProvider.get()
-    debug(`render ${template} with view `, view, ` with partials `, partials)
     return Mustache.render(template, view, partials)
   }
 
   renderTemplate(templateName: string, view: any) {
+    debug(`renderTemplate(${templateName})`)
     return this.render(this.templateLoader.load(templateName), view)
   }
 
@@ -36,6 +36,7 @@ export class TemplateRenderer {
   }
 
   renderHtmlTemplate(templateName: string, view: any): string {
+    debug(`renderHtmlTemplate(${templateName})`)    
     return this.renderHtml(this.templateLoader.load(templateName), view)
   }
 }
