@@ -40,7 +40,7 @@ export class SingleEventTemplateView extends BaseTemplateView {
     }
 
     this.matchers = (event.matchers || []).map((matcher, index) => (
-      new MatcherView(matcher, index === 0, index === (this.event.matchers.length - 1))
+      new MatcherView(matcher, index === 0, index === (this.event.matchers.length - 1), context)
     ))
   }
 

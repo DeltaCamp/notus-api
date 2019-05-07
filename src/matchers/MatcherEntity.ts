@@ -10,15 +10,14 @@ import {
 import { Field, ObjectType, ID } from 'type-graphql';
 import { IsNotEmpty, ValidateIf } from "class-validator";
 
-import { OperatorTitle } from './OperatorTitle'
 import { Operator } from './Operator'
 import * as Source from './Source'
-import { SourceTitle } from './SourceTitle'
 import {
   EventEntity,
   AbiEventInputEntity
 } from '../entities';
 import { MetaDataType } from './MetaDataType';
+import { SourceMetaDataType } from './SourceMetaDataType'
 
 @Entity({ name: 'matchers' })
 @ObjectType()
@@ -75,7 +74,7 @@ export class MatcherEntity {
     if (this.source === Source.CONTRACT_EVENT_INPUT && this.abiEventInput) {
       return this.abiEventInput.metaType
     } else {
-      return null
+      return SourceMetaDataType[this.source]
     }
   }
 }

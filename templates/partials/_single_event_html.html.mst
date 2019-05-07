@@ -1,11 +1,11 @@
-<div class='pb1'>
+<section>
   <h3>{{title}} occurred at block {{block.number}}</h3>
-  <p>
+  <ul>
     {{#matchers}}
-      {{description}} {{^isLast}}and <br /> {{/isLast}}
+      <li>{{sourceTitle}}: <b>{{sourceValue}}</b></li>
     {{/matchers}}
-  </p>
+  </ul>
   <p>
     <a href="{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}">View the transaction on Etherscan</a>
   </p>
-</div>
+</section>

@@ -21,7 +21,7 @@ export class MailJobRunner {
 
   handle = async (job) => {
     const mailJob: MailJob = job.data
-    debug('sendMail: ', pick(mailJob, ['to', 'subject']))
+    debug('sendMail: ', pick(mailJob, ['to', 'subject', 'text']))
     await this.mailerService.sendMail(mailJob)
   }
 }

@@ -1,7 +1,7 @@
-{{title}} occurred at block {{block.number}} <br />
+{{title}} occurred at block {{block.number}}
+
 {{#matchers}}
-  {{#isFirst}} where{{/isFirst}} {{description}} {{^isLast}}and 
-{{/isLast}}
+{{sourceTitle}}: {{sourceValue}}
 {{/matchers}}
 
 View the transaction on Etherscan: {{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}
