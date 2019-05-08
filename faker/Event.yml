@@ -6,9 +6,11 @@ items:
     user: '@user0'
     isPublic: true
     scope: 0
+    disableEmailKey: '0x1234123412341234'
   event1:
     title: 'Deleted Event'
     app: '@app1'
     user: '@user0'
     scope: 0
     deletedAt: '1980-10-10 12:12:00'
+    disableEmailKey: '0x1234123412341234'

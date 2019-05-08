@@ -5,3 +5,5 @@
 {{/matchers}}
 
 View the transaction on Etherscan: {{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}
+
+Unsubscribe from this Event: {{disableEventUrl}}

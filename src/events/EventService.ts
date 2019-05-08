@@ -17,6 +17,7 @@ import { AppService } from '../apps/AppService';
 import { AbiEventService } from '../abis/AbiEventService'
 import { EventsQuery } from './EventsQuery'
 import { ContractService } from '../contracts/ContractService'
+import { newKeyHex } from '../utils/newKeyHex';
 
 const debug = require('debug')('notus:events:EventService')
 
@@ -206,6 +207,8 @@ export class EventService {
       event.sendEmail = eventDto.sendEmail
     }
 
+    event.disableEmailKey = newKeyHex()
+
     await this.validateEvent(event)
 
     await em.save(event)
@@ -331,5 +334,12 @@ export class EventService {
     if (errors.length > 0) {
       throw new ValidationException(`Event is invalid`, errors)
     }
+  }
+
+  async disableEventEmail(disableEmailKey: string): Promise<EventEntity> {
+    const event = await this.provider.get().findOneOrFail(EventEntity, { disableEmailKey })
+    event.sendEmail = false
+    await this.provider.get().save(event)
+    return event
   }
 }

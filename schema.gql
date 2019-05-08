@@ -188,6 +188,7 @@ type Mutation {
   createApp(app: AppDto!): AppEntity!
   updateApp(app: AppDto!): AppEntity!
   destroyApp(appId: Float!): AppEntity!
+  disableEventEmail(disableEmailKey: String!): Float!
   createEvent(event: EventDto!): EventEntity!
   updateEvent(event: EventDto!): EventEntity!
   deleteEvent(eventId: Float!): EventEntity!

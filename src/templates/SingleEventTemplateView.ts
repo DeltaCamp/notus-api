@@ -44,6 +44,10 @@ export class SingleEventTemplateView extends BaseTemplateView {
     ))
   }
 
+  disableEventUrl = () => {
+    return `${this.notusNetworkUri()}/disable-email?disableEmailKey=${this.event.disableEmailKey}`
+  }
+
   title = () => {
     return this.event.formatTitle()
   }

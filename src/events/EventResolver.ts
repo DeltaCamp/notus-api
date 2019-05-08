@@ -73,6 +73,14 @@ export class EventResolver {
     return result
   }
 
+  @Mutation(returns => Number)
+  async disableEventEmail(
+    @Args('disableEmailKey') disableEmailKey: string
+  ): Promise<number> {
+    const event = await this.eventService.disableEventEmail(disableEmailKey)
+    return event.id
+  }
+
   @ResolveProperty('abiEvent')
   async abiEvent(@Parent() event: EventEntity): Promise<AbiEventEntity> {
     return await this.eventService.getAbiEvent(event)

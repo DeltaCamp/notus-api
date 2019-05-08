@@ -144,6 +144,9 @@ export class EventEntity {
   @Column({ type: 'boolean', default: true, nullable: false })
   sendEmail: boolean;
 
+  @Column({ type: 'text', nullable: false })
+  disableEmailKey: string;
+
   hasEmailAction(): boolean {
     return this.sendEmail
   }

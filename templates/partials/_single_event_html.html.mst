@@ -8,4 +8,7 @@
   <p>
     <a href="{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}">View the transaction on Etherscan</a>
   </p>
+  <p>
+    <a href="{{disableEventUrl}}">Unsubscribe from Event</a>
+  </p>
 </section>
