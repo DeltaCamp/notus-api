@@ -18,7 +18,7 @@ describe('MatcherView', () => {
       matcher1.operator = Operator.EQ
       matcher1.operand = '0x4321'
 
-      let matcher = new MatcherView(matcher1, true, true)
+      let matcher = new MatcherView(matcher1, true, true, null)
 
       expect(matcher.description()).toContain(`transaction from address is equal to 0x4321`)
     })
@@ -45,7 +45,7 @@ describe('MatcherView', () => {
       matcher2.operator = Operator.GT
       matcher2.operand = '1000'
 
-      let matcher = new MatcherView(matcher2, true, true)
+      let matcher = new MatcherView(matcher2, true, true, null)
 
       expect(matcher.description()).toContain(`transfer value is greater than 1000`)
     })  
