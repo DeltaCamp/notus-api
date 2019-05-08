@@ -1,0 +1,9 @@
+Emails for "{{title}}" have been suspended due to high frequency.
+
+{{#event.webhookUrl}}
+The webhook is unaffected: {{event.webhookUrl}}
+{{/event.webhookUrl}}
+
+You may enable emails again by editing the event:
+
+{{eventUrl}}

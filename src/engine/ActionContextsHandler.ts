@@ -31,7 +31,6 @@ export class ActionContextsHandler {
   groupActionContextsByUser(actionContexts: ActionContext[]): Map<number, ActionContext[]> {
     return actionContexts.reduce(
       (userContexts: Map<number, ActionContext[]>, actionContext: ActionContext): Map<number, ActionContext[]> => {
-        debug(actionContext.event)
         const userId = actionContext.event.user.id
         if (!userContexts[userId]) {
           userContexts[userId] = []

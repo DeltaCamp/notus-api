@@ -16,6 +16,7 @@ import {
   UserEntity,
   AppEntity,
   AbiEventEntity,
+  EventLogEntity,
   MatcherEntity,
   ContractEntity
 } from '../entities'
@@ -96,6 +97,9 @@ export class EventEntity {
   @Field({ nullable: true })
   @RelationId((event: EventEntity) => event.parent)
   parentId?: number | null;
+
+  @OneToMany(type => EventLogEntity, eventLog => eventLog.event)
+  eventLogs: EventLogEntity[];
 
   @OneToMany(type => EventEntity, child => child.parent, {
     nullable: true

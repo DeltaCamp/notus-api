@@ -20,3 +20,5 @@ export ETHEREUM_NETWORK=ropsten
 # When the worker is started, how many new blocks it should retroactively retrieve before continuing with current blocks
 export MAX_REPLAY_BLOCKS=20
 # export ETHEREUM_NETWORK=localhost
+export EVENT_WINDOW_MAX_COUNT=5
+export EVENT_WINDOW_DURATION_SECONDS=300

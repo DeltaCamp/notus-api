@@ -1,12 +1,10 @@
-import { Block, Log } from 'ethers/providers';
+import { Log } from 'ethers/providers';
 import { Network } from 'ethers/utils/networks';
 
-import { Transaction } from '../engine/Transaction'
 import { BaseTemplateView } from '../templates/BaseTemplateView'
 import { MatchContext } from '../engine/MatchContext'
 import {
-  EventEntity,
-  MatcherEntity
+  EventEntity
 } from '../entities'
 import { formatEtherscanAddressUrl } from '../utils/formatEtherscanAddressUrl'
 import { formatEtherscanTransactionUrl } from '../utils/formatEtherscanTransactionUrl'
@@ -42,6 +40,10 @@ export class SingleEventTemplateView extends BaseTemplateView {
     this.matchers = (event.matchers || []).map((matcher, index) => (
       new MatcherView(matcher, index === 0, index === (this.event.matchers.length - 1), context)
     ))
+  }
+
+  eventUrl = () => {
+    return `${this.notusNetworkUri()}/events/${this.event.id}/edit`
   }
 
   disableEventUrl = () => {

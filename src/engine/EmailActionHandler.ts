@@ -4,8 +4,15 @@ import { ActionContext } from './ActionContext'
 import { MailJobPublisher } from '../jobs/MailJobPublisher'
 import { EventTemplateView } from '../templates/EventTemplateView'
 import { TemplateRenderer } from '../templates/TemplateRenderer'
-import { UserEntity } from "../entities";
+import {
+  UserEntity,
+  EventLogEntity
+} from "../entities";
 import { SingleEventTemplateView } from "../templates/SingleEventTemplateView";
+import { EventLogService } from "../event-logs/EventLogService";
+import { EventService } from "../events";
+import { EmailHaltWarningView } from "../templates/EmailHaltWarningView";
+import { transactionContextRunner } from "../transactions";
 
 const debug = require('debug')('notus:engine:EmailActionHandler')
 
@@ -14,21 +21,20 @@ export class EmailActionHandler {
 
   constructor (
     private readonly templateRenderer: TemplateRenderer,
-    private readonly mailJobPublisher: MailJobPublisher
+    private readonly mailJobPublisher: MailJobPublisher,
+    private readonly eventLogService: EventLogService,
+    private readonly eventService: EventService
   ) {}
 
   async handle(user: UserEntity, actionContexts: ActionContext[]) {
     debug(`handle received ${actionContexts.length} for user id ${user.id} and email ${user.email}`)
 
-    const events = actionContexts.reduce((views: SingleEventTemplateView[], actionContext: ActionContext): SingleEventTemplateView[] => {
-      if (actionContext.event.hasEmailAction()) {
-        views.push(new SingleEventTemplateView(actionContext.matchContext, actionContext.event))
-      }
-      return views
-    }, [])
+    const views: SingleEventTemplateView[] = await this.actionContextsToTemplateViews(actionContexts)
 
-    const text = this.templateRenderer.renderTemplate('event.template.text.mst', new EventTemplateView(events))
-    const html = this.templateRenderer.renderHtmlTemplate('event.template.html.mst', new EventTemplateView(events))
+    if (!views.length) { return }
+
+    const text = this.templateRenderer.renderTemplate('event.template.text.mst', new EventTemplateView(views))
+    const html = this.templateRenderer.renderHtmlTemplate('event.template.html.mst', new EventTemplateView(views))
 
     let subject: string
     if (actionContexts.length === 1) {
@@ -36,6 +42,48 @@ export class EmailActionHandler {
     } else {
       subject = `${actionContexts.length} new events in block ${actionContexts[0].matchContext.block.number}`
     }
+
+    await this.mailJobPublisher.sendMail({
+      to: user.email,
+      subject,
+      text,
+      html
+    })
+  }
+
+  async actionContextsToTemplateViews(actionContexts: ActionContext[]): Promise<SingleEventTemplateView[]> {
+    const views = []
+    let i: number
+    for (i = 0; i < actionContexts.length; i++) {
+      const actionContext = actionContexts[i]
+      const { event, matchContext } = actionContext
+      if (event.hasEmailAction()) {
+        await transactionContextRunner(async () => {        
+          const eventLog = await this.eventLogService.logEvent(event)
+          if (eventLog.isWindowFull()) {
+            await this.haltEmails(actionContext, eventLog)
+          } else {
+            views.push(new SingleEventTemplateView(matchContext, event))          
+          }
+        })
+      }
+    }
+    return views
+  }
+
+  async haltEmails(actionContext: ActionContext, eventLog: EventLogEntity) {
+    if (eventLog.warningSent) { return }
+    await this.eventLogService.sendWarning(eventLog)
+    await this.sendHaltEmail(actionContext, eventLog)
+    await this.eventService.haltEmails(actionContext.event)
+  }
+
+  async sendHaltEmail(actionContext: ActionContext, eventLog: EventLogEntity) {
+    const { user } = actionContext.event
+    const view = new EmailHaltWarningView(actionContext, eventLog)
+    const text = this.templateRenderer.renderTemplate('email_halt_warning.text.mst', view)
+    const html = this.templateRenderer.renderHtmlTemplate('email_halt_warning.html.mst', view)
+    const subject = `Emails for "${actionContext.event.formatTitle()}" have been suspended`
 
     await this.mailJobPublisher.sendMail({
       to: user.email,

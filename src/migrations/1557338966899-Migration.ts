@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class Migration1557273228367 implements MigrationInterface {
+export class Migration1557338966899 implements MigrationInterface {
 
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.query(`CREATE TYPE "events_scope_enum" AS ENUM('0', '1', '2')`);
@@ -17,6 +17,7 @@ export class Migration1557273228367 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "abi_event_inputs" ("id" SERIAL NOT NULL, "name" text NOT NULL, "type" "abi_event_inputs_type_enum" NOT NULL, "metaType" "abi_event_inputs_metatype_enum", "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "abiEventId" integer, CONSTRAINT "PK_5cd4dc5ab935687cfb9dae2b039" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "work_logs" ("id" SERIAL NOT NULL, "chainId" integer NOT NULL, "lastCompletedBlockNumber" integer NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), CONSTRAINT "PK_f4f3234af57451baa20576887be" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "contracts" ("id" SERIAL NOT NULL, "name" text NOT NULL, "address" text NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "deletedAt" TIMESTAMP DEFAULT null, "ownerId" integer, "abiId" integer, CONSTRAINT "PK_2c7b8f3a7b1acdd49497d83d0fb" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "event_logs" ("id" SERIAL NOT NULL, "windowStartAt" TIMESTAMP WITH TIME ZONE NOT NULL, "windowCount" integer NOT NULL, "warningSent" boolean NOT NULL, "createdAt" TIMESTAMP NOT NULL DEFAULT now(), "updatedAt" TIMESTAMP NOT NULL DEFAULT now(), "eventId" integer, CONSTRAINT "PK_b09cf1bb58150797d898076b242" PRIMARY KEY ("id"))`);
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_9929fa8516afa13f87b41abb263" FOREIGN KEY ("userId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_50180127b5727e1b8d434230064" FOREIGN KEY ("abiEventId") REFERENCES "abi_events"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "events" ADD CONSTRAINT "FK_603e041f034ae7bece6e7a14fab" FOREIGN KEY ("appId") REFERENCES "apps"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
@@ -30,9 +31,11 @@ export class Migration1557273228367 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "abi_event_inputs" ADD CONSTRAINT "FK_68fd6317edadc7b05c99d99b0b6" FOREIGN KEY ("abiEventId") REFERENCES "abi_events"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "contracts" ADD CONSTRAINT "FK_83da1c4b4e98a1254703438aa9c" FOREIGN KEY ("ownerId") REFERENCES "users"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
         await queryRunner.query(`ALTER TABLE "contracts" ADD CONSTRAINT "FK_a343b55b5f5ebbbb35779353ec8" FOREIGN KEY ("abiId") REFERENCES "abis"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
+        await queryRunner.query(`ALTER TABLE "event_logs" ADD CONSTRAINT "FK_dfde4711e1ec00e6cef05ade815" FOREIGN KEY ("eventId") REFERENCES "events"("id") ON DELETE NO ACTION ON UPDATE NO ACTION`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<any> {
+        await queryRunner.query(`ALTER TABLE "event_logs" DROP CONSTRAINT "FK_dfde4711e1ec00e6cef05ade815"`);
         await queryRunner.query(`ALTER TABLE "contracts" DROP CONSTRAINT "FK_a343b55b5f5ebbbb35779353ec8"`);
         await queryRunner.query(`ALTER TABLE "contracts" DROP CONSTRAINT "FK_83da1c4b4e98a1254703438aa9c"`);
         await queryRunner.query(`ALTER TABLE "abi_event_inputs" DROP CONSTRAINT "FK_68fd6317edadc7b05c99d99b0b6"`);
@@ -46,6 +49,7 @@ export class Migration1557273228367 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_603e041f034ae7bece6e7a14fab"`);
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_50180127b5727e1b8d434230064"`);
         await queryRunner.query(`ALTER TABLE "events" DROP CONSTRAINT "FK_9929fa8516afa13f87b41abb263"`);
+        await queryRunner.query(`DROP TABLE "event_logs"`);
         await queryRunner.query(`DROP TABLE "contracts"`);
         await queryRunner.query(`DROP TABLE "work_logs"`);
         await queryRunner.query(`DROP TABLE "abi_event_inputs"`);

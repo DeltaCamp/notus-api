@@ -140,6 +140,12 @@ type EventEntity {
   sendEmail: Boolean!
 }
 
+type EventLogEntity {
+  id: ID!
+  event: EventEntity!
+  eventId: Float!
+}
+
 input EventsQuery {
   skip: Float
   take: Float

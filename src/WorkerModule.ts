@@ -15,6 +15,7 @@ import { mailerModule } from './mailerModule'
 import { TemplateModule } from './templates/TemplateModule'
 import { WorkLogModule } from './work-logs/WorkLogModule'
 import { JobModule } from './jobs/JobModule'
+import { EventLogModule } from './event-logs/EventLogModule'
 import { EntityManagerProvider } from './transactions/EntityManagerProvider';
 
 @Global()
@@ -23,6 +24,7 @@ import { EntityManagerProvider } from './transactions/EntityManagerProvider';
     TypeOrmModule.forRoot(),
     ContractModule,
     EngineModule,
+    EventLogModule,
     AppModule,
     mailerModule,
     EventModule,

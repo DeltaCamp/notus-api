@@ -220,7 +220,6 @@ export class EventService {
     return event
   }
 
-  @Transaction()
   async findByScope(scope: EventScope): Promise<EventEntity[]> {
     return await this.provider.get().createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect('events.contract', 'contracts')
@@ -341,5 +340,11 @@ export class EventService {
     event.sendEmail = false
     await this.provider.get().save(event)
     return event
+  }
+
+  @Transaction()
+  async haltEmails(event: EventEntity) {
+    event.sendEmail = false
+    await this.provider.get().save(event)
   }
 }

@@ -7,7 +7,6 @@ import { createTransaction } from './createTransaction'
 import { Transaction } from './Transaction'
 import { EventEntity } from '../entities'
 import { EventService } from '../events/EventService'
-import { transactionContextRunner } from '../transactions'
 import { Network } from 'ethers/utils';
 import { EthersProvider } from './EthersProvider';
 import { MatchHandler } from './MatchHandler'
@@ -29,12 +28,10 @@ export class BlockHandler {
     protected readonly matchHandler: MatchHandler,
   ) {}
 
-  handle = (networkName: string, blockNumber: number): Promise<any> => {
+  handle = async (networkName: string, blockNumber: number): Promise<any> => {
     this.provider = this.ethersProvider.getNetworkProvider(networkName)
-    return transactionContextRunner(async () => {
-      this.network = await this.provider.getNetwork()
-      await this.checkBlockNumber(blockNumber)
-    })
+    this.network = await this.provider.getNetwork()
+    await this.checkBlockNumber(blockNumber)
   }
 
   checkBlockNumber = async (blockNumber) => {

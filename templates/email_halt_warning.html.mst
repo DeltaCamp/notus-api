@@ -1,0 +1,30 @@
+<html>
+  <head>
+    {{> style }}
+  </head>
+  <body>
+    {{> header }}
+    <div class='content'>
+      <h2>Emails for "{{title}}" have been suspended automatically</h2>
+
+      {{#event.webhookUrl}}
+      <p>
+        The webhook is unaffected: {{event.webhookUrl}}
+      </p>
+      {{/event.webhookUrl}}
+
+      <p>
+        This happens automatically if more than {{eventLog.windowMaxCount}} events occur in {{windowDurationInWords}}
+      </p>
+
+      <p>
+        You can re-enable emails by editing your event.
+      </p>
+
+      <p class='has-text-centered pb2 pt2'>
+        <a class='button' href='{{eventUrl}}'>Edit Event</a>
+      </p>
+    </div>
+    {{> footer }}
+  </body>
+</html>
