@@ -36,16 +36,29 @@ type AbiEventEntity {
 
 input AbiEventInputDto {
   id: ID
-  metaType: Float
+  metaType: String
 }
 
 type AbiEventInputEntity {
   id: ID!
   name: String!
   type: String!
-  metaType: Float
+  metaType: String
   abiEvent: AbiEventEntity!
   abiEventId: Float!
+}
+
+input AbiEventsQuery {
+  skip: Float
+  take: Float
+  abiId: Float
+}
+
+type AbiEventsQueryResponse {
+  totalCount: Float!
+  skip: Float
+  take: Float
+  abiEvents: [AbiEventEntity!]!
 }
 
 input AppDto {
@@ -238,7 +251,7 @@ type Query {
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
   abiEventInput(id: Float!): AbiEventInputEntity!
   abiEvent(id: Float!): AbiEventEntity!
-  abiEvents(topic: String, name: String): [AbiEventEntity!]!
+  abiEvents(abiEventsQuery: AbiEventsQuery): AbiEventsQueryResponse!
   contract(id: Float!): ContractEntity!
   contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
 }

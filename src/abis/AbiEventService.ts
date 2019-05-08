@@ -7,6 +7,7 @@ import {
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
+import { AbiEventsQuery } from './AbiEventsQuery'
 import { AbiEventDto } from './AbiEventDto'
 
 @Injectable()
@@ -54,6 +55,28 @@ export class AbiEventService {
       .innerJoin('abiEventInputs.abiEvent', 'abiEvents')
       .where('"abiEvents"."id" = :id', { id: abiEvent.id })
       .getMany()
+  }
+
+  @Transaction()
+  async findAndCount(params: AbiEventsQuery) {
+    let query = await this.provider.get().createQueryBuilder(AbiEventEntity, 'abiEvents')
+
+    if (params) {
+      if (params.abiId) {
+        query = query.andWhere('"abiEvents"."abiId" = :id', { id: params.abiId })
+      }
+      // if (params.isPublic) {
+      //   query = query.andWhere('"events"."isPublic" IS TRUE')
+      // }
+      if (params.skip) {
+        query = query.offset(params.skip)
+      }
+      if (params.take) {
+        query = query.limit(params.take)
+      }
+    }
+
+    return query.printSql().orderBy('"abiEvents"."name"', 'ASC').getManyAndCount()
   }
 
   @Transaction()

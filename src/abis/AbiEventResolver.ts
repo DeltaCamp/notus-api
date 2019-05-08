@@ -14,6 +14,8 @@ import { GqlAuthGuard } from '../auth/GqlAuthGuard';
 import { Mutation } from 'type-graphql';
 import { GqlAuthUser } from '../decorators/GqlAuthUser';
 import { AbiEventDto } from './AbiEventDto'
+import { AbiEventsQuery } from './AbiEventsQuery'
+import { AbiEventsQueryResponse } from './AbiEventsQueryResponse';
 
 const debug = require('debug')('notus:AbiEventResolver')
 
@@ -33,11 +35,25 @@ export class AbiEventResolver {
     return await this.abiEventService.findOneOrFail(id)
   }
 
-  @Query(returns => [AbiEventEntity])
+  @Query(returns => AbiEventsQueryResponse)
   async abiEvents (
-    @Args({ name: 'name', type: () => String, nullable: true }) name: string,
-    @Args({ name: 'topic', type: () => String, nullable: true }) topic: string) {
-    return await this.abiEventService.find(name, topic)
+    @Args({
+      name: 'abiEventsQuery',
+      type: () => AbiEventsQuery, nullable: true
+    }) abiEventsQuery: AbiEventsQuery): Promise<AbiEventsQueryResponse> {
+
+    const result = new AbiEventsQueryResponse()
+    const [abiEvents, totalCount] = await this.abiEventService.findAndCount(abiEventsQuery);
+
+    result.abiEvents = abiEvents
+    result.totalCount = totalCount
+
+    if (abiEventsQuery) {
+      result.skip = abiEventsQuery.skip
+      result.take = abiEventsQuery.take
+    }
+
+    return result
   }
   
   @ResolveProperty('abi')
