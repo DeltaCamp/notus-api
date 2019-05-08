@@ -12,4 +12,7 @@ export class ContractsQuery extends PagedQuery {
 
   @Field({ nullable: true })
   name?: string
+
+  @Field({ nullable: true })
+  hasAbiEvents?: boolean
 }

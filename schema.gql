@@ -97,6 +97,7 @@ input ContractsQuery {
   userId: Float
   address: String
   name: String
+  hasAbiEvents: Boolean
 }
 
 type ContractsQueryResponse {

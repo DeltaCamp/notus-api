@@ -35,7 +35,10 @@ export class ContractResolver {
   @Query(returns => ContractsQueryResponse)
   async contracts(
     @GqlAuthUser() user: UserEntity,
-    @Args({ name: 'contractsQuery', type: () => ContractsQuery, nullable: true }) contractsQuery: ContractsQuery): Promise<ContractsQueryResponse> {
+    @Args({
+      name: 'contractsQuery', type: () => ContractsQuery, nullable: true
+    }) contractsQuery: ContractsQuery
+  ): Promise<ContractsQueryResponse> {
     const result = new ContractsQueryResponse()
     const [contracts, totalCount] = await this.contractService.findAndCount(contractsQuery);
     result.contracts = contracts

@@ -26,10 +26,16 @@ export class ContractService {
   @Transaction()
   async findAndCount(params: ContractsQuery): Promise<[ContractEntity[], number]> {
     let query = await this.provider.get().createQueryBuilder(ContractEntity, 'contracts')
+      .leftJoinAndSelect("contracts.abi", "abis")
+      .leftJoinAndSelect("abis.abiEvents", "abiEvents")
     
     query = query.where('"contracts"."deletedAt" IS NULL')
     
     if (params) {
+      if (params.hasAbiEvents) {
+        // "contracts"."abiId"
+        query = query.andWhere('"contracts"."abiId" IN (SELECT "abi_events"."abiId" FROM abi_events GROUP BY "abi_events"."abiId" HAVING COUNT(*) > 0)')
+      }
       if (params.userId) {
         query = query.andWhere('"contracts"."userId" = :id', { id: params.userId })
       }

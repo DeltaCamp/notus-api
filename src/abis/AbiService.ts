@@ -103,7 +103,6 @@ export class AbiService {
     abi.abi = abiDto.abi
     abi.isPublic = abiDto.isPublic || false
     abi.abiEvents = []
-
     await this.validate(abi)
 
     abiJson.forEach((element: any) => {
