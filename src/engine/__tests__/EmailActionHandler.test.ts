@@ -75,7 +75,7 @@ describe('EmailActionHandler', () => {
 
       expect(mailJobPublisher.sendMail).toHaveBeenCalledWith({
         to: 'fake@fake.com',
-        subject: `${event.title} occurred in block ${block.number}`,
+        subject: `${event.formatTitle()} occurred in block ${block.number}`,
         text: 'event.template.text.mst',
         html: 'event.template.html.mst'
       })

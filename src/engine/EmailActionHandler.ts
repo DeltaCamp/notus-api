@@ -37,10 +37,10 @@ export class EmailActionHandler {
     const html = this.templateRenderer.renderHtmlTemplate('event.template.html.mst', new EventTemplateView(views))
 
     let subject: string
-    if (actionContexts.length === 1) {
-      subject = `${actionContexts[0].event.title} occurred in block ${actionContexts[0].matchContext.block.number}`
+    if (views.length === 1) {
+      subject = `${views[0].title()} occurred in block ${views[0].block.number()}`
     } else {
-      subject = `${actionContexts.length} new events in block ${actionContexts[0].matchContext.block.number}`
+      subject = `${views.length} new events in block ${views[0].block.number()}`
     }
 
     await this.mailJobPublisher.sendMail({
