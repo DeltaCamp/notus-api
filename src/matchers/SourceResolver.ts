@@ -8,6 +8,8 @@ import { SourceEntity } from './SourceEntity'
 import { SourceMetaDataType } from './SourceMetaDataType'
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 
+const debug = require('debug')('notus:matchers:SourceResolver')
+
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => SourceEntity)
 export class SourceResolver {

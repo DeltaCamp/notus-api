@@ -247,7 +247,7 @@ type SourceEntity {
   source: ID!
   title: String!
   dataType: String!
-  metaDataType: Float
+  metaDataType: String
 }
 
 type UserEntity {

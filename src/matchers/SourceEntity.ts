@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType, ID } from 'type-graphql';
+import { Field, ObjectType, ID } from 'type-graphql';
 
 import { SolidityDataType } from '../common/SolidityDataType'
 import { MetaDataType } from './MetaDataType'
