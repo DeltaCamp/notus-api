@@ -194,7 +194,7 @@ type MatcherEntity {
   abiEventInput: AbiEventInputEntity!
   abiEventInputId: Float
   operator: Float!
-  operand: String!
+  operand: String
   createdAt: Date!
   updatedAt: Date!
 }

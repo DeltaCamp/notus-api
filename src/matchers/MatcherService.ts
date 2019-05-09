@@ -94,7 +94,7 @@ export class MatcherService {
   async validateMatcher(matcher: MatcherEntity) {
     let errors = []
 
-    if (matcher.operator !== Operator.NOOP) {
+    if (matcher.operator !== Operator.NOOP && matcher.operand !== '') {
       const dataType: SolidityDataType = await this.getDataType(matcher)
       try {
         validateOperand(dataType, matcher.operand)

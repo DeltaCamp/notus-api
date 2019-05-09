@@ -56,10 +56,9 @@ export class MatcherEntity {
   @Field()
   operator: Operator;
 
-  @ValidateIf(matcher => matcher.operator !== Operator.NOOP)
-  @IsNotEmpty()
+  // @ValidateIf(matcher => matcher.operator !== Operator.NOOP)
   @Column({ type: 'text', nullable: true })
-  @Field()
+  @Field({ nullable: true })
   operand: string;
 
   @Field()

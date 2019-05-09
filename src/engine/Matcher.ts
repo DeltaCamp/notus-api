@@ -15,6 +15,11 @@ const debug = require('debug')('notus:Matcher')
 export class Matcher {
 
   matches(matchContext: MatchContext, matcher: MatcherEntity): boolean {
+    if (!matcher.operand) {
+      // move this to SQL for performance increase
+      return false
+    }
+
     switch(matcher.operator) {
       case Operator.EQ:
         return this.eq(matchContext, matcher)
