@@ -30,6 +30,14 @@ export class WebhookActionHandler {
     await Promise.all(eventViews.map(async (eventView: SingleEventTemplateView) => {
       try {
         const { event } = eventView
+
+        const headers = new Map<String, String>()
+        
+        event.webhookHeaders.forEach(webhookHeader => {
+          const value = this.templateRenderer.render(webhookHeader.value, eventView)
+          headers[webhookHeader.key] = value
+        })
+
         const url = this.templateRenderer.render(event.webhookUrl, eventView)
         let body = null
         if (event.webhookBody) {
@@ -37,6 +45,7 @@ export class WebhookActionHandler {
         }
         debug('publishing ', url, body)
         await this.webhookJobPublisher.publish({
+          headers,
           url,
           body
         })

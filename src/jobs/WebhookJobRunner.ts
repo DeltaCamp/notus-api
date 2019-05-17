@@ -19,11 +19,15 @@ export class WebhookJobRunner {
 
   handle = async (job: any) => {
     const webhookJob: WebhookJob = job.data
+    const config = {
+      timeout: 1000,
+      headers: webhookJob.headers
+    }
     debug('handle: ', webhookJob)
     if (webhookJob.body) {
-      axios.post(webhookJob.url, webhookJob.body)
+      axios.post(webhookJob.url, webhookJob.body, config)
     } else {
-      axios.get(webhookJob.url)
+      axios.get(webhookJob.url, config)
     }
   }
 }

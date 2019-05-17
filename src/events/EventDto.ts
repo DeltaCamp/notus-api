@@ -2,6 +2,7 @@ import { Field, InputType, ID } from 'type-graphql';
 
 import { MatcherDto } from '../matchers/MatcherDto';
 import { AppDto } from '../apps';
+import { WebhookHeaderDto } from './WebhookHeaderDto'
 
 @InputType()
 export class EventDto {
@@ -52,4 +53,7 @@ export class EventDto {
 
   @Field(type => [MatcherDto], { nullable: true })
   matchers: MatcherDto[];
+
+  @Field(type => [WebhookHeaderDto], { nullable: true })
+  webhookHeaders: WebhookHeaderDto[];
 }

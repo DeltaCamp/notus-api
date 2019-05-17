@@ -127,6 +127,7 @@ input EventDto {
   color: String
   sendEmail: Boolean
   matchers: [MatcherDto!]
+  webhookHeaders: [WebhookHeaderDto!]
 }
 
 type EventEntity {
@@ -150,6 +151,7 @@ type EventEntity {
   deletedAt: Date
   webhookUrl: String
   webhookBody: String
+  webhookHeaders: [WebhookHeaderEntity!]!
   color: String!
   sendEmail: Boolean!
 }
@@ -212,6 +214,9 @@ type Mutation {
   createEvent(event: EventDto!): EventEntity!
   updateEvent(event: EventDto!): EventEntity!
   deleteEvent(eventId: Float!): EventEntity!
+  createWebhookHeader(webhookHeader: WebhookHeaderDto!): WebhookHeaderEntity!
+  updateWebhookHeader(webhookHeader: WebhookHeaderDto!): WebhookHeaderEntity!
+  destroyWebhookHeader(webhookHeaderId: Float!): Boolean!
   createMatcher(matcher: MatcherDto!): MatcherEntity!
   updateMatcher(matcher: MatcherDto!): MatcherEntity!
   destroyMatcher(matcherId: Float!): Boolean!
@@ -269,6 +274,20 @@ type UserEntity {
   name: String!
   email: String!
   isAdmin: Boolean!
+}
+
+input WebhookHeaderDto {
+  id: ID
+  key: String!
+  value: String!
+  eventId: Float
+}
+
+type WebhookHeaderEntity {
+  id: ID!
+  key: String!
+  value: String!
+  event: EventEntity!
 }
 
 type WorkLogEntity {

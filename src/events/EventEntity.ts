@@ -18,7 +18,8 @@ import {
   AbiEventEntity,
   EventLogEntity,
   MatcherEntity,
-  ContractEntity
+  ContractEntity,
+  WebhookHeaderEntity
 } from '../entities'
 import { EventScope } from './EventScope';
 import { EventScopeTitle } from './EventScopeTitle'
@@ -137,6 +138,10 @@ export class EventEntity {
   @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })
   webhookBody: string;
+
+  @Field(type => [WebhookHeaderEntity])
+  @OneToMany(type => WebhookHeaderEntity, webhookHeader => webhookHeader.event)
+  webhookHeaders: WebhookHeaderEntity[];
 
   @IsOptional()
   @IsHexColor()

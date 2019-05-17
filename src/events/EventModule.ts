@@ -1,9 +1,14 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { EventEntity } from '../entities';
+import {
+  EventEntity,
+  WebhookHeaderEntity
+} from '../entities';
 import { EventService } from './EventService';
 import { EventResolver } from './EventResolver';
+import { WebhookHeaderService } from './WebhookHeaderService';
+import { WebhookHeaderResolver } from './WebhookHeaderResolver';
 
 @Module({
   imports: [
@@ -12,11 +17,11 @@ import { EventResolver } from './EventResolver';
     ])
   ],
   providers: [
-    EventService, EventResolver
+    EventService, EventResolver, WebhookHeaderResolver, WebhookHeaderService
   ],
 
   exports: [
-    EventService
+    EventService, WebhookHeaderService
   ]
 })
 export class EventModule {}

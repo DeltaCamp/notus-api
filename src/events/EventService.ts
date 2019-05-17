@@ -18,6 +18,7 @@ import { AbiEventService } from '../abis/AbiEventService'
 import { EventsQuery } from './EventsQuery'
 import { ContractService } from '../contracts/ContractService'
 import { newKeyHex } from '../utils/newKeyHex';
+import { WebhookHeaderService } from './WebhookHeaderService';
 
 const debug = require('debug')('notus:events:EventService')
 
@@ -30,7 +31,8 @@ export class EventService {
     @Inject(forwardRef(() => AppService))
     private readonly appService: AppService,
     private readonly abiEventService: AbiEventService,
-    private readonly contractService: ContractService
+    private readonly contractService: ContractService,
+    private readonly webhookHeaderService: WebhookHeaderService
   ) {}
 
   @Transaction()
@@ -217,6 +219,10 @@ export class EventService {
       this.matcherService.createMatcher(event, matcherDto)
     )))
 
+    event.webhookHeaders = await Promise.all(eventDto.webhookHeaders.map(webhookHeaderDto => {
+      return this.webhookHeaderService.createOrUpdate(event, webhookHeaderDto)
+    }))
+
     return event
   }
 
@@ -225,6 +231,7 @@ export class EventService {
       .leftJoinAndSelect('events.contract', 'contracts')
       .leftJoinAndSelect('events.user', 'users')
       .leftJoinAndSelect('events.abiEvent', 'abiEvents')
+      .leftJoinAndSelect('events.webhookHeaders', 'webhook_headers')
       .leftJoinAndSelect('abiEvents.abi', 'abis')
       .leftJoinAndSelect('events.matchers', 'matchers')
       .leftJoinAndSelect('matchers.abiEventInput', 'abiEventInputs')
