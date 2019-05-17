@@ -7,6 +7,7 @@ import {
   UserEntity,
   EventEntity,
   AbiEventEntity,
+  WebhookHeaderEntity,
   MatcherEntity
 } from '../entities'
 import { EventScope } from './EventScope'
@@ -165,6 +166,16 @@ export class EventService {
       .innerJoin('matchers.event', 'events')
       .where('"events"."id" = :id', { id: event.id })
       .addOrderBy("matchers.order", "ASC")
+      .getMany()
+  }
+
+  @Transaction()
+  async getWebhookHeaders(event: EventEntity): Promise<WebhookHeaderEntity[]> {
+    return this.provider.get().createQueryBuilder()
+      .select('webhook_headers')
+      .from(WebhookHeaderEntity, 'webhook_headers')
+      .innerJoin('webhook_headers.event', 'events')
+      .where('"events"."id" = :id', { id: event.id })
       .getMany()
   }
 

@@ -32,6 +32,7 @@ export class WebhookHeaderEntity {
   })
   event: EventEntity;
 
+  @Field()
   @RelationId((webhook: WebhookHeaderEntity) => webhook.event)
   eventId: number;
 }

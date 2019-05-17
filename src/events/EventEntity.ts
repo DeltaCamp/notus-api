@@ -139,7 +139,7 @@ export class EventEntity {
   @Column({ type: 'text', nullable: true })
   webhookBody: string;
 
-  @Field(type => [WebhookHeaderEntity])
+  @Field(type => [WebhookHeaderEntity], { nullable: true })
   @OneToMany(type => WebhookHeaderEntity, webhookHeader => webhookHeader.event)
   webhookHeaders: WebhookHeaderEntity[];
 

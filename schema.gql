@@ -151,7 +151,7 @@ type EventEntity {
   deletedAt: Date
   webhookUrl: String
   webhookBody: String
-  webhookHeaders: [WebhookHeaderEntity!]!
+  webhookHeaders: [WebhookHeaderEntity!]
   color: String!
   sendEmail: Boolean!
 }
@@ -278,9 +278,9 @@ type UserEntity {
 
 input WebhookHeaderDto {
   id: ID
-  key: String!
-  value: String!
-  eventId: Float
+  key: String
+  value: String
+  eventId: Float!
 }
 
 type WebhookHeaderEntity {
@@ -288,6 +288,7 @@ type WebhookHeaderEntity {
   key: String!
   value: String!
   event: EventEntity!
+  eventId: Float!
 }
 
 type WorkLogEntity {

@@ -5,12 +5,12 @@ export class WebhookHeaderDto {
   @Field(type => ID, { nullable: true })
   id?: number;
 
-  @Field(({ nullable: false }))
+  @Field(({ nullable: true }))
   key: string;
 
-  @Field(({ nullable: false }))
+  @Field(({ nullable: true }))
   value: string;
 
-  @Field({ nullable: true })
+  @Field({ nullable: false })
   eventId: number;
 }

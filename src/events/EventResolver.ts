@@ -21,7 +21,8 @@ import {
   UserEntity,
   EventEntity,
   AbiEventEntity,
-  MatcherEntity
+  MatcherEntity,
+  WebhookHeaderEntity
 } from '../entities'
 import { EventService } from './EventService'
 import { EventDto } from './EventDto'
@@ -103,6 +104,12 @@ export class EventResolver {
   async matchers(@Parent() event: EventEntity): Promise<MatcherEntity[]> {
     if (event.matchers && event.matchers.length > 0) { return event.matchers }
     return await this.eventService.getMatchers(event)
+  }
+
+  @ResolveProperty('webhookHeaders')
+  async webhookHeaders(@Parent() event: EventEntity): Promise<WebhookHeaderEntity[]> {
+    if (event.matchers && event.matchers.length > 0) { return event.webhookHeaders }
+    return await this.eventService.getWebhookHeaders(event)
   }
 
   @UseGuards(GqlAuthGuard)
