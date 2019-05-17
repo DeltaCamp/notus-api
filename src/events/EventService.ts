@@ -226,11 +226,11 @@ export class EventService {
 
     await em.save(event)
 
-    event.matchers = await Promise.all(eventDto.matchers.map(matcherDto => (
+    event.matchers = await Promise.all((eventDto.matchers || []).map(matcherDto => (
       this.matcherService.createMatcher(event, matcherDto)
     )))
 
-    event.webhookHeaders = await Promise.all(eventDto.webhookHeaders.map(webhookHeaderDto => {
+    event.webhookHeaders = await Promise.all((eventDto.webhookHeaders || []).map(webhookHeaderDto => {
       return this.webhookHeaderService.createOrUpdate(event, webhookHeaderDto)
     }))
 
