@@ -1,5 +1,6 @@
 import { UnauthorizedException, UseFilters } from '@nestjs/common'
 import { Resolver, Query, Args } from '@nestjs/graphql'
+import { isBefore } from 'date-fns'
 
 import { UserService } from '../users/UserService'
 import { AuthJwtService } from './AuthJwtService'
@@ -22,7 +23,8 @@ export class AuthResolver {
     if (!user) {
       oneTimeKeyValid.valid = false
     } else {
-      oneTimeKeyValid.valid = user.one_time_key_expires_at && user.one_time_key_expires_at < new Date()
+      oneTimeKeyValid.valid = user.one_time_key_expires_at &&
+        isBefore(new Date(), user.one_time_key_expires_at)
     }
     oneTimeKeyValid.expiresAt = user.one_time_key_expires_at
     return oneTimeKeyValid
