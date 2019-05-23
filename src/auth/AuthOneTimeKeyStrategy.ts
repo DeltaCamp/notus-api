@@ -12,7 +12,7 @@ export class AuthOneTimeKeyStrategy extends PassportStrategy(Strategy, 'oneTimeK
   }
 
   async validate(token: string) {
-    const user = await this.userService.findOneByOneTimeKey(token);
+    const user = await this.userService.findOneOrFailByOneTimeKey(token);
     if (!user) {
       rollbar.error(`Error signing user in - could not find user with token: ${token}`)
       throw new UnauthorizedException()

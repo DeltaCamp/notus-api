@@ -4,6 +4,7 @@ import { Resolver, Query, Args } from '@nestjs/graphql'
 import { UserService } from '../users/UserService'
 import { AuthJwtService } from './AuthJwtService'
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+import { OneTimeKeyValidEntity } from './OneTimeKeyValidEntity';
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver()
@@ -13,6 +14,19 @@ export class AuthResolver {
     private readonly userService: UserService,
     private readonly authJwtService: AuthJwtService
   ) {}
+
+  @Query(returns => OneTimeKeyValidEntity)
+  async oneTimeKeyValid(@Args('oneTimeKey') oneTimeKey: string): Promise<OneTimeKeyValidEntity> {
+    let user = await this.userService.findOneByOneTimeKey(oneTimeKey)
+    let oneTimeKeyValid = new OneTimeKeyValidEntity()
+    if (!user) {
+      oneTimeKeyValid.valid = false
+    } else {
+      oneTimeKeyValid.valid = user.one_time_key_expires_at && user.one_time_key_expires_at < new Date()
+    }
+    oneTimeKeyValid.expiresAt = user.one_time_key_expires_at
+    return oneTimeKeyValid
+  }
 
   @Query(returns => String)
   async jwt(@Args('email') email: string, @Args('password') password: string): Promise<String> {

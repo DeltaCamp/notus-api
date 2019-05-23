@@ -88,6 +88,11 @@ export class UserService {
 
   @Transaction()
   public async findOneByOneTimeKey(oneTimeKey: string) {
+    return await this.provider.get().findOne(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
+  }
+
+  @Transaction()
+  public async findOneOrFailByOneTimeKey(oneTimeKey: string) {
     return await this.provider.get().findOneOrFail(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
   }
 
