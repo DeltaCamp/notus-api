@@ -230,6 +230,11 @@ type Mutation {
   destroyContract(id: Float!): ContractEntity!
 }
 
+type OneTimeKeyValidEntity {
+  valid: Boolean!
+  expiresAt: Date
+}
+
 input PagedQuery {
   skip: Float
   take: Float
@@ -242,6 +247,7 @@ type PagedQueryResponse {
 }
 
 type Query {
+  oneTimeKeyValid(oneTimeKey: String!): OneTimeKeyValidEntity!
   jwt(password: String!, email: String!): String!
   Authorization(password: String!, email: String!): String!
   app(id: Float!): AppEntity
