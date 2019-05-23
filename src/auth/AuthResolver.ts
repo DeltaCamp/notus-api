@@ -20,13 +20,17 @@ export class AuthResolver {
   async oneTimeKeyValid(@Args('oneTimeKey') oneTimeKey: string): Promise<OneTimeKeyValidEntity> {
     let user = await this.userService.findOneByOneTimeKey(oneTimeKey)
     let oneTimeKeyValid = new OneTimeKeyValidEntity()
+    
     if (!user) {
       oneTimeKeyValid.valid = false
     } else {
       oneTimeKeyValid.valid = user.one_time_key_expires_at &&
         isBefore(new Date(), user.one_time_key_expires_at)
+        
+      oneTimeKeyValid.expiresAt = user.one_time_key_expires_at
     }
-    oneTimeKeyValid.expiresAt = user.one_time_key_expires_at
+
+
     return oneTimeKeyValid
   }
 
