@@ -10,6 +10,7 @@ import { Resolver,
   Args,
   Query
 } from '@nestjs/graphql'
+import { getAddress } from 'ethers/utils'
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
@@ -21,8 +22,13 @@ import {
 import { AbiDto } from './AbiDto'
 import { AbiService } from './AbiService'
 
-const debug = require('debug')('notus:AbiResolver')
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+import { EtherscanAbiEntity } from './EtherscanAbiEntity';
+import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
+import { ValidationException } from '../common/ValidationException';
+
+const axios = require('axios')
+const debug = require('debug')('notus:AbiResolver')
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => AbiEntity)
@@ -61,6 +67,25 @@ export class AbiResolver {
       throw new UnauthorizedException()
     }
     return await this.abiService.createAndSave(user, abiDto)
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Query(returns => EtherscanAbiEntity)
+  async etherscanAbi(
+    @GqlAuthUser() user: UserEntity,
+    @Args('address') address: string
+  ): Promise<EtherscanAbiEntity> {
+
+    let parsedAddress
+    try {
+      parsedAddress = getAddress(address)
+    } catch (error) {
+      throw new ValidationException("Not a valid address", [])
+    }
+
+    const url = `https://api.etherscan.io/api?module=contract&action=getabi&address=${parsedAddress}&apikey=${user.etherscan_api_key}`
+    const response = await axios.get(url)
+    return response.data
   }
 
   @UseGuards(GqlAuthGuard)

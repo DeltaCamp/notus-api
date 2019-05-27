@@ -67,6 +67,10 @@ export class UserEntity {
   updatedAt: Date;
 
   @Field()
+  @Column({ type: 'text', nullable: true })
+  etherscan_api_key: string;
+
+  @Field()
   @Column({ type: 'boolean', default: false, nullable: false })
   isAdmin: boolean;
 

@@ -110,6 +110,12 @@ type ContractsQueryResponse {
 """Date custom scalar type"""
 scalar Date
 
+type EtherscanAbiEntity {
+  status: String!
+  message: String!
+  result: String!
+}
+
 input EventDto {
   id: ID
   app: AppDto
@@ -262,6 +268,7 @@ type Query {
   metaDataTypes: [MetaDataTypeEntity!]!
   abi(id: Float!): AbiEntity!
   abis(name: String): [AbiEntity!]!
+  etherscanAbi(address: String!): EtherscanAbiEntity!
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
   abiEventInput(id: Float!): AbiEventInputEntity!
   abiEvent(id: Float!): AbiEventEntity!
@@ -281,6 +288,7 @@ type UserEntity {
   id: ID!
   name: String!
   email: String!
+  etherscan_api_key: String!
   isAdmin: Boolean!
 }
 
