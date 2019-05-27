@@ -286,7 +286,7 @@ input WebhookHeaderDto {
   id: ID
   key: String
   value: String
-  eventId: Float!
+  eventId: Float
 }
 
 type WebhookHeaderEntity {

@@ -33,12 +33,12 @@ export class WebhookHeaderService {
     if (webhookHeaderDto.id) {
       return await this.update(webhookHeaderDto)
     } else {
-      return await this.createMatcher(event, webhookHeaderDto)
+      return await this.create(event, webhookHeaderDto)
     }
   }
 
   @Transaction()
-  async createMatcher(event: EventEntity, webhookHeaderDto: WebhookHeaderDto): Promise<WebhookHeaderEntity> {
+  async create(event: EventEntity, webhookHeaderDto: WebhookHeaderDto): Promise<WebhookHeaderEntity> {
     const webhookHeader = new WebhookHeaderEntity()
 
     webhookHeader.event = event

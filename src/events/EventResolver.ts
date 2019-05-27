@@ -108,7 +108,7 @@ export class EventResolver {
 
   @ResolveProperty('webhookHeaders')
   async webhookHeaders(@Parent() event: EventEntity): Promise<WebhookHeaderEntity[]> {
-    if (event.matchers && event.matchers.length > 0) { return event.webhookHeaders }
+    if (event.webhookHeaders && event.webhookHeaders.length > 0) { return event.webhookHeaders }
     return await this.eventService.getWebhookHeaders(event)
   }
 

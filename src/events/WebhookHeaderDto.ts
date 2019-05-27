@@ -11,6 +11,6 @@ export class WebhookHeaderDto {
   @Field(({ nullable: true }))
   value: string;
 
-  @Field({ nullable: false })
-  eventId: number;
+  @Field({ nullable: true })
+  eventId?: number;
 }
