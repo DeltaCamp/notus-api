@@ -126,6 +126,7 @@ input EventDto {
   webhookBody: String
   color: String
   sendEmail: Boolean
+  callWebhook: Boolean
   matchers: [MatcherDto!]
   webhookHeaders: [WebhookHeaderDto!]
 }
@@ -154,6 +155,7 @@ type EventEntity {
   webhookHeaders: [WebhookHeaderEntity!]
   color: String!
   sendEmail: Boolean!
+  callWebhook: Boolean!
 }
 
 type EventLogEntity {

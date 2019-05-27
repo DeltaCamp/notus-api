@@ -210,6 +210,7 @@ export class EventService {
     event.runCount = eventDto.runCount
     event.webhookUrl = eventDto.webhookUrl
     event.webhookBody = eventDto.webhookBody
+    event.callWebhook = eventDto.callWebhook
 
     debug(eventDto)
 
@@ -316,7 +317,11 @@ export class EventService {
         event.webhookBody = null
       }
     }
-      
+
+    if (eventDto.callWebhook !== undefined) {
+      event.callWebhook = eventDto.callWebhook
+    }
+
     await this.validateEvent(event)
 
     await this.provider.get().save(event)

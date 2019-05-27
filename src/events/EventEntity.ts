@@ -153,6 +153,10 @@ export class EventEntity {
   @Column({ type: 'boolean', default: true, nullable: false })
   sendEmail: boolean;
 
+  @Field()
+  @Column({ type: 'boolean', default: false, nullable: false })
+  callWebhook: boolean;
+
   @Column({ type: 'text', nullable: false })
   disableEmailKey: string;
 

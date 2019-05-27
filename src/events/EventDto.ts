@@ -51,6 +51,9 @@ export class EventDto {
   @Field({ nullable: true })
   sendEmail: boolean;
 
+  @Field({ nullable: true })
+  callWebhook: boolean;
+
   @Field(type => [MatcherDto], { nullable: true })
   matchers: MatcherDto[];
 

@@ -19,7 +19,7 @@ export class WebhookActionHandler {
   async handle(actionContexts: ActionContext[]) {
     const eventViews = actionContexts.reduce((views: SingleEventTemplateView[], actionContext: ActionContext): SingleEventTemplateView[] => {
       const { matchContext, event } = actionContext
-      if (event.webhookUrl) {
+      if (event.callWebhook && event.webhookUrl) {
         views.push(new SingleEventTemplateView(matchContext, event))
       }
       return views
