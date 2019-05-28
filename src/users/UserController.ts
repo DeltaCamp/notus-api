@@ -6,6 +6,8 @@ import {
   UseGuards,
   InternalServerErrorException,
   NotAcceptableException,
+  ClassSerializerInterceptor,
+  UseInterceptors,
   UseFilters
 } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
@@ -15,6 +17,8 @@ import { UserEntity } from "./UserEntity";
 import { UserService } from './UserService'
 import { AuthJwtService } from '../auth/AuthJwtService'
 import { RollbarExceptionsFilter } from '../filters/RollbarExceptionsFilter';
+
+const debug = require('debug')('notus:UserController')
 
 @UseFilters(RollbarExceptionsFilter)
 @Controller('users')
@@ -33,11 +37,21 @@ export class UserController {
     return user
   }
 
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post('/')
   public async create(
     @Body('email') email
   ) {
-    return await this.userService.createOrRequestMagicLink(email);
+    const user = await this.userService.createOrRequestMagicLink(email);
+    debug('user', user)
+
+    if (user.isNew) {
+      const jwtToken = await this.authJwtService.signIn(user)
+      debug('jwtToken', jwtToken)
+      return { jwtToken }
+    } else {
+      return { previouslySignedUp: true }
+    }
   }
 
   @Post('password-reset')

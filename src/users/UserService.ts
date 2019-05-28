@@ -13,6 +13,8 @@ import { validate } from 'class-validator';
 import { UserDto } from './UserDto';
 import { notDefined } from '../utils/notDefined';
 
+const debug = require('debug')('notus:UserService')
+
 @Injectable()
 export class UserService {
 
@@ -46,27 +48,40 @@ export class UserService {
 
   @Transaction()
   public async createOrRequestMagicLink(email: string): Promise<UserEntity> {
-    let user = await this.provider.get().findOne(UserEntity, { email })
+    let user
 
-    let newUser = !user
-    if (newUser) {
-      user = new UserEntity()
-      user.email = email
+    try {
+      user = await this.provider.get().findOne(UserEntity, { email })
+
+      if (!user) {
+        user = new UserEntity()
+        user.email = email
+        user.isNew = true
+      }
+
+      const oneTimeKey = user.generateOneTimeKey()
+
+      await this.validateUser(user)
+
+      await this.provider.get().save(user)
+
+      if (user.isNew) {
+        this.sendWelcome(user, oneTimeKey)
+      } else {
+        this.sendMagicLink(user, oneTimeKey)
+      }
+
+      return user
+    } catch (e) {
+      debug('e2', e)
+      throw new Error(e)
+
+      // return user
+
+      // return {
+      //   error: e.message
+      // }
     }
-
-    const oneTimeKey = user.generateOneTimeKey()
-
-    await this.validateUser(user)
-
-    this.provider.get().save(user)
-
-    if (newUser) {
-      this.sendWelcome(user, oneTimeKey)
-    } else {
-      this.sendMagicLink(user, oneTimeKey)
-    }
-
-    return user
   }
 
   @Transaction()
@@ -89,6 +104,7 @@ export class UserService {
   @Transaction()
   public async confirm(user: UserEntity, password: string): Promise<void> {
     user.clearOneTimeKey()
+    user.confirmedAt = new Date()
     user.password_hash = keyHashHex(password)
     await this.validateUser(user)
     await this.provider.get().save(user)

@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   OneToMany
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Field, ObjectType, ID } from 'type-graphql';
 
 import {
@@ -48,15 +49,15 @@ export class UserEntity {
   @Column({ type: 'text' })
   email: string = '';
 
-  @Column()
-  confirmed: boolean = false;
-
+  @Exclude()
   @Column({ type: 'text', nullable: true })
   one_time_key_hash: string;
 
+  @Exclude()
   @Column({ type: 'timestamptz', nullable: true })
   one_time_key_expires_at: Date;
 
+  @Exclude()
   @Column ({ type: 'text', nullable: true })
   password_hash: string;
 
@@ -67,6 +68,10 @@ export class UserEntity {
   updatedAt: Date;
 
   @Field()
+  @Column({ type: 'timestamp', nullable: true })
+  confirmedAt: Date;
+
+  @Field()
   @Column({ type: 'text', nullable: true })
   etherscan_api_key: string;
 
@@ -74,8 +79,10 @@ export class UserEntity {
   @Column({ type: 'boolean', default: false, nullable: false })
   isAdmin: boolean;
 
+  @Exclude()
+  isNew: boolean;
+
   public clearOneTimeKey(): void {
-    this.confirmed = true
     this.one_time_key_hash = null
     this.one_time_key_expires_at = null
   }
