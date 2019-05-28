@@ -10,6 +10,8 @@ import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 import { TemplateRenderer } from '../templates/TemplateRenderer';
 import { ValidationException } from '../common/ValidationException';
 import { validate } from 'class-validator';
+import { UserDto } from './UserDto';
+import { notDefined } from '../utils/notDefined';
 
 @Injectable()
 export class UserService {
@@ -28,6 +30,12 @@ export class UserService {
   @Transaction()
   async findOne(id): Promise<UserEntity> {
     return await this.provider.get().findOne(UserEntity, id)
+  }
+
+  @Transaction()
+  async findOneOrFail(id): Promise<UserEntity> {
+    if (notDefined(id)) { throw new Error('id must be defined') }
+    return await this.provider.get().findOneOrFail(UserEntity, id)
   }
 
   @Transaction()
@@ -84,6 +92,22 @@ export class UserService {
     user.password_hash = keyHashHex(password)
     await this.validateUser(user)
     await this.provider.get().save(user)
+  }
+
+  @Transaction()
+  public async update(user: UserEntity, userDto: UserDto): Promise<UserEntity> {
+
+    if (userDto.name !== undefined) {
+      user.name = userDto.name
+    }
+
+    if (userDto.etherscan_api_key !== undefined) {
+      user.etherscan_api_key = userDto.etherscan_api_key
+    }
+
+    await this.provider.get().save(user)
+
+    return user
   }
 
   @Transaction()

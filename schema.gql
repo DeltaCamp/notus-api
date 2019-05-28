@@ -236,6 +236,7 @@ type Mutation {
   createContract(contract: ContractDto!): ContractEntity!
   updateContract(contract: ContractDto!): ContractEntity!
   destroyContract(id: Float!): ContractEntity!
+  updateUser(user: UserDto!): UserEntity!
 }
 
 type OneTimeKeyValidEntity {
@@ -282,6 +283,11 @@ type SourceEntity {
   title: String!
   dataType: String!
   metaDataType: String
+}
+
+input UserDto {
+  name: String
+  etherscan_api_key: String
 }
 
 type UserEntity {

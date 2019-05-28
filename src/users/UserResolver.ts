@@ -1,4 +1,4 @@
-import { UseGuards, UseFilters } from '@nestjs/common'
+import { UseGuards, UseFilters, UnauthorizedException } from '@nestjs/common'
 import { Resolver, ResolveProperty, Parent, Mutation, Args } from '@nestjs/graphql'
 
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
@@ -7,10 +7,16 @@ import {
   UserEntity
 } from '../entities'
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
+import { UserDto } from './UserDto';
+import { UserService } from './UserService';
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => UserEntity)
 export class UserResolver {
+
+  constructor (
+    private readonly userService: UserService
+  ) {}
 
   @UseGuards(GqlAuthGuard)
   @ResolveProperty('email')
@@ -20,6 +26,12 @@ export class UserResolver {
     } else {
       return ''
     }
+  }
+
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => UserEntity)
+  async updateUser(@GqlAuthUser() user: UserEntity, @Args('user') userDto: UserDto) {
+    return this.userService.update(user, userDto)
   }
 
 }
