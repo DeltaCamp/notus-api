@@ -94,7 +94,7 @@ type ContractEntity {
 input ContractsQuery {
   skip: Float
   take: Float
-  userId: Float
+  ownerId: Float
   address: String
   name: String
   hasAbiEvents: Boolean

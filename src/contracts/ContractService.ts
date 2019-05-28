@@ -36,8 +36,8 @@ export class ContractService {
         // "contracts"."abiId"
         query = query.andWhere('"contracts"."abiId" IN (SELECT "abi_events"."abiId" FROM abi_events GROUP BY "abi_events"."abiId" HAVING COUNT(*) > 0)')
       }
-      if (params.userId) {
-        query = query.andWhere('"contracts"."userId" = :id', { id: params.userId })
+      if (params.ownerId) {
+        query = query.andWhere('"contracts"."ownerId" = :id', { id: params.ownerId })
       }
       if (params.address) {
         query = query.andWhere('"contracts"."address" ILIKE :address', { address: params.address })

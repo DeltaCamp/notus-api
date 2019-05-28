@@ -5,7 +5,7 @@ import { PagedQuery } from '../dtos/PagedQuery'
 @InputType()
 export class ContractsQuery extends PagedQuery {
   @Field({ nullable: true })
-  userId?: number
+  ownerId?: number
 
   @Field({ nullable: true })
   address?: string

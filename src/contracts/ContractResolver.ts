@@ -32,6 +32,7 @@ export class ContractResolver {
     return await this.contractService.findOneOrFail(id)
   }
 
+  @UseGuards(GqlAuthGuard)
   @Query(returns => ContractsQueryResponse)
   async contracts(
     @GqlAuthUser() user: UserEntity,
@@ -40,13 +41,16 @@ export class ContractResolver {
     }) contractsQuery: ContractsQuery
   ): Promise<ContractsQueryResponse> {
     const result = new ContractsQueryResponse()
+    if (!contractsQuery) {
+      contractsQuery = new ContractsQuery()
+    }
+    // Always force the userId to be the person making the request (until public contracts are made)
+    contractsQuery.ownerId = user.id
     const [contracts, totalCount] = await this.contractService.findAndCount(contractsQuery);
     result.contracts = contracts
     result.totalCount = totalCount
-    if (contractsQuery) {
-      result.skip = contractsQuery.skip
-      result.take = contractsQuery.take
-    }
+    result.skip = contractsQuery.skip
+    result.take = contractsQuery.take
     return result
   }
 
@@ -56,9 +60,6 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
-    if (!user.isAdmin) {
-      throw new UnauthorizedException()
-    }
     return await this.contractService.createContract(user, contractDto)
   }
 
@@ -75,9 +76,6 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
-    if (!user.isAdmin) {
-      throw new UnauthorizedException()
-    }
     const contract = await this.contractService.findOneOrFail(contractDto.id)
     if (contract.ownerId !== user.id) {
       throw new UnauthorizedException()
@@ -91,9 +89,6 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('id') id: number
   ): Promise<ContractEntity> {
-    if (!user.isAdmin) {
-      throw new UnauthorizedException()
-    }
     const contract = await this.contractService.findOneOrFail(id)
     if (contract.ownerId !== user.id) {
       throw new UnauthorizedException()
