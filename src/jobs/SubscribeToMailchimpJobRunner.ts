@@ -7,7 +7,14 @@ const debug = require('debug')('notus:jobs:SubscribeToMailchimpJobRunner')
 
 const Mailchimp = require('mailchimp-api-v3')
 
-const mailchimp = new Mailchimp(process.env.MAILCHIMP_API_KEY);
+let mailchimp = null
+
+function getMailchimp() {
+  if (!mailchimp) {
+    mailchimp = new Mailchimp(process.env.MAILCHIMP_API_KEY);
+  }
+  return mailchimp
+}
 
 @Injectable()
 export class SubscribeToMailchimpJobRunner {
@@ -21,6 +28,15 @@ export class SubscribeToMailchimpJobRunner {
   }
 
   handleSubscribeToMailchimpJob = async (job: any) => {
+    if (!process.env.MAILCHIMP_LIST_ID) {
+      debug('MAILCHIMP_LIST_ID is not defined.  Ignoring subscription.')
+      return
+    }
+    if (!process.env.MAILCHIMP_API_KEY) {
+      debug('MAILCHIMP_API_KEY is not defined.  Ignoring subscription.')
+      return
+    }
+    const mailchimp = getMailchimp()
     let subscribeToMailchimpJob: SubscribeToMailchimpJob = job.data
     debug(`handleSubscribeToMailchimpJob`)
     try {
