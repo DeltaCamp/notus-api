@@ -12,6 +12,7 @@ import { ValidationException } from '../common/ValidationException';
 import { validate } from 'class-validator';
 import { UserDto } from './UserDto';
 import { notDefined } from '../utils/notDefined';
+import { SubscribeToMailchimpJobPublisher } from '../jobs/SubscribeToMailchimpJobPublisher';
 
 const debug = require('debug')('notus:UserService')
 
@@ -21,7 +22,8 @@ export class UserService {
   constructor(
     private readonly provider: EntityManagerProvider,
     private readonly mailJobPublisher: MailJobPublisher,
-    private readonly templateRenderer: TemplateRenderer
+    private readonly templateRenderer: TemplateRenderer,
+    private readonly subscribeToMailchimp: SubscribeToMailchimpJobPublisher
   ) { }
 
   @Transaction()
@@ -62,11 +64,11 @@ export class UserService {
       const oneTimeKey = user.generateOneTimeKey()
 
       await this.validateUser(user)
-
       await this.provider.get().save(user)
 
       if (user.isNew) {
         this.sendWelcome(user, oneTimeKey)
+        this.subscribeToMailchimp.publish({ email: user.email })
       } else {
         this.sendMagicLink(user, oneTimeKey)
       }
@@ -75,12 +77,6 @@ export class UserService {
     } catch (e) {
       debug('e2', e)
       throw new Error(e)
-
-      // return user
-
-      // return {
-      //   error: e.message
-      // }
     }
   }
 

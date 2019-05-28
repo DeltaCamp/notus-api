@@ -94,7 +94,7 @@ type ContractEntity {
 input ContractsQuery {
   skip: Float
   take: Float
-  userId: Float
+  ownerId: Float
   address: String
   name: String
   hasAbiEvents: Boolean
@@ -276,6 +276,7 @@ type Query {
   abiEvents(abiEventsQuery: AbiEventsQuery): AbiEventsQueryResponse!
   contract(id: Float!): ContractEntity!
   contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
+  currentUser: UserEntity!
 }
 
 type SourceEntity {
