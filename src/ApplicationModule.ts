@@ -17,6 +17,7 @@ import { MatcherModule } from './matchers';
 import { TemplateModule } from './templates/TemplateModule'
 import { AbiModule } from './abis/AbiModule';
 import { ContractModule } from './contracts/ContractModule';
+import { NetworkModule } from './networks/NetworkModule';
 import { EventLogModule } from './event-logs/EventLogModule'
 import { WorkLogModule } from './work-logs/WorkLogModule'
 
@@ -38,6 +39,7 @@ const isProduction = process.env.NODE_ENV === 'production'
     EventModule,
     EventLogModule,
     TemplateModule,
+    NetworkModule,
     JobModule,
     EngineModule,
     GraphQLModule.forRoot({

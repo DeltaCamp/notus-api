@@ -239,6 +239,11 @@ type Mutation {
   updateUser(user: UserDto!): UserEntity!
 }
 
+type NetworkEntity {
+  id: ID!
+  name: String!
+}
+
 type OneTimeKeyValidEntity {
   valid: Boolean!
   expiresAt: Date
@@ -276,6 +281,8 @@ type Query {
   abiEvents(abiEventsQuery: AbiEventsQuery): AbiEventsQueryResponse!
   contract(id: Float!): ContractEntity!
   contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
+  network(id: Float!): NetworkEntity!
+  networks: [NetworkEntity!]!
   currentUser: UserEntity!
 }
 
