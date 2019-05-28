@@ -276,6 +276,7 @@ type Query {
   abiEvents(abiEventsQuery: AbiEventsQuery): AbiEventsQueryResponse!
   contract(id: Float!): ContractEntity!
   contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
+  currentUser: UserEntity!
 }
 
 type SourceEntity {
