@@ -12,6 +12,7 @@ import { ValidationException } from '../common/ValidationException';
 import { validate } from 'class-validator';
 import { UserDto } from './UserDto';
 import { notDefined } from '../utils/notDefined';
+import { SubscribeToMailchimpJobPublisher } from '../jobs/SubscribeToMailchimpJobPublisher';
 
 @Injectable()
 export class UserService {
@@ -19,7 +20,8 @@ export class UserService {
   constructor(
     private readonly provider: EntityManagerProvider,
     private readonly mailJobPublisher: MailJobPublisher,
-    private readonly templateRenderer: TemplateRenderer
+    private readonly templateRenderer: TemplateRenderer,
+    private readonly subscribeToMailchimp: SubscribeToMailchimpJobPublisher
   ) { }
 
   @Transaction()
@@ -62,6 +64,7 @@ export class UserService {
 
     if (newUser) {
       this.sendWelcome(user, oneTimeKey)
+      this.subscribeToMailchimp.publish({ email: user.email })
     } else {
       this.sendMagicLink(user, oneTimeKey)
     }
