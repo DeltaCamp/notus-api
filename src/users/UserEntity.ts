@@ -71,7 +71,7 @@ export class UserEntity {
   @Column({ type: 'timestamp', nullable: true })
   confirmedAt: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ type: 'text', nullable: true })
   etherscan_api_key: string;
 

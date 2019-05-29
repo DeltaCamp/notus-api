@@ -276,7 +276,7 @@ type Query {
   abiEvents(abiEventsQuery: AbiEventsQuery): AbiEventsQueryResponse!
   contract(id: Float!): ContractEntity!
   contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
-  currentUser: UserEntity!
+  currentUser: UserEntity
 }
 
 type SourceEntity {
@@ -296,7 +296,7 @@ type UserEntity {
   name: String!
   email: String!
   confirmedAt: Date!
-  etherscan_api_key: String!
+  etherscan_api_key: String
   isAdmin: Boolean!
 }
 
