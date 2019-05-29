@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 
 import { BlockListener } from './BlockListener'
+import { useLocalhostNotMainnet } from '../utils/useLocalhostNotMainnet'
 
 const debug = require('debug')('notus:engine:BlockListenerManager')
 
@@ -11,8 +12,14 @@ export class BlockListenerManager {
   ) {}
 
   start() {
-    debug(`Starting BlockListener on network "${process.env.ETHEREUM_NETWORK}"...`)
-    this.blockListener.start(process.env.ETHEREUM_NETWORK)
+    if (useLocalhostNotMainnet()) {
+      this.blockListener.start('localhost')
+    } else {
+      this.blockListener.start('homestead')
+    }
+    this.blockListener.start('ropsten')
+    this.blockListener.start('rinkeby')
+    this.blockListener.start('kovan')
   }
 
   stop() {

@@ -33,11 +33,13 @@ export class ContractService {
     
     if (params) {
       if (params.hasAbiEvents) {
-        // "contracts"."abiId"
         query = query.andWhere('"contracts"."abiId" IN (SELECT "abi_events"."abiId" FROM abi_events GROUP BY "abi_events"."abiId" HAVING COUNT(*) > 0)')
       }
       if (params.ownerId) {
         query = query.andWhere('"contracts"."ownerId" = :id', { id: params.ownerId })
+      }
+      if (params.networkId) {
+        query = query.andWhere('"contracts"."networkId" = :networkId', { networkId: params.networkId })
       }
       if (params.address) {
         query = query.andWhere('"contracts"."address" ILIKE :address', { address: params.address })
@@ -45,7 +47,6 @@ export class ContractService {
       if (params.name) {
         query = query.andWhere('"contracts"."name" ILIKE :name', { name: params.name })
       }
-
       if (params.skip) {
         query = query.offset(params.skip)
       }
@@ -70,6 +71,7 @@ export class ContractService {
     contract.name = contractDto.name
     contract.address = contractDto.address
     contract.abi = await this.abiService.findOrCreate(user, contractDto.abi)
+    contract.networkId = contractDto.networkId
 
     await this.validate(contract)
 
@@ -88,6 +90,10 @@ export class ContractService {
 
     if (contractDto.address !== undefined) {
       contract.address = contractDto.address
+    }
+
+    if (contractDto.networkId !== undefined) {
+      contract.networkId = contractDto.networkId
     }
 
     await this.validate(contract)

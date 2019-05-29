@@ -7,7 +7,8 @@ describe('the test', () => {
 
   let entityManager,
       mailerService,
-      templateRenderer
+      templateRenderer,
+      subscriptionPublisher
 
   let user
 
@@ -23,13 +24,17 @@ describe('the test', () => {
       renderTemplate: jest.fn(),
       renderHtmlTemplate: jest.fn()
     }
+    subscriptionPublisher = {
+      publish: jest.fn()
+    }
   })
 
   function newService() {
     return new UserService(
       { get: () => entityManager },
       mailerService,
-      templateRenderer
+      templateRenderer,
+      subscriptionPublisher
     )
   }
 
@@ -42,6 +47,7 @@ describe('the test', () => {
       expect(mailerService.sendMail).toHaveBeenCalledWith(
         expect.objectContaining({ subject: 'Welcome to Notus' })
       )
+      expect(subscriptionPublisher.publish).toHaveBeenCalledWith({ email: 'foo@bar.com' })
 
       expect(user.one_time_key_hash).toBeDefined()
       expect(user.one_time_key_expires_at).toBeDefined()

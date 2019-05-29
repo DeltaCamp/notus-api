@@ -8,7 +8,6 @@ import {
   RelationId
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
-import { IsNotEmpty, ValidateIf } from "class-validator";
 
 import { Operator } from './Operator'
 import * as Source from './Source'

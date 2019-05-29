@@ -15,8 +15,8 @@ import {
   EventEntity,
   UserEntity
 } from '../entities'
-
 import { IsAddress } from '../decorators/IsAddress';
+import { IsDefined } from "class-validator";
 
 @Entity({ name: 'contracts' })
 @ObjectType()
@@ -33,6 +33,7 @@ export class ContractEntity {
   @RelationId((contract: ContractEntity) => contract.owner)
   ownerId: number;
 
+  @IsDefined()
   @Field()
   @Column({ type: 'text' })
   name: string = '';
@@ -49,6 +50,11 @@ export class ContractEntity {
   @Field()
   @Column({ type: 'text' })
   address: string = '';
+
+  @IsDefined()
+  @Field()
+  @Column({ type: 'integer', default: 1, nullable: false })
+  networkId: number;
 
   @OneToMany(type => EventEntity, event => event.contract)
   events: EventEntity[];

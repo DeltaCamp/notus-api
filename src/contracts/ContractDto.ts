@@ -12,6 +12,9 @@ export class ContractDto {
   @Field({ nullable: true })
   address?: string;
 
+  @Field({ nullable: true })
+  networkId?: number;
+
   @Field(type => AbiDto, { nullable: true })
   abi?: AbiDto;
 }

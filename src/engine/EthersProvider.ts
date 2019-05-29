@@ -4,10 +4,10 @@ import { BaseProvider } from 'ethers/providers';
 export class EthersProvider {
   private providers: {} = {}
 
-  getNetworkProvider(network: string = process.env.ETHEREUM_NETWORK): BaseProvider {
+  getNetworkProvider(network: string): BaseProvider {
     let provider: BaseProvider = this.providers[network]
     if (!provider) {
-      if (network === 'localhost') {
+      if (network === 'localhost' || network === 'unknown') {
         provider = new ethers.providers.JsonRpcProvider('http://localhost:8545')
       } else {
         provider = ethers.getDefaultProvider(network)

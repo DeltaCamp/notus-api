@@ -75,6 +75,7 @@ input ContractDto {
   id: ID
   name: String
   address: String
+  networkId: Float
   abi: AbiDto
 }
 
@@ -86,6 +87,7 @@ type ContractEntity {
   abi: AbiEntity!
   abiId: Float!
   address: String!
+  networkId: Float!
   createdAt: Date!
   updatedAt: Date!
   deletedAt: Date
@@ -96,6 +98,7 @@ input ContractsQuery {
   take: Float
   ownerId: Float
   address: String
+  networkId: Float
   name: String
   hasAbiEvents: Boolean
 }
@@ -124,6 +127,7 @@ input EventDto {
   runCount: Float
   abiEventId: Float
   contractId: Float
+  networkId: Float
   isPublic: Boolean
   isActive: Boolean
   parentId: Float
@@ -162,6 +166,7 @@ type EventEntity {
   color: String!
   sendEmail: Boolean!
   callWebhook: Boolean!
+  networkId: Float!
 }
 
 type EventLogEntity {

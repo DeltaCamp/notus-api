@@ -10,7 +10,7 @@ import {
   RelationId
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
-import { MinLength, IsJSON, IsOptional, IsUrl, IsHexColor } from 'class-validator'
+import { IsDefined, MinLength, IsJSON, IsOptional, IsUrl, IsHexColor } from 'class-validator'
 
 import {
   UserEntity,
@@ -159,6 +159,11 @@ export class EventEntity {
 
   @Column({ type: 'text', nullable: false })
   disableEmailKey: string;
+
+  @IsDefined()
+  @Field()
+  @Column({ type: 'integer', default: 1, nullable: false })
+  networkId: number;
 
   hasEmailAction(): boolean {
     return this.sendEmail

@@ -72,9 +72,9 @@ describe('BlockHandler', () => {
 
       expect(ethersProvider.getNetworkProvider).toHaveBeenCalledWith('homestead')
 
-      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.BLOCK)
-      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.TRANSACTION)
-      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.CONTRACT_EVENT)
+      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.BLOCK, 1)
+      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.TRANSACTION, 1)
+      expect(eventService.findByScope).toHaveBeenCalledWith(EventScope.CONTRACT_EVENT, 1)
 
       expect(provider.getBlock).toHaveBeenCalledWith(10)
       expect(provider.getTransaction).toHaveBeenCalledWith('0x1234')

@@ -16,10 +16,10 @@ export JWT_SECRET=someverylongsecret
 export JWT_EXPIRES_IN="30 days"
 export ONE_TIME_KEY_EXPIRES_IN=1200 # 20 minutes
 export BLOCK_CONFIRMATION_LEVEL=8
-export ETHEREUM_NETWORK=ropsten
+// Contracts and events running against mainnet will instead run against localhost
+export USE_LOCALHOST_NOT_MAINNET=true
 # When the worker is started, how many new blocks it should retroactively retrieve before continuing with current blocks
 export MAX_REPLAY_BLOCKS=20
-# export ETHEREUM_NETWORK=localhost
 export EVENT_WINDOW_MAX_COUNT=5
 export EVENT_WINDOW_DURATION_SECONDS=300
 export MAILCHIMP_API_KEY=secretapikey

@@ -1,5 +1,5 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { validate } from 'class-validator'
+import { validate, ValidationError } from 'class-validator'
 import { ValidationException } from '../common/ValidationException'
 
 import { notDefined } from '../utils/notDefined'
@@ -10,6 +10,7 @@ import {
   WebhookHeaderEntity,
   MatcherEntity
 } from '../entities'
+import { Network } from '../networks/Network'
 import { EventScope } from './EventScope'
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
@@ -211,6 +212,7 @@ export class EventService {
     event.webhookUrl = eventDto.webhookUrl
     event.webhookBody = eventDto.webhookBody
     event.callWebhook = eventDto.callWebhook
+    event.networkId = eventDto.networkId
 
     debug(eventDto)
 
@@ -238,7 +240,7 @@ export class EventService {
     return event
   }
 
-  async findByScope(scope: EventScope): Promise<EventEntity[]> {
+  async findByScope(scope: EventScope, networkId: Network): Promise<EventEntity[]> {
     return await this.provider.get().createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect('events.contract', 'contracts')
       .leftJoinAndSelect('events.user', 'users')
@@ -250,6 +252,7 @@ export class EventService {
       .leftJoinAndSelect('abiEventInputs.abiEvent', 'aei_abiEvents')
       .leftJoinAndSelect('aei_abiEvents.abi', 'aei_abis')
       .where('(events.scope = :scope)', { scope })
+      .andWhere('("events"."networkId" = :networkId)', { networkId })
       .andWhere('"events"."deletedAt" IS NULL')
       .andWhere('"events"."isActive" IS TRUE')
       .getMany()
@@ -284,6 +287,10 @@ export class EventService {
       } else {
         event.contract = null
       }
+    }
+
+    if (eventDto.networkId !== undefined) {
+      event.networkId = eventDto.networkId
     }
 
     if (eventDto.color !== undefined) {
@@ -352,7 +359,20 @@ export class EventService {
   }
 
   async validateEvent(event: EventEntity) {
-    let errors = await validate(event)
+    const errors: ValidationError[] = await validate(event)
+
+    if (event.contract && event.contract.networkId !== event.networkId) {
+      errors.push({
+        target: event,
+        property: 'contract',
+        value: event.contract.networkId,
+        constraints: { // Constraints that failed validation with error messages.
+            'contract': '$property does not have same networkId as event'
+        },
+        children: []
+      })
+    }
+
     if (errors.length > 0) {
       throw new ValidationException(`Event is invalid`, errors)
     }

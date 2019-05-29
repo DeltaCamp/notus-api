@@ -5,15 +5,16 @@ describe('BlockListener', () => {
 
   let ethersProvider, workLogService, blockJobPublisher
 
-  let provider, lastBlockNumber
+  let provider, lastBlockNumber, blockNumber
 
   let oldBlockConfirmationLevel, oldCatchUpMaxBlocks
 
   beforeEach(() => {
+    blockNumber = 1
+
     provider = {
-      getNetwork: jest.fn(() => ({ name: 'homestead', chainId: 1 })),
-      on: jest.fn(),
-      removeListener: jest.fn()
+      getNetwork: jest.fn(() => (Promise.resolve({ name: 'homestead', chainId: 1 }))),
+      getBlockNumber: jest.fn(() => Promise.resolve(blockNumber))
     }
 
     ethersProvider = {
@@ -33,6 +34,9 @@ describe('BlockListener', () => {
     oldCatchUpMaxBlocks = process.env.MAX_REPLAY_BLOCKS
 
     blockListener = new BlockListener(ethersProvider, workLogService, blockJobPublisher)
+
+    // Intercept the timeout so that that can test deterministically
+    blockListener.startTimeout = jest.fn()
   })
 
   afterEach(() => {
@@ -43,12 +47,11 @@ describe('BlockListener', () => {
   describe('start()', () => {
     it('should bind the onBlock handlers', async () => {
       await blockListener.start('homestead')
-
-      expect(blockListener.onBlocks['homestead']).toBeDefined()
+      expect(blockListener.startTimeout).toHaveBeenCalledWith(1)
     })
 
     it('should throw if a network already started', async () => {
-      blockListener.start('homestead')
+      await blockListener.start('homestead')
       let fail = false
       try {
         await blockListener.start('homestead')
@@ -59,16 +62,17 @@ describe('BlockListener', () => {
     })
   })
 
-  describe('onBlock()', () => {
+  describe('checkNetwork()', () => {
     it('should process all blocks since the last one', async () => {
       await blockListener.start('homestead')
 
       process.env.BLOCK_CONFIRMATION_LEVEL = '0' // current block
       process.env.MAX_REPLAY_BLOCKS = '4' //
       
+      blockNumber = 4
       lastBlockNumber = 2
 
-      await blockListener.onBlocks['homestead'](4)
+      await blockListener.checkNetwork(provider)
 
       expect(blockJobPublisher.newBlock).not.toHaveBeenCalledWith(
         expect.objectContaining({ blockNumber: 2 })
@@ -89,9 +93,10 @@ describe('BlockListener', () => {
       process.env.BLOCK_CONFIRMATION_LEVEL = '2'
       process.env.MAX_REPLAY_BLOCKS = '1'
       
+      blockNumber = 10
       lastBlockNumber = 2
 
-      await blockListener.onBlocks['homestead'](10)
+      await blockListener.checkNetwork(provider)
 
       expect(blockJobPublisher.newBlock).not.toHaveBeenCalledWith(
         expect.objectContaining({ blockNumber: 6 })
@@ -113,9 +118,10 @@ describe('BlockListener', () => {
       process.env.BLOCK_CONFIRMATION_LEVEL = '0' // current block
       process.env.MAX_REPLAY_BLOCKS = '2' // process maximum the two previous blocks
       
+      blockNumber = 50
       lastBlockNumber = 1
 
-      await blockListener.onBlocks['homestead'](50)
+      await blockListener.checkNetwork(provider)
       
       expect(blockJobPublisher.newBlock).not.toHaveBeenCalledWith(
         expect.objectContaining({ blockNumber: 47 })
