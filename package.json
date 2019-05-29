@@ -9,6 +9,7 @@
     "fixture": "$(yarn bin)/ts-node -r tsconfig-paths/register ./node_modules/typeorm-fixtures-cli/dist/cli.js",
     "console": "$(yarn bin)/ts-node -r tsconfig-paths/register",
     "graphql:generate": "$(yarn bin)/ts-node scripts/generate-typings",
+    "db:mirror": "node scripts/pull-prod-db.js",
     "db:generate": "yarn typeorm migration:generate -n Migration",
     "db:migrate": "yarn typeorm migration:run",
     "db:revert": "yarn typeorm migration:revert",
