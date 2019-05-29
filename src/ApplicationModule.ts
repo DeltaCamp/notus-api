@@ -20,7 +20,11 @@ import { ContractModule } from './contracts/ContractModule';
 import { EventLogModule } from './event-logs/EventLogModule'
 import { WorkLogModule } from './work-logs/WorkLogModule'
 
-import { TransactionMiddleware, TransactionModule } from './transactions';
+import { LoggerMiddleware } from './common/middleware/LoggerMiddleware';
+import {
+  TransactionMiddleware,
+  TransactionModule
+} from './transactions';
 import { UserModule } from './users';
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -68,7 +72,7 @@ export class ApplicationModule implements NestModule {
 
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(TransactionMiddleware)
+      .apply(LoggerMiddleware, TransactionMiddleware)
       .forRoutes('*')
   }
 }
