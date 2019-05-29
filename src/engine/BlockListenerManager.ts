@@ -20,6 +20,7 @@ export class BlockListenerManager {
     this.blockListener.start('ropsten')
     this.blockListener.start('rinkeby')
     this.blockListener.start('kovan')
+    this.blockListener.start('goerli')
   }
 
   stop() {
