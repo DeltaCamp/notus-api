@@ -288,7 +288,7 @@ type Query {
   contracts(contractsQuery: ContractsQuery): ContractsQueryResponse!
   network(id: Float!): NetworkEntity!
   networks: [NetworkEntity!]!
-  currentUser: UserEntity!
+  currentUser: UserEntity
 }
 
 type SourceEntity {
@@ -307,7 +307,8 @@ type UserEntity {
   id: ID!
   name: String!
   email: String!
-  etherscan_api_key: String!
+  confirmedAt: Date!
+  etherscan_api_key: String
   isAdmin: Boolean!
 }
 
