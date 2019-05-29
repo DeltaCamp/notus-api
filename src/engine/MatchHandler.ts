@@ -33,7 +33,7 @@ export class MatchHandler {
   }
 
   async startBlock(network: Network, blockNumber: number) {
-    debug('startBlock: ', network, `with chainId/number: ${network.chainId} ${blockNumber}`)
+    debug(`startBlock with chainId/number: ${network.chainId} ${blockNumber}`)
     if (!this.actionContextBuffers[network.chainId]) {
       this.actionContextBuffers[network.chainId] = new Map<number, ActionContext[]>()
     }
@@ -41,9 +41,9 @@ export class MatchHandler {
   }
 
   async endBlock(network: Network, blockNumber: number) {
-    debug('endBlock: ', network, `with chainId/number: ${network.chainId} ${blockNumber}`)
+    debug(`endBlock with chainId/number: ${network.chainId} ${blockNumber}`)
     const buffer = this.actionContextBuffers[network.chainId][blockNumber]
-    if (buffer.length > 0) {
+    if (buffer && buffer.length > 0) {
       await this.actionContextsHandler.handle(buffer)
     }
     delete this.actionContextBuffers[network.chainId][blockNumber]
@@ -51,7 +51,7 @@ export class MatchHandler {
 
   addActionContext(matchContext: MatchContext, event: EventEntity) {
     const { block, network } = matchContext
-    debug(`addActionContext with chainId/number: ${network.chainId} ${block.number}`)
+    debug(`addActionContext with chainId/number: ${network.chainId} ${block.number} for event id ${event.id}`)
     this.actionContextBuffers[network.chainId][block.number].push(new ActionContext(matchContext, event))
   }
 }
