@@ -5,6 +5,8 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { AuthJwtService } from './AuthJwtService';
 import { JwtPayload } from './JwtPayload';
 
+const debug = require('debug')('notus:AuthJwtService')
+
 @Injectable()
 export class OptionalAuthJWTStrategy extends PassportStrategy(Strategy, 'optionalJwt') {
   constructor(private readonly authService: AuthJwtService) {
@@ -15,6 +17,7 @@ export class OptionalAuthJWTStrategy extends PassportStrategy(Strategy, 'optiona
   }
 
   async validate(payload: JwtPayload) {
+    debug('payload', payload)
     return await this.authService.validateUser(payload);
   }
 }

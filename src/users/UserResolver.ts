@@ -1,6 +1,8 @@
 import { UseGuards, UseFilters, UnauthorizedException } from '@nestjs/common'
 import { Resolver, ResolveProperty, Parent, Mutation, Args, Query } from '@nestjs/graphql'
 
+
+import { OptionalGqlAuthGuard } from '../auth/OptionalGqlAuthGuard'
 import { GqlAuthGuard } from '../auth/GqlAuthGuard'
 import { GqlAuthUser } from '../decorators/GqlAuthUser'
 import {
@@ -18,8 +20,8 @@ export class UserResolver {
     private readonly userService: UserService
   ) {}
 
-  @UseGuards(GqlAuthGuard)
-  @Query(returns => UserEntity)
+  @UseGuards(OptionalGqlAuthGuard)
+  @Query(returns => UserEntity, { nullable: true })
   async currentUser(@GqlAuthUser() user: UserEntity): Promise<UserEntity> {
     return user
   }
