@@ -21,6 +21,7 @@ import { EventsQuery } from './EventsQuery'
 import { ContractService } from '../contracts/ContractService'
 import { newKeyHex } from '../utils/newKeyHex';
 import { WebhookHeaderService } from './WebhookHeaderService';
+import { EventLogService } from '../event-logs/EventLogService';
 
 const debug = require('debug')('notus:events:EventService')
 
@@ -34,7 +35,8 @@ export class EventService {
     private readonly appService: AppService,
     private readonly abiEventService: AbiEventService,
     private readonly contractService: ContractService,
-    private readonly webhookHeaderService: WebhookHeaderService
+    private readonly webhookHeaderService: WebhookHeaderService,
+    private readonly eventLogService: EventLogService
   ) {}
 
   @Transaction()
@@ -299,6 +301,10 @@ export class EventService {
     }
 
     if (eventDto.sendEmail !== undefined) {
+      // If we are re-activating then reset the event log
+      if (!event.sendEmail && eventDto.sendEmail) {
+        this.eventLogService.reset(event)
+      }
       event.sendEmail = eventDto.sendEmail
     }
 

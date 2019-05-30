@@ -32,6 +32,15 @@ export class EventLogService {
   }
 
   @Transaction()
+  async reset(event: EventEntity): Promise<EventLogEntity> {
+    let eventLog = await this.provider.get().findOne(EventLogEntity, { eventId: event.id })
+    if (eventLog) {
+      eventLog.resetWindow()
+    }
+    return eventLog
+  }
+
+  @Transaction()
   async sendWarning(eventLog: EventLogEntity) {
     eventLog.warningSent = true
     await this.provider.get().save(eventLog)
