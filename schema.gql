@@ -307,7 +307,7 @@ type UserEntity {
   id: ID!
   name: String!
   email: String!
-  confirmedAt: Date!
+  confirmedAt: Date
   etherscan_api_key: String
   isAdmin: Boolean!
 }
