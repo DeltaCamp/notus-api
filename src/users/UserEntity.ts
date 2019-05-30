@@ -67,7 +67,7 @@ export class UserEntity {
   @UpdateDateColumn({ type: 'timestamp' })
   updatedAt: Date;
 
-  @Field()
+  @Field({ nullable: true })
   @Column({ type: 'timestamp', nullable: true })
   confirmedAt: Date;
 
