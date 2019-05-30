@@ -256,6 +256,7 @@ export class EventService {
       .where('(events.scope = :scope)', { scope })
       .andWhere('("events"."networkId" = :networkId)', { networkId })
       .andWhere('"events"."deletedAt" IS NULL')
+      .andWhere('"users"."confirmedAt" IS NOT NULL')
       .andWhere('"events"."isActive" IS TRUE')
       .andWhere('("events"."sendEmail" IS TRUE OR "events"."callWebhook" IS TRUE)')
       .getMany()

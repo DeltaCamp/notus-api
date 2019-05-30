@@ -5,9 +5,17 @@
       <li>{{sourceTitle}}: <b>{{sourceValue}}</b></li>
     {{/matchers}}
   </ul>
-  <p>
-    <a href="{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}">View the transaction on Etherscan</a>
-  </p>
+  {{#transaction}}
+    <p>
+      <a href="{{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}">View the transaction on Etherscan</a>
+    </p>
+  {{/transaction}}
+
+  {{^transaction}}
+    <p>
+      <a href="{{#etherscanBlock}}{{block.number}}{{/etherscanBlock}}">View the block on Etherscan</a>
+    </p>
+  {{/transaction}}
   <p>
     <a href="{{disableEventUrl}}">Unsubscribe from Event</a>
   </p>

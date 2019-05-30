@@ -16,11 +16,11 @@ export class BlockListenerManager {
       this.blockListener.start('localhost')
     } else {
       this.blockListener.start('homestead')
+      this.blockListener.start('ropsten')
+      this.blockListener.start('rinkeby')
+      this.blockListener.start('kovan')
+      this.blockListener.start('goerli')
     }
-    this.blockListener.start('ropsten')
-    this.blockListener.start('rinkeby')
-    this.blockListener.start('kovan')
-    this.blockListener.start('goerli')
   }
 
   stop() {
