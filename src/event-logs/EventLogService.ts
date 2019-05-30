@@ -36,6 +36,7 @@ export class EventLogService {
     let eventLog = await this.provider.get().findOne(EventLogEntity, { eventId: event.id })
     if (eventLog) {
       eventLog.resetWindow()
+      await this.provider.get().save(eventLog)
     }
     return eventLog
   }
