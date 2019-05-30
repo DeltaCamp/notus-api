@@ -6,7 +6,7 @@ export class PgBossProvider {
   constructor () {
     this.pgBoss = new PgBoss({
       connectionString: process.env.DATABASE_URL,
-      deleteArchivedJobsEvery: "2 hours"
+      deleteArchivedJobsEvery: "30 minutes"
     })
   }
 

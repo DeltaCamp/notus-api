@@ -255,6 +255,7 @@ export class EventService {
       .andWhere('("events"."networkId" = :networkId)', { networkId })
       .andWhere('"events"."deletedAt" IS NULL')
       .andWhere('"events"."isActive" IS TRUE')
+      .andWhere('("events"."sendEmail" IS TRUE OR "events"."callWebhook" IS TRUE)')
       .getMany()
   }
 

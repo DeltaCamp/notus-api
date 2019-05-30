@@ -3,6 +3,8 @@ import { Injectable } from '@nestjs/common'
 import { PgBossProvider } from './PgBossProvider';
 import { JOB_NAME, MailJob } from './MailJob'
 
+const debug = require('debug')('notus:jobs:MailJobPublisher')
+
 @Injectable()
 export class MailJobPublisher {
 
@@ -11,6 +13,7 @@ export class MailJobPublisher {
   ) {}
 
   async sendMail(mailJob: MailJob) {
-    await this.provider.get().publish(JOB_NAME, mailJob)
+    debug(`sendMail(${mailJob.subject}`)
+    await this.provider.get().publish(JOB_NAME, mailJob, { retryLimit: 2, expireIn: '15 minutes' })
   }
 }

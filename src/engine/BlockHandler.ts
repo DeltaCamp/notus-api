@@ -36,6 +36,7 @@ export class BlockHandler {
   }
 
   checkBlockNumber = async (provider: BaseProvider, network: Network, blockNumber: number) => {
+    debug(`checkBlockNumber: ${network.chainId}`)
     const blockEvents = await this.eventService.findByScope(EventScope.BLOCK, network.chainId)
     const transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION, network.chainId)
     const abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT, network.chainId)

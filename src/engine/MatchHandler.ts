@@ -8,6 +8,7 @@ import {
 import { ActionContext } from './ActionContext'
 import { EventService } from '../events/EventService'
 import { ActionContextsHandler } from './ActionContextsHandler';
+import { transactionContextRunner } from '../transactions';
 
 const debug = require('debug')('notus:engine:MatchHandler')
 
@@ -27,7 +28,9 @@ export class MatchHandler {
     if (!event.isActive) { return false }
     this.addActionContext(matchContext, event)
     if (event.runCount !== -1) { //once the event is fired, deactivate it
-      await this.eventService.deactivateEvent(event)
+      await transactionContextRunner(() => {
+        return this.eventService.deactivateEvent(event)
+      })
     }
     return true
   }

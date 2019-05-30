@@ -10,7 +10,7 @@ import { SolidityDataType } from '../common/SolidityDataType'
 import { SourceDataType } from '../matchers/SourceDataType'
 import * as Source from '../matchers/Source'
 
-const debug = require('debug')('notus:Matcher')
+const debug = require('debug')('notus:engine:Matcher')
 
 export class Matcher {
 

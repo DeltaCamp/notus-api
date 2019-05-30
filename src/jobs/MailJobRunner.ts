@@ -7,6 +7,8 @@ import { JOB_NAME, MailJob } from './MailJob'
 
 const debug = require('debug')('notus:jobs:MailJobRunner')
 
+const CONCURRENCY = 10
+
 @Injectable()
 export class MailJobRunner {
 
@@ -16,7 +18,9 @@ export class MailJobRunner {
   ) {}
 
   async start() {
-    await this.provider.get().subscribe(JOB_NAME, this.handle)
+    await this.provider.get().subscribe(JOB_NAME, {
+      teamSize: CONCURRENCY, teamConcurrency: CONCURRENCY
+    }, this.handle)
   }
 
   handle = async (job) => {

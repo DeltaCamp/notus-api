@@ -45,14 +45,17 @@ export class EventsMatcher {
     debug(`Checking event ${event.id}`, event.scope)
 
     if (this.abiEventScopeDoesNotMatch(matchContext, event)) {
+      debug(`abiEventScopeDoesNotMatch for event ${event.id}`)
       return false
     }
 
     if (this.contractDoesNotMatch(matchContext, event)) {
+      debug(`contractDoesNotMatch for event ${event.id}`)
       return false
     }
 
     if (!this.matchersSucceed(matchContext, event)) {
+      debug(`matchers failed for event ${event.id}`)
       return false
     }
 
@@ -60,7 +63,6 @@ export class EventsMatcher {
   }
 
   abiEventScopeDoesNotMatch(matchContext: MatchContext, event: EventEntity): boolean {
-    debug(`abiEventScopeDoesNotMatch: ${event.scope} ${EventScope.CONTRACT_EVENT} for ${event.id}`)
     return event.scope === EventScope.CONTRACT_EVENT && matchContext.log.topics[0] !== event.abiEvent.topic
   }
 
