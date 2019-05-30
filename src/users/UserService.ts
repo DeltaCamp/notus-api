@@ -13,6 +13,7 @@ import { validate } from 'class-validator';
 import { UserDto } from './UserDto';
 import { notDefined } from '../utils/notDefined';
 import { SubscribeToMailchimpJobPublisher } from '../jobs/SubscribeToMailchimpJobPublisher';
+import { SlackDeltaCampJobPublisher } from '../jobs/SlackDeltaCampJobPublisher';
 
 const debug = require('debug')('notus:UserService')
 
@@ -23,7 +24,8 @@ export class UserService {
     private readonly provider: EntityManagerProvider,
     private readonly mailJobPublisher: MailJobPublisher,
     private readonly templateRenderer: TemplateRenderer,
-    private readonly subscribeToMailchimp: SubscribeToMailchimpJobPublisher
+    private readonly subscribeToMailchimp: SubscribeToMailchimpJobPublisher,
+    private readonly slackDeltaCamp: SlackDeltaCampJobPublisher
   ) { }
 
   @Transaction()
@@ -69,6 +71,7 @@ export class UserService {
       if (user.isNew) {
         this.sendWelcome(user, oneTimeKey)
         this.subscribeToMailchimp.publish({ email: user.email })
+        this.slackDeltaCamp.publish({ email: user.email })
       } else {
         this.sendMagicLink(user, oneTimeKey)
       }

@@ -10,6 +10,8 @@ import { WebhookJobRunner } from './WebhookJobRunner'
 import { WebhookJobPublisher } from './WebhookJobPublisher'
 import { SubscribeToMailchimpJobRunner } from './SubscribeToMailchimpJobRunner'
 import { SubscribeToMailchimpJobPublisher } from './SubscribeToMailchimpJobPublisher'
+import { SlackDeltaCampJobRunner } from './SlackDeltaCampJobRunner'
+import { SlackDeltaCampJobPublisher } from './SlackDeltaCampJobPublisher'
 
 @Module({
   providers: [
@@ -22,7 +24,9 @@ import { SubscribeToMailchimpJobPublisher } from './SubscribeToMailchimpJobPubli
     WebhookJobRunner,
     WebhookJobPublisher,
     SubscribeToMailchimpJobRunner,
-    SubscribeToMailchimpJobPublisher
+    SubscribeToMailchimpJobPublisher,
+    SlackDeltaCampJobRunner,
+    SlackDeltaCampJobPublisher
   ],
 
   exports: [
@@ -31,7 +35,8 @@ import { SubscribeToMailchimpJobPublisher } from './SubscribeToMailchimpJobPubli
     MailJobPublisher,
     BlockJobPublisher,
     WebhookJobPublisher,
-    SubscribeToMailchimpJobPublisher
+    SubscribeToMailchimpJobPublisher,
+    SlackDeltaCampJobPublisher
   ]
 })
 export class JobModule {}
