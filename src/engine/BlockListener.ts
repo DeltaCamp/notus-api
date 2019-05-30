@@ -25,6 +25,7 @@ export class BlockListener {
   }
 
   async start(networkName: string) {
+    debug(`Registering listener for '${networkName}'`)
     const provider = this.ethersProvider.getNetworkProvider(networkName)
     const network = await provider.getNetwork()
     if (this.networkChecks[network.chainId]) { throw new Error(`Provider already defined for network ${networkName}`) }

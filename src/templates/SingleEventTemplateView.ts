@@ -7,6 +7,7 @@ import {
   EventEntity
 } from '../entities'
 import { formatEtherscanAddressUrl } from '../utils/formatEtherscanAddressUrl'
+import { formatEtherscanBlockUrl } from '../utils/formatEtherscanBlockUrl'
 import { formatEtherscanTransactionUrl } from '../utils/formatEtherscanTransactionUrl'
 import { BlockView } from './BlockView'
 import { TransactionView } from './TransactionView'
@@ -26,8 +27,13 @@ export class SingleEventTemplateView extends BaseTemplateView {
   ) {
     super()
     this.event = event
-    this.block = new BlockView(context.block)
-    this.transaction = new TransactionView(context.transaction)
+
+    if (context.transaction) {
+      this.transaction = new TransactionView(context.transaction)
+    } else {
+      this.block = new BlockView(context.block)
+    }
+
     this.log = context.log
     this.network = context.network
 
@@ -58,12 +64,20 @@ export class SingleEventTemplateView extends BaseTemplateView {
     return this.formatEtherscanAddressUrl
   }
 
+  etherscanBlock = () => {
+    return this.formatEtherscanBlockUrl
+  }
+
   etherscanTx  = () => {
     return this.formatEtherscanTransactionUrl
   }
 
   formatEtherscanAddressUrl = (text: string, render: (val: string) => string) => {
     return formatEtherscanAddressUrl(render(text), this.network.chainId)
+  }
+
+  formatEtherscanBlockUrl = (text: string, render: (val: string) => string) => {
+    return formatEtherscanBlockUrl(render(text), this.network.chainId)
   }
 
   formatEtherscanTransactionUrl = (text: string, render: (val: string) => string) => {

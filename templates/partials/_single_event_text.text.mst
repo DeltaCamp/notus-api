@@ -4,6 +4,13 @@
 {{sourceTitle}}: {{sourceValue}}
 {{/matchers}}
 
+{{#transaction}}
 View the transaction on Etherscan: {{#etherscanTx}}{{transaction.hash}}{{/etherscanTx}}
+{{/transaction}}
+
+{{^transaction}}
+View the block on Etherscan: {{#etherscanBlock}}{{block.number}}{{/etherscanBlock}}
+{{/transaction}}
+
 
 Unsubscribe from this Event: {{disableEventUrl}}
