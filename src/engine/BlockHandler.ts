@@ -27,24 +27,20 @@ export class BlockHandler {
     const provider = this.ethersProvider.getNetworkProvider(networkName)
     const network = await provider.getNetwork()
     // Hack so that mainnet contracts and events work on localhost
-    debug(`Received ${networkName} block number ${blockNumber}`)
     if (networkName === 'unknown' && useLocalhostNotMainnet()) {
       network.chainId = 1
-      debug(`Using localhost, so rewriting chainId to 1`)
     }
     await this.checkBlockNumber(provider, network, blockNumber)
   }
 
   checkBlockNumber = async (provider: BaseProvider, network: Network, blockNumber: number) => {
-    debug(`checkBlockNumber: ${network.chainId}`)
     const blockEvents = await this.eventService.findByScope(EventScope.BLOCK, network.chainId)
     const transactionEvents = await this.eventService.findByScope(EventScope.TRANSACTION, network.chainId)
     const abiEventEvents = await this.eventService.findByScope(EventScope.CONTRACT_EVENT, network.chainId)
     const block: Block = await provider.getBlock(blockNumber)
     await this.matchHandler.startBlock(network, blockNumber)
-    debug(`Found number of events: [block, transaction, log] [${blockEvents.length}, ${transactionEvents.length}, ${abiEventEvents.length}]`)
+    debug(`checkBlockNumber ${blockNumber} for chain id ${network.chainId}: [block, transaction, log] [${blockEvents.length}, ${transactionEvents.length}, ${abiEventEvents.length}]`)
     if (blockEvents.length) {
-      debug(`Checking events ${blockEvents.map(event => event.id).join(', ')} for block: ${blockNumber}`)
       await this.eventsMatcher.match(blockEvents, network, block, undefined, undefined)
     }
     await Promise.all(block.transactions.map(transactionHash => (
@@ -59,7 +55,6 @@ export class BlockHandler {
     if (transactionReceipt) {
       const transaction: Transaction = createTransaction(transactionResponse, transactionReceipt)
       if (transactionEvents.length) {
-        debug(`Checking events ${transactionEvents.map(event => event.id).join(', ')} for transaction: ${transactionHash}`)
         await this.eventsMatcher.match(transactionEvents, network, block, transaction, undefined)
       }
       if (transactionReceipt.logs && transactionReceipt.logs.length) {
@@ -68,13 +63,12 @@ export class BlockHandler {
         )))
       }
     } else {
-      debug(`Skipping transaction ${transactionHash} for block ${block.number}`)
+      debug(`Skipping transaction ${transactionHash} for block ${block.number}: No receipt`)
     }
   }
 
   handleLog = async (abiEventEvents: EventEntity[], network: Network, block: Block, transaction: Transaction, log: Log) => {
     if (abiEventEvents.length) {
-      debug(`Checking events ${abiEventEvents.map(event => event.id).join(', ')} for log: ${log.transactionHash}:${log.logIndex}`)
       await this.eventsMatcher.match(abiEventEvents, network, block, transaction, log)
     }
   }

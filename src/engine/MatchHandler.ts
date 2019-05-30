@@ -44,10 +44,9 @@ export class MatchHandler {
   }
 
   async endBlock(network: Network, blockNumber: number) {
-    debug(`endBlock with chainId/number: ${network.chainId} ${blockNumber}`)
     const buffer = this.actionContextBuffers[network.chainId][blockNumber]
+    debug(`endBlock with chainId/number/num events: ${network.chainId} ${blockNumber} ${buffer ? buffer.length : 'null'}`)
     if (buffer && buffer.length > 0) {
-      debug(`endBlock with chainId/number FLUSHING: ${buffer.length}`)
       await this.actionContextsHandler.handle(buffer)
     }
     delete this.actionContextBuffers[network.chainId][blockNumber]
