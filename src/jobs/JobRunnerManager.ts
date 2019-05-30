@@ -5,6 +5,7 @@ import { MailJobRunner } from './MailJobRunner'
 import { BlockJobRunner } from './BlockJobRunner';
 import { WebhookJobRunner } from './WebhookJobRunner';
 import { SubscribeToMailchimpJobRunner } from './SubscribeToMailchimpJobRunner';
+import { SlackDeltaCampJobRunner } from './SlackDeltaCampJobRunner';
 
 @Injectable()
 export class JobRunnerManager {
@@ -14,7 +15,8 @@ export class JobRunnerManager {
     private readonly mailJobRunner: MailJobRunner,
     private readonly blockJobRunner: BlockJobRunner,
     private readonly webhookJobRunner: WebhookJobRunner,
-    private readonly subscribeToMailchimpJobRunner: SubscribeToMailchimpJobRunner
+    private readonly subscribeToMailchimpJobRunner: SubscribeToMailchimpJobRunner,
+    private readonly slackDeltaCampJobRunner: SlackDeltaCampJobRunner
   ) {}
 
   async start() {
@@ -23,7 +25,8 @@ export class JobRunnerManager {
       this.mailJobRunner.start(),
       this.blockJobRunner.start(),
       this.webhookJobRunner.start(),
-      this.subscribeToMailchimpJobRunner.start()
+      this.subscribeToMailchimpJobRunner.start(),
+      this.slackDeltaCampJobRunner.start()
     ])
   }
 
