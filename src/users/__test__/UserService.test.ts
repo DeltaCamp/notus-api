@@ -8,7 +8,8 @@ describe('the test', () => {
   let entityManager,
       mailerService,
       templateRenderer,
-      subscriptionPublisher
+      subscriptionPublisher,
+      slackPublisher
 
   let user
 
@@ -27,6 +28,9 @@ describe('the test', () => {
     subscriptionPublisher = {
       publish: jest.fn()
     }
+    slackPublisher = {
+      publish: jest.fn()
+    }
   })
 
   function newService() {
@@ -34,7 +38,8 @@ describe('the test', () => {
       { get: () => entityManager },
       mailerService,
       templateRenderer,
-      subscriptionPublisher
+      subscriptionPublisher,
+      slackPublisher
     )
   }
 
