@@ -7,7 +7,8 @@ import { JOB_NAME, MailJob } from './MailJob'
 
 const debug = require('debug')('notus:jobs:MailJobRunner')
 
-const CONCURRENCY = 10
+const TEAM_SIZE = 10 // the number of jobs to fetch per polling period
+const TEAM_CONCURRENCY = 2 // the number of jobs that can be run concurrently
 
 @Injectable()
 export class MailJobRunner {
@@ -19,7 +20,7 @@ export class MailJobRunner {
 
   async start() {
     await this.provider.get().subscribe(JOB_NAME, {
-      teamSize: CONCURRENCY, teamConcurrency: CONCURRENCY
+      teamSize: TEAM_SIZE, teamConcurrency: TEAM_CONCURRENCY
     }, this.handle)
   }
 

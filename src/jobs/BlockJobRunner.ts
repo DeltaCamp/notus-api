@@ -6,7 +6,8 @@ import { BlockHandler } from '../engine/BlockHandler'
 
 const debug = require('debug')('notus:jobs:BlockJobRunner')
 
-const CONCURRENCY = 10
+const TEAM_SIZE = 10 // the number of jobs to fetch per polling period
+const TEAM_CONCURRENCY = 2 // the number of jobs that can be run concurrently
 
 @Injectable()
 export class BlockJobRunner {
@@ -18,7 +19,7 @@ export class BlockJobRunner {
 
   start() {
     this.provider.get().subscribe(BLOCK_JOB_NAME, {
-      teamSize: CONCURRENCY, teamConcurrency: CONCURRENCY
+      teamSize: TEAM_SIZE, teamConcurrency: TEAM_CONCURRENCY
     }, this.handleBlockJob)
   }
 
