@@ -30,6 +30,14 @@ import { ValidationException } from '../common/ValidationException';
 const axios = require('axios')
 const debug = require('debug')('notus:AbiResolver')
 
+const ETHERSCAN_API_URL_MAP = {
+  1: 'https://api.etherscan.io',
+  3: 'https://api-ropsten.etherscan.io',
+  4: 'https://api-rinkeby.etherscan.io',
+  5: 'https://api-goerli.etherscan.io',
+  42: 'https://api-kovan.etherscan.io',
+};
+
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => AbiEntity)
 export class AbiResolver {
@@ -73,7 +81,8 @@ export class AbiResolver {
   @Query(returns => EtherscanAbiEntity)
   async etherscanAbi(
     @GqlAuthUser() user: UserEntity,
-    @Args('address') address: string
+    @Args('address') address: string,
+    @Args({ name: 'networkId', type: () => Number, nullable: true }) networkId: number
   ): Promise<EtherscanAbiEntity> {
 
     let parsedAddress
@@ -83,7 +92,7 @@ export class AbiResolver {
       throw new ValidationException("Not a valid address", [])
     }
 
-    const url = `https://api.etherscan.io/api?module=contract&action=getabi&address=${parsedAddress}&apikey=${user.etherscan_api_key}`
+    const url = `${ETHERSCAN_API_URL_MAP[networkId || 1]}/api?module=contract&action=getabi&address=${parsedAddress}&apikey=${user.etherscan_api_key}`
     const response = await axios.get(url)
     return response.data
   }

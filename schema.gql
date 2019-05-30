@@ -280,7 +280,7 @@ type Query {
   metaDataTypes: [MetaDataTypeEntity!]!
   abi(id: Float!): AbiEntity!
   abis(name: String): [AbiEntity!]!
-  etherscanAbi(address: String!): EtherscanAbiEntity!
+  etherscanAbi(networkId: Float, address: String!): EtherscanAbiEntity!
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
   abiEventInput(id: Float!): AbiEventInputEntity!
   abiEvent(id: Float!): AbiEventEntity!
