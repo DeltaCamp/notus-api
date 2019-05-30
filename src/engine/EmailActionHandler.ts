@@ -31,7 +31,10 @@ export class EmailActionHandler {
 
     const views: SingleEventTemplateView[] = await this.actionContextsToTemplateViews(actionContexts)
 
-    if (!views.length) { return }
+    if (!views.length) {
+      debug(`no views are valid`)
+      return
+    }
 
     const text = this.templateRenderer.renderTemplate('event.template.text.mst', new EventTemplateView(views))
     const html = this.templateRenderer.renderHtmlTemplate('event.template.html.mst', new EventTemplateView(views))
@@ -60,14 +63,19 @@ export class EmailActionHandler {
       const actionContext = actionContexts[i]
       const { event, matchContext } = actionContext
       if (event.hasEmailAction()) {
+        debug('has email action')
         await transactionContextRunner(async () => {        
           const eventLog = await this.eventLogService.logEvent(event)
           if (eventLog.isWindowFull()) {
+            debug('window is full')
             await this.haltEmails(actionContext, eventLog)
           } else {
+            debug('adding view')
             views.push(new SingleEventTemplateView(matchContext, event))          
           }
         })
+      } else {
+        debug('does not have email action')
       }
     }
     return views

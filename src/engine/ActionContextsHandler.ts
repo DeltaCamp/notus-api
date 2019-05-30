@@ -18,6 +18,8 @@ export class ActionContextsHandler {
     // need to sort into users, 
     await this.webhookActionHandler.handle(actionContexts)
 
+    debug(`handle(${actionContexts.length})`)
+
     const userActionContexts = this.groupActionContextsByUser(actionContexts)
     await Promise.all(Object.values(userActionContexts).map(async (actionContexts: ActionContext[]) => {
       await this.emailActionHandler.handle(actionContexts[0].event.user, actionContexts)
