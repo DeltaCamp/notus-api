@@ -44,6 +44,7 @@ export class MatchHandler {
     debug(`endBlock with chainId/number: ${network.chainId} ${blockNumber}`)
     const buffer = this.actionContextBuffers[network.chainId][blockNumber]
     if (buffer && buffer.length > 0) {
+      debug(`endBlock with chainId/number FLUSHING: ${buffer.length}`)
       await this.actionContextsHandler.handle(buffer)
     }
     delete this.actionContextBuffers[network.chainId][blockNumber]

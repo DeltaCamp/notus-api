@@ -13,7 +13,7 @@ export class BlockJobPublisher {
   ) {}
 
   async newBlock(blockJob: BlockJob): Promise<string> {
-    return await this.provider.get().publish(BLOCK_JOB_NAME, blockJob, { priority: 1000, retryLimit: 2, expireIn: '5 minutes' })
+    return await this.provider.get().publish(BLOCK_JOB_NAME, blockJob, { retryLimit: 2, expireIn: '5 minutes' })
   }
 
 }

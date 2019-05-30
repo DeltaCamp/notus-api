@@ -43,6 +43,8 @@ export class EmailActionHandler {
       subject = `${views.length} new events in block ${views[0].block.number()}`
     }
 
+    debug(`!!!!!!!!! emailing subject "${subject}"`)
+
     await this.mailJobPublisher.sendMail({
       to: user.email,
       subject,
