@@ -242,6 +242,7 @@ type Mutation {
   updateContract(contract: ContractDto!): ContractEntity!
   destroyContract(id: Float!): ContractEntity!
   updateUser(user: UserDto!): UserEntity!
+  resendConfirmation: UserEntity!
 }
 
 type NetworkEntity {

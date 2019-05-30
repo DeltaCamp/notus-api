@@ -70,8 +70,10 @@ export class UserService {
 
       if (user.isNew) {
         this.sendWelcome(user, oneTimeKey)
-        this.subscribeToMailchimp.publish({ email: user.email })
         this.slackDeltaCamp.publish({ email: user.email })
+
+        // move this to when they confirm their email?
+        this.subscribeToMailchimp.publish({ email: user.email })
       } else {
         this.sendMagicLink(user, oneTimeKey)
       }
@@ -89,11 +91,8 @@ export class UserService {
 
     if (user) {
       const oneTimeKey = user.generateOneTimeKey()
-
       await this.validateUser(user)
-
       await this.provider.get().save(user)
-
       this.sendMagicLink(user, oneTimeKey)
     }
 
@@ -107,6 +106,24 @@ export class UserService {
     user.password_hash = keyHashHex(password)
     await this.validateUser(user)
     await this.provider.get().save(user)
+  }
+
+  @Transaction()
+  public async resendConfirmation(user: UserEntity): Promise<UserEntity> {
+    this.doResendConfirmation(user)
+    return user
+  }
+
+  async doResendConfirmation(user: UserEntity): Promise<void> {
+    user.clearOneTimeKey()
+
+    user.confirmedAt = null
+    user.password_hash = null
+
+    const oneTimeKey = user.generateOneTimeKey()
+    await this.provider.get().save(user)
+    
+    this.sendWelcome(user, oneTimeKey)
   }
 
   @Transaction()

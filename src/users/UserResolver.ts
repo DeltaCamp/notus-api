@@ -42,4 +42,10 @@ export class UserResolver {
     return this.userService.update(user, userDto)
   }
 
+  @UseGuards(GqlAuthGuard)
+  @Mutation(returns => UserEntity)
+  async resendConfirmation(@GqlAuthUser() user: UserEntity) {
+    return this.userService.resendConfirmation(user)
+  }
+
 }
