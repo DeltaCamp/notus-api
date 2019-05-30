@@ -29,23 +29,31 @@ export class SlackDeltaCampJobRunner {
     try {
       const config = {
         timeout: 3000,
-        headers: [
-          'Content-type: application/json'
-        ]
+        // headers: [
+        //   'Content-type: application/json'
+        // ]
       }
 
       const url = `https://hooks.slack.com/services/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`
       const text = `Somebody just signed up with the email '${SlackDeltaCampJob.email}'!`
-      const postParams = { params: { text } }
+      // const postParams = { params: { text } }
+      const postParams = { text }
 
       const runAxiosPost = async () => {
-        const response = await axios.post(
-          url,
-          postParams,
-          config
-        )
+        try {
+          const response = await axios.post(
+            url,
+            postParams,
+            config
+          )
         
-        debug('Message sent: ', response);
+          debug('Message sent: ', response);
+        } catch (e) {
+          // console.error(e)
+          console.error(e.response.status)
+          console.error(e.response.statusText)
+          throw e         
+        }
       }
 
       runAxiosPost()
