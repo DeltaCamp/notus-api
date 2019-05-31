@@ -129,7 +129,6 @@ input EventDto {
   contractId: Float
   networkId: Float
   isPublic: Boolean
-  isActive: Boolean
   parentId: Float
   deletedAt: Date
   webhookUrl: String
@@ -152,7 +151,6 @@ type EventEntity {
   contractId: Float
   title: String!
   isPublic: Boolean!
-  isActive: Boolean!
   parent: EventEntity
   parentId: Float
   matchers: [MatcherEntity!]!

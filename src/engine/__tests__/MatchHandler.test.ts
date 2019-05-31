@@ -36,7 +36,6 @@ describe('MatchHandler', () => {
 
   function newEvent() {
     return {
-      isActive: true,
       id: eventId++
     }
   }

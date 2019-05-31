@@ -25,11 +25,11 @@ export class MatchHandler {
 
   async handle(matchContext: MatchContext, event: EventEntity) {
      // in case an event was previously deactivated, just bounce
-    if (!event.isActive) { return false }
+    if (event.runCount === 0) { return false }
     this.addActionContext(matchContext, event)
-    if (event.runCount !== -1) { //once the event is fired, deactivate it
+    if (event.runCount > 0) {
       await transactionContextRunner(() => {
-        return this.eventService.deactivateEvent(event)
+        return this.eventService.decrementRunCount(event)
       })
     }
     return true

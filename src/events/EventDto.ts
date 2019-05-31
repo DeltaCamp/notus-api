@@ -34,9 +34,6 @@ export class EventDto {
   isPublic: boolean;
 
   @Field({ nullable: true })
-  isActive: boolean;
-
-  @Field({ nullable: true })
   parentId?: number;
 
   @Field({ nullable: true })

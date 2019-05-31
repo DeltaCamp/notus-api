@@ -133,18 +133,6 @@ export class EventService {
   }
 
   @Transaction()
-  async findAllForMatch(): Promise<EventEntity[]> {
-    return await this.provider.get().createQueryBuilder(EventEntity, 'events')
-      .leftJoinAndSelect("events.user", "users")
-      .leftJoinAndSelect("events.matchers", "matchers")
-      .leftJoinAndSelect("matchers.abiEventInput", "input")
-      .leftJoinAndSelect("input.abiEvent", "abi_event")
-      .leftJoinAndSelect("abi_event.abi", "abi")
-      .where('"events"."isActive" IS TRUE AND "events"."deletedAt" IS NULL')
-      .getMany()
-  }
-
-  @Transaction()
   async getUser(event: EventEntity): Promise<UserEntity> {
     return this.provider.get().createQueryBuilder()
       .select('users')
@@ -258,7 +246,6 @@ export class EventService {
       .andWhere('("events"."networkId" = :networkId)', { networkId })
       .andWhere('"events"."deletedAt" IS NULL')
       .andWhere('"users"."confirmedAt" IS NOT NULL')
-      .andWhere('"events"."isActive" IS TRUE')
       .andWhere('("events"."sendEmail" IS TRUE OR "events"."callWebhook" IS TRUE)')
       .getMany()
   }
@@ -269,7 +256,6 @@ export class EventService {
 
     new Array(
       'title', 
-      'isActive', 
       'isPublic', 
     ).forEach(attr => {
       if (eventDto[attr] !== undefined) {
@@ -359,8 +345,8 @@ export class EventService {
   }
 
   @Transaction()
-  async deactivateEvent(event: EventEntity) {
-    event.isActive = false
+  async decrementRunCount(event: EventEntity) {
+    event.runCount = event.runCount - 1
     await this.provider.get().save(event)
     return true
   }
