@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Inject, forwardRef, Scope } from '@nestjs/common';
 import { validate, ValidationError } from 'class-validator'
 import { ValidationException } from '../common/ValidationException'
 
@@ -11,7 +11,6 @@ import {
   MatcherEntity
 } from '../entities'
 import { Network } from '../networks/Network'
-import { EventScope } from './EventScope'
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
 import { Transaction, EntityManagerProvider } from '../transactions'
@@ -22,6 +21,8 @@ import { ContractService } from '../contracts/ContractService'
 import { newKeyHex } from '../utils/newKeyHex';
 import { WebhookHeaderService } from './WebhookHeaderService';
 import { EventLogService } from '../event-logs/EventLogService';
+import { NetworkName } from '../networks/NetworkName'
+import { EventScope } from './EventScope'
 
 const debug = require('debug')('notus:events:EventService')
 
@@ -270,12 +271,19 @@ export class EventService {
       'title', 
       'isActive', 
       'isPublic', 
-      'scope'
     ).forEach(attr => {
       if (eventDto[attr] !== undefined) {
         event[attr] = eventDto[attr]
       }
     })
+
+    if (eventDto.scope !== undefined) {
+      event.scope = eventDto.scope
+      if (eventDto.scope !== EventScope.CONTRACT_EVENT) {
+        event.contract = null
+        event.contractId = null
+      }
+    }
 
     if (eventDto.runCount !== undefined) {
       event.runCount = eventDto.runCount
@@ -369,16 +377,19 @@ export class EventService {
   async validateEvent(event: EventEntity) {
     const errors: ValidationError[] = await validate(event)
 
-    if (event.contract && event.contract.networkId !== event.networkId) {
-      errors.push({
-        target: event,
-        property: 'contract',
-        value: event.contract.networkId,
-        constraints: { // Constraints that failed validation with error messages.
-            'contract': '$property does not have same networkId as event'
-        },
-        children: []
-      })
+    if (event.contractId || event.contract) {
+      const contract = event.contract || (await this.contractService.findOneOrFail(event.contractId))
+      if (contract && contract.networkId !== event.networkId) {
+        errors.push({
+          target: event,
+          property: 'contract',
+          value: contract.networkId,
+          constraints: { // Constraints that failed validation with error messages.
+              'contract': `${contract.name} is on ${NetworkName[contract.networkId]}`
+          },
+          children: []
+        })
+      }
     }
 
     if (errors.length > 0) {
