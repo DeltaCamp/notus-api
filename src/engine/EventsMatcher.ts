@@ -73,7 +73,7 @@ export class EventsMatcher {
   }
 
   matchersSucceed(matchContext: MatchContext, event: EventEntity): Boolean {
-    if (event.matchers.length === 0) { return false }
+    if (event.matchers.length === 0) { return true }
 
     let i: number;
     let matcher: MatcherEntity
