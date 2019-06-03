@@ -30,10 +30,9 @@ export class SingleEventTemplateView extends BaseTemplateView {
 
     if (context.transaction) {
       this.transaction = new TransactionView(context.transaction)
-    } else {
-      this.block = new BlockView(context.block)
     }
 
+    this.block = new BlockView(context.block)
     this.log = context.log
     this.network = context.network
 
