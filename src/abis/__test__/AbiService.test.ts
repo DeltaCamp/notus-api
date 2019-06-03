@@ -24,6 +24,8 @@ const TRANSFER_EVENT = {
   "type": "event"
 }
 
+const cDAI = require('./cdai_abi.json')
+
 describe('AbiService', () => {
   let service
 
@@ -58,5 +60,11 @@ describe('AbiService', () => {
       expect(abiEvent.topic).toEqual('0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef')
     })
   })
-  
+
+  describe('cDAI', () => {
+    it('should load the cDAI abi', async () => {
+      const abi = await service.createAbi(newDto(cDAI))
+      expect(abi.abiEvents.length).toEqual(15)
+    })
+  })
 })
