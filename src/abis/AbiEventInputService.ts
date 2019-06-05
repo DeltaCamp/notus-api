@@ -44,6 +44,7 @@ export class AbiEventInputService {
   async create(abiEvent: AbiEventEntity, name: string, type: SolidityDataType): Promise<AbiEventInputEntity> {
     const abiEventInput = new AbiEventInputEntity()
     abiEventInput.name = name
+    abiEventInput.title = name
     abiEventInput.type = type
     abiEventInput.abiEvent = abiEvent
 
