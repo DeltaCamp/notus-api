@@ -24,7 +24,7 @@ import { EventLogService } from '../event-logs/EventLogService';
 import { NetworkName } from '../networks/NetworkName'
 import { EventScope } from './EventScope'
 
-const debug = require('debug')('notus:events:EventService')
+// const debug = require('debug')('notus:events:EventService')
 
 @Injectable()
 export class EventService {
@@ -205,8 +205,6 @@ export class EventService {
     event.callWebhook = eventDto.callWebhook
     event.networkId = eventDto.networkId
 
-    debug(eventDto)
-
     if (eventDto.color !== undefined) {
       event.color = eventDto.color
     }
@@ -246,7 +244,7 @@ export class EventService {
       .andWhere('("events"."networkId" = :networkId)', { networkId })
       .andWhere('"events"."deletedAt" IS NULL')
       .andWhere('"users"."confirmedAt" IS NOT NULL')
-      .andWhere('("events"."sendEmail" IS TRUE OR "events"."callWebhook" IS TRUE)')
+      .andWhere('("events"."sendEmail" IS TRUE OR ("events"."callWebhook" IS TRUE AND "events"."webhookUrl" IS NOT NULL))')
       .getMany()
   }
 
