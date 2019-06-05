@@ -20,11 +20,13 @@ type AbiEntity {
 
 input AbiEventDto {
   id: ID
+  title: String
   isPublic: Boolean
 }
 
 type AbiEventEntity {
   id: ID!
+  title: String!
   name: String!
   topic: String!
   events: [EventEntity!]!

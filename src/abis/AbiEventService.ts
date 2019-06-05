@@ -1,5 +1,7 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Inject, forwardRef } from '@nestjs/common'
+import { validate, ValidationError } from 'class-validator'
 
+import { ValidationException } from '../common/ValidationException'
 import {
   AbiEntity,
   AbiEventEntity,
@@ -10,6 +12,7 @@ import { notDefined } from '../utils/notDefined';
 import { AbiEventsQuery } from './AbiEventsQuery'
 import { AbiEventDto } from './AbiEventDto'
 import { AbiEventInputService } from './AbiEventInputService';
+import { AbiService } from './AbiService';
 
 @Injectable()
 export class AbiEventService {
@@ -85,9 +88,12 @@ export class AbiEventService {
   async create(abi: AbiEntity, descriptor: any): Promise<AbiEventEntity> {
 
     const abiEvent = new AbiEventEntity()
+    abiEvent.title = descriptor.name
     abiEvent.name = descriptor.name
     abiEvent.topic = abi.interface().events[descriptor.name].topic
     abiEvent.abi = abi
+
+    await validate(abiEvent)
 
     this.provider.get().save(abiEvent)
 
@@ -103,7 +109,22 @@ export class AbiEventService {
     if (abiEventDto.isPublic !== undefined) {
       abiEvent.isPublic = abiEventDto.isPublic
     }
+
+    if (abiEventDto.title !== undefined) {
+      abiEvent.title = abiEventDto.title
+    }
+
+    await validate(abiEvent)
+
     await this.provider.get().save(abiEvent)
     return abiEvent
+  }
+
+  async validate(abiEvent: AbiEventEntity) {
+    const errors: ValidationError[] = await validate(event)
+
+    if (errors.length > 0) {
+      throw new ValidationException(`Event is invalid`, errors)
+    }
   }
 }
