@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common'
 import {
-  AbiEventInputEntity
+  AbiEventInputEntity,
+  AbiEventEntity
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
 
 import { notDefined } from '../utils/notDefined'
 import { AbiEventInputDto } from './AbiEventInputDto';
+import { SolidityDataType } from '../common/SolidityDataType';
 
 @Injectable()
 export class AbiEventInputService {
@@ -34,6 +36,18 @@ export class AbiEventInputService {
     }
 
     return query.getMany()
+  }
+
+  @Transaction()
+  async create(abiEvent: AbiEventEntity, name: string, type: SolidityDataType): Promise<AbiEventInputEntity> {
+    const abiEventInput = new AbiEventInputEntity()
+    abiEventInput.name = name
+    abiEventInput.type = type
+    abiEventInput.abiEvent = abiEvent
+
+    this.provider.get().save(abiEventInput)
+
+    return abiEventInput
   }
 
   @Transaction()

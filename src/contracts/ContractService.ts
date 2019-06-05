@@ -66,6 +66,7 @@ export class ContractService {
 
   @Transaction()
   async createContract(user: UserEntity, contractDto: ContractDto): Promise<ContractEntity> {
+
     const contract = new ContractEntity()
     contract.owner = user
     contract.name = contractDto.name
@@ -112,6 +113,19 @@ export class ContractService {
 
   async validate(contract: ContractEntity) {
     const errors = await validate(contract)
+
+    if (!(contract.abi || contract.abiId)) {
+      errors.push({
+        target: contract,
+        property: 'abi',
+        value: contract.abi,
+        constraints: {
+            'abi': `Must have an abi`
+        },
+        children: []
+      })
+    }
+
     if (errors.length) {
       throw new ClassValidationError(errors)
     }

@@ -42,9 +42,7 @@ export class AbiEntity {
   isPublic: boolean;
 
   @Field(type => [AbiEventEntity])
-  @OneToMany(type => AbiEventEntity, abiEvent => abiEvent.abi, {
-    cascade: true
-  })
+  @OneToMany(type => AbiEventEntity, abiEvent => abiEvent.abi)
   abiEvents: AbiEventEntity[];
 
   @OneToMany(type => ContractEntity, contract => contract.abi)

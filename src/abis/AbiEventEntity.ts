@@ -44,9 +44,7 @@ export class AbiEventEntity {
   abiId: number;
   
   @Field(type => [AbiEventInputEntity])
-  @OneToMany(type => AbiEventInputEntity, abiEventInput => abiEventInput.abiEvent, {
-    cascade: true
-  })
+  @OneToMany(type => AbiEventInputEntity, abiEventInput => abiEventInput.abiEvent)
   abiEventInputs: AbiEventInputEntity[];
 
   @Field()

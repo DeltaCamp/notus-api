@@ -9,12 +9,14 @@ import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
 import { AbiEventsQuery } from './AbiEventsQuery'
 import { AbiEventDto } from './AbiEventDto'
+import { AbiEventInputService } from './AbiEventInputService';
 
 @Injectable()
 export class AbiEventService {
 
   constructor (
-    private readonly provider: EntityManagerProvider
+    private readonly provider: EntityManagerProvider,
+    private readonly abiEventInputService: AbiEventInputService
   ) {}
 
   @Transaction()
@@ -77,6 +79,23 @@ export class AbiEventService {
     }
 
     return query.printSql().orderBy('"abiEvents"."name"', 'ASC').getManyAndCount()
+  }
+
+  @Transaction()
+  async create(abi: AbiEntity, descriptor: any): Promise<AbiEventEntity> {
+
+    const abiEvent = new AbiEventEntity()
+    abiEvent.name = descriptor.name
+    abiEvent.topic = abi.interface().events[descriptor.name].topic
+    abiEvent.abi = abi
+
+    this.provider.get().save(abiEvent)
+
+    abiEvent.abiEventInputs = descriptor.inputs.map((input: any) => {
+      return this.abiEventInputService.create(abiEvent, input.name, input.type)
+    })
+    
+    return abiEvent
   }
 
   @Transaction()
