@@ -61,6 +61,19 @@ type AbiEventsQueryResponse {
   abiEvents: [AbiEventEntity!]!
 }
 
+input AbisQuery {
+  skip: Float
+  take: Float
+  abiId: Float
+}
+
+type AbisQueryResponse {
+  totalCount: Float!
+  skip: Float
+  take: Float
+  abis: [AbiEntity!]!
+}
+
 input AppDto {
   id: ID
   name: String = ""
@@ -277,7 +290,7 @@ type Query {
   metaDataType(metaDataType: String!): MetaDataTypeEntity!
   metaDataTypes: [MetaDataTypeEntity!]!
   abi(id: Float!): AbiEntity!
-  abis(name: String): [AbiEntity!]!
+  abis(abisQuery: AbisQuery): AbisQueryResponse!
   etherscanAbi(networkId: Float, address: String!): EtherscanAbiEntity!
   abiEventInputs(abiEventId: Float, name: String): [AbiEventInputEntity!]!
   abiEventInput(id: Float!): AbiEventInputEntity!

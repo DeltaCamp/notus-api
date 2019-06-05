@@ -5,6 +5,7 @@ import { validate } from 'class-validator'
 
 import { ClassValidationError } from '../ClassValidationError'
 import { AbiDto } from './AbiDto'
+import { AbisQuery } from './AbisQuery'
 import {
   AbiEntity,
   AbiEventEntity,
@@ -47,6 +48,26 @@ export class AbiService {
     } else {
       return this.createAndSave(user, abiDto)
     }
+  }
+
+  // should have a way of scoping by user instead of just all abis:
+  @Transaction()
+  async findAndCount(params: AbisQuery) {
+    let query = await this.provider.get().createQueryBuilder(AbiEntity, 'abis')
+
+    if (params) {
+      if (params.abiId) {
+        query = query.andWhere('"abis"."abiId" = :id', { id: params.abiId })
+      }
+      if (params.skip) {
+        query = query.offset(params.skip)
+      }
+      if (params.take) {
+        query = query.limit(params.take)
+      }
+    }
+
+    return query.printSql().orderBy('"abis"."name"', 'ASC').getManyAndCount()
   }
 
   @Transaction()

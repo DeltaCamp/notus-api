@@ -21,6 +21,8 @@ import {
 } from '../entities'
 import { AbiDto } from './AbiDto'
 import { AbiService } from './AbiService'
+import { AbisQuery } from './AbisQuery';
+import { AbisQueryResponse } from './AbisQueryResponse';
 
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 import { EtherscanAbiEntity } from './EtherscanAbiEntity';
@@ -52,10 +54,31 @@ export class AbiResolver {
     return await this.abiService.findOneOrFail(id)
   }
 
-  @Query(returns => [AbiEntity])
+  // @Query(returns => [AbiEntity])
+  // async abis(
+  //   @Args({ name: 'name', type: () => String, nullable: true }) name: string) {
+  //   return await this.abiService.find(name)
+  // }
+
+  @Query(returns => AbisQueryResponse)
   async abis(
-    @Args({ name: 'name', type: () => String, nullable: true }) name: string) {
-    return await this.abiService.find(name)
+    @Args({
+      name: 'abisQuery',
+      type: () => AbisQuery, nullable: true
+    }) abisQuery: AbisQuery): Promise<AbisQueryResponse> {
+
+    const result = new AbisQueryResponse()
+    const [abis, totalCount] = await this.abiService.findAndCount(abisQuery);
+
+    result.abis = abis
+    result.totalCount = totalCount
+
+    if (abisQuery) {
+      result.skip = abisQuery.skip
+      result.take = abisQuery.take
+    }
+
+    return result
   }
 
   @ResolveProperty('abiEvents')
