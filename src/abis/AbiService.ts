@@ -3,7 +3,6 @@ import { Validator } from 'jsonschema'
 import { Like } from 'typeorm'
 import { validate } from 'class-validator'
 
-import { ClassValidationError } from '../ClassValidationError'
 import { AbiDto } from './AbiDto'
 import {
   AbiEntity,
@@ -14,6 +13,7 @@ import {
 import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
 import { AbiEventService } from './AbiEventService';
+import { ValidationException } from '../common/ValidationException';
 
 const schema = require('../../abi.spec.json')
 
@@ -135,8 +135,8 @@ export class AbiService {
 
   async validate(abi: AbiEntity) {
     const errors = await validate(abi)
-    if (errors.length) {
-      throw new ClassValidationError(errors)
+    if (errors.length > 0) {
+      throw new ValidationException(`ABI is invalid`, errors)
     }
   }
 }

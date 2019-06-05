@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common'
 import { validate } from 'class-validator'
 import { getAddress } from 'ethers/utils'
 
-import { ClassValidationError } from '../ClassValidationError'
 import {
   ContractEntity,
   UserEntity
@@ -12,6 +11,7 @@ import { notDefined } from '../utils/notDefined';
 import { ContractDto } from './ContractDto'
 import { AbiService } from '../abis/AbiService';
 import { ContractsQuery } from './ContractsQuery';
+import { ValidationException } from '../common/ValidationException';
 
 const debug = require('debug')('notus:ContractService')
 
@@ -139,8 +139,8 @@ export class ContractService {
       })
     }
 
-    if (errors.length) {
-      throw new ClassValidationError(errors)
+    if (errors.length > 0) {
+      throw new ValidationException(`Contract is invalid`, errors)
     }
   }
 }
