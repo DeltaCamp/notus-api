@@ -38,11 +38,13 @@ type AbiEventEntity {
 
 input AbiEventInputDto {
   id: ID
+  title: String
   metaType: String
 }
 
 type AbiEventInputEntity {
   id: ID!
+  title: String!
   name: String!
   type: String!
   metaType: String

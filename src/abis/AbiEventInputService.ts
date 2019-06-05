@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
+import { validate, ValidationError } from 'class-validator'
+
 import {
   AbiEventInputEntity,
   AbiEventEntity
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
-
+import { ValidationException } from '../common/ValidationException'
 import { notDefined } from '../utils/notDefined'
 import { AbiEventInputDto } from './AbiEventInputDto';
 import { SolidityDataType } from '../common/SolidityDataType';
@@ -45,6 +47,8 @@ export class AbiEventInputService {
     abiEventInput.type = type
     abiEventInput.abiEvent = abiEvent
 
+    await this.validate(abiEventInput)
+
     this.provider.get().save(abiEventInput)
 
     return abiEventInput
@@ -55,7 +59,21 @@ export class AbiEventInputService {
     if (abiEventInputDto.metaType !== undefined) {
       abiEventInput.metaType = abiEventInputDto.metaType
     }
+    if (abiEventInputDto.title !== undefined) {
+      abiEventInput.title = abiEventInputDto.title
+    }
+
+    await this.validate(abiEventInput)
+
     await this.provider.get().save(abiEventInput)
     return abiEventInput
+  }
+
+  async validate(abiEventInput: AbiEventInputEntity) {
+    const errors: ValidationError[] = await validate(abiEventInput)
+
+    if (errors.length > 0) {
+      throw new ValidationException(`ABI Event Input is invalid`, errors)
+    }
   }
 }

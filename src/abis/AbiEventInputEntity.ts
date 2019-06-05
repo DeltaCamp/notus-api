@@ -12,6 +12,7 @@ import { Field, ObjectType, ID } from 'type-graphql';
 import { SolidityDataType } from '../common/SolidityDataType';
 import { AbiEventEntity } from './AbiEventEntity'
 import { MetaDataType } from '../matchers/MetaDataType';
+import { IsDefined } from 'class-validator';
 
 @ObjectType()
 @Entity({ name: 'abi_event_inputs' })
@@ -20,6 +21,12 @@ export class AbiEventInputEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @IsDefined()
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  title: string = '';
+
+  @IsDefined()
   @Field()
   @Column({ type: 'text', nullable: false })
   name: string = '';
