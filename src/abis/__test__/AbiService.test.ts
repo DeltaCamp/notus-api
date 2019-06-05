@@ -26,6 +26,7 @@ const TRANSFER_EVENT = {
 
 const cDAI = require('./cdai_abi.json')
 const Pool = require('./pool_abi.json')
+const MoneyMarket = require('./money-market_abi.json')
 
 describe('AbiService', () => {
   let service
@@ -78,5 +79,10 @@ describe('AbiService', () => {
   it('should load the Pool abi', async () => {
     const abi = await service.createAbi(newDto(Pool))
     expect(abi.abiEvents.length).toEqual(6)
+  })
+
+  it('should load the MoneyMarket abi', async () => {
+    const abi = await service.createAbi(newDto(MoneyMarket))
+    expect(abi.abiEvents.length).toEqual(0)
   })
 })
