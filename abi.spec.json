@@ -63,7 +63,10 @@
           "$ref": "#/definitions/StateMutability"
         },
         "constant": { "type": "boolean" },
-        "payable": { "type": "boolean", "default": false }
+        "payable": { "type": "boolean", "default": false },
+        "signature": {
+          "type": "string"
+        }
       },
       "required": ["name", "inputs", "constant"],
       "additionalProperties": false

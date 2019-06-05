@@ -3,7 +3,6 @@ import { Validator } from 'jsonschema'
 import { Like } from 'typeorm'
 import { validate } from 'class-validator'
 
-import { ClassValidationError } from '../ClassValidationError'
 import { AbiDto } from './AbiDto'
 import { AbisQuery } from './AbisQuery'
 import {
@@ -14,6 +13,8 @@ import {
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
+import { AbiEventService } from './AbiEventService';
+import { ValidationException } from '../common/ValidationException';
 
 const schema = require('../../abi.spec.json')
 
@@ -23,7 +24,8 @@ const debug = require('debug')('notus:AbiService')
 export class AbiService {
 
   constructor (
-    private readonly provider: EntityManagerProvider
+    private readonly provider: EntityManagerProvider,
+    private readonly abiEventService: AbiEventService
   ) {}
 
   @Transaction()
@@ -126,30 +128,17 @@ export class AbiService {
     abi.abiEvents = []
     await this.validate(abi)
 
-    abiJson.forEach((element: any) => {
+    await this.provider.get().save(abi)
+
+    let i
+    for (i = 0; i < abiJson.length; i++) {
+      const element = abiJson[i]
       if (element.type === 'event') {
-        abi.abiEvents.push(this.createEvent(abi, element))
+        abi.abiEvents.push(await this.abiEventService.create(abi, element))
       }
-    })
+    }
 
     return abi
-  }
-
-  createEvent(abi: AbiEntity, descriptor: any): AbiEventEntity {
-    const abiEvent = new AbiEventEntity()
-    abiEvent.name = descriptor.name
-    abiEvent.topic = abi.interface().events[descriptor.name].topic
-    abiEvent.abiEventInputs = descriptor.inputs.map((input: any) => {
-      return this.createEventInput(input)
-    })
-    return abiEvent
-  }
-
-  createEventInput(input: any): AbiEventInputEntity {
-    const abiEventInput = new AbiEventInputEntity()
-    abiEventInput.name = input.name
-    abiEventInput.type = input.type
-    return abiEventInput
   }
 
   @Transaction()
@@ -167,8 +156,8 @@ export class AbiService {
 
   async validate(abi: AbiEntity) {
     const errors = await validate(abi)
-    if (errors.length) {
-      throw new ClassValidationError(errors)
+    if (errors.length > 0) {
+      throw new ValidationException(`ABI is invalid`, errors)
     }
   }
 }

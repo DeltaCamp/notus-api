@@ -9,6 +9,7 @@ import {
   OneToMany
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
+import { IsDefined } from 'class-validator';
 
 import {
   AbiEntity,
@@ -16,13 +17,19 @@ import {
   EventEntity
 } from '../entities';
 
-@ObjectType()
 @Entity({ name: 'abi_events' })
+@ObjectType()
 export class AbiEventEntity {
   @Field(type => ID)
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @IsDefined()
+  @Field()
+  @Column({ type: 'text', nullable: false })
+  title: string = '';
+
+  @IsDefined()
   @Field()
   @Column({ type: 'text', nullable: false })
   name: string = '';
@@ -44,9 +51,7 @@ export class AbiEventEntity {
   abiId: number;
   
   @Field(type => [AbiEventInputEntity])
-  @OneToMany(type => AbiEventInputEntity, abiEventInput => abiEventInput.abiEvent, {
-    cascade: true
-  })
+  @OneToMany(type => AbiEventInputEntity, abiEventInput => abiEventInput.abiEvent)
   abiEventInputs: AbiEventInputEntity[];
 
   @Field()

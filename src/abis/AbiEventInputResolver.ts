@@ -2,6 +2,7 @@ import { Resolver, ResolveProperty, Parent, Args, Query, Mutation } from '@nestj
 
 import {
   UserEntity,
+  AbiEntity,
   AbiEventEntity,
   AbiEventInputEntity
 } from '../entities'
@@ -12,6 +13,7 @@ import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter'
 import { UseFilters, UseGuards, UnauthorizedException } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/GqlAuthGuard';
 import { GqlAuthUser } from '../decorators/GqlAuthUser';
+import { AbiService } from './AbiService';
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => AbiEventInputEntity)
@@ -19,7 +21,8 @@ export class AbiEventInputResolver {
 
   constructor(
     private readonly abiEventInputService: AbiEventInputService,
-    private readonly abiEventService: AbiEventService
+    private readonly abiEventService: AbiEventService,
+    private readonly abiService: AbiService
   ) {}
 
   @Query(returns => [AbiEventInputEntity])
@@ -49,10 +52,32 @@ export class AbiEventInputResolver {
     @Args('abiEventInput') abiEventInputDto: AbiEventInputDto
   ): Promise<AbiEventInputEntity> {
     const abiEventInput = await this.abiEventInputService.findOneOrFail(abiEventInputDto.id)
-    if (abiEventInput.abiEvent.abi.ownerId !== user.id) {
+    const abi = await this.getInputAbi(abiEventInput)
+    if (abi.ownerId !== user.id) {
       throw new UnauthorizedException()
     }
     const event = await this.abiEventInputService.update(abiEventInput, abiEventInputDto)
     return event
+  }
+
+  async getInputAbi(abiEventInput: AbiEventInputEntity) {
+    const abiEvent = await this.getAbiEvent(abiEventInput)
+    return await this.getAbi(abiEvent)
+  }
+
+  async getAbiEvent(abiEventInput: AbiEventInputEntity): Promise<AbiEventEntity> {
+    if (abiEventInput.abiEvent) {
+      return abiEventInput.abiEvent
+    } else {
+      return this.abiEventService.findOneOrFail(abiEventInput.abiEventId)
+    }
+  }
+  
+  async getAbi(abiEvent: AbiEventEntity): Promise<AbiEntity> {
+    if (abiEvent.abi) {
+      return abiEvent.abi
+    } else {
+      return this.abiService.findOneOrFail(abiEvent.abiId)
+    }
   }
 }

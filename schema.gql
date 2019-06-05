@@ -20,11 +20,13 @@ type AbiEntity {
 
 input AbiEventDto {
   id: ID
+  title: String
   isPublic: Boolean
 }
 
 type AbiEventEntity {
   id: ID!
+  title: String!
   name: String!
   topic: String!
   events: [EventEntity!]!
@@ -36,11 +38,13 @@ type AbiEventEntity {
 
 input AbiEventInputDto {
   id: ID
+  title: String
   metaType: String
 }
 
 type AbiEventInputEntity {
   id: ID!
+  title: String!
   name: String!
   type: String!
   metaType: String
@@ -88,6 +92,7 @@ input ContractDto {
   id: ID
   name: String
   address: String
+  isPublic: Boolean
   networkId: Float
   abi: AbiDto
 }
@@ -98,6 +103,7 @@ type ContractEntity {
   ownerId: Float!
   name: String!
   abi: AbiEntity!
+  isPublic: Boolean!
   abiId: Float!
   address: String!
   networkId: Float!

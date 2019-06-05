@@ -8,5 +8,8 @@ export class AbiEventInputDto {
   id?: number;
 
   @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
   metaType?: MetaDataType;
 }

@@ -6,5 +6,8 @@ export class AbiEventDto {
   id?: number;
 
   @Field({ nullable: true })
+  title?: string;
+
+  @Field({ nullable: true })
   isPublic?: boolean;
 }

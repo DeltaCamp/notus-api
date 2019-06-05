@@ -25,18 +25,28 @@ const TRANSFER_EVENT = {
 }
 
 const cDAI = require('./cdai_abi.json')
+const Pool = require('./pool_abi.json')
+const MoneyMarket = require('./money-market_abi.json')
 
 describe('AbiService', () => {
   let service
 
-  let emp
+  let provider, repo, abiEventService
 
   beforeEach(() => {
-    emp = {
-      get: jest.fn()
+    repo = {
+      save: jest.fn()
     }
 
-    service = new AbiService(emp)
+    provider = {
+      get: jest.fn(() => repo)
+    }
+
+    abiEventService = {
+      create: jest.fn(() => ({ topic: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' }))
+    }
+
+    service = new AbiService(provider, abiEventService)
   })
 
   function newDto(abiObject: Object): AbiDto {
@@ -61,10 +71,18 @@ describe('AbiService', () => {
     })
   })
 
-  describe('cDAI', () => {
-    it('should load the cDAI abi', async () => {
-      const abi = await service.createAbi(newDto(cDAI))
-      expect(abi.abiEvents.length).toEqual(15)
-    })
+  it('should load the cDAI abi', async () => {
+    const abi = await service.createAbi(newDto(cDAI))
+    expect(abi.abiEvents.length).toEqual(15)
+  })
+
+  it('should load the Pool abi', async () => {
+    const abi = await service.createAbi(newDto(Pool))
+    expect(abi.abiEvents.length).toEqual(6)
+  })
+
+  it('should load the MoneyMarket abi', async () => {
+    const abi = await service.createAbi(newDto(MoneyMarket))
+    expect(abi.abiEvents.length).toEqual(0)
   })
 })

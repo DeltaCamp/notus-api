@@ -1,11 +1,15 @@
 import { Injectable } from '@nestjs/common'
+import { validate, ValidationError } from 'class-validator'
+
 import {
-  AbiEventInputEntity
+  AbiEventInputEntity,
+  AbiEventEntity
 } from '../entities'
 import { Transaction, EntityManagerProvider } from '../transactions'
-
+import { ValidationException } from '../common/ValidationException'
 import { notDefined } from '../utils/notDefined'
 import { AbiEventInputDto } from './AbiEventInputDto';
+import { SolidityDataType } from '../common/SolidityDataType';
 
 @Injectable()
 export class AbiEventInputService {
@@ -37,11 +41,40 @@ export class AbiEventInputService {
   }
 
   @Transaction()
+  async create(abiEvent: AbiEventEntity, name: string, type: SolidityDataType): Promise<AbiEventInputEntity> {
+    const abiEventInput = new AbiEventInputEntity()
+    abiEventInput.name = name
+    abiEventInput.title = name
+    abiEventInput.type = type
+    abiEventInput.abiEvent = abiEvent
+
+    await this.validate(abiEventInput)
+
+    this.provider.get().save(abiEventInput)
+
+    return abiEventInput
+  }
+
+  @Transaction()
   async update(abiEventInput: AbiEventInputEntity, abiEventInputDto: AbiEventInputDto): Promise<AbiEventInputEntity> {
     if (abiEventInputDto.metaType !== undefined) {
       abiEventInput.metaType = abiEventInputDto.metaType
     }
+    if (abiEventInputDto.title !== undefined) {
+      abiEventInput.title = abiEventInputDto.title
+    }
+
+    await this.validate(abiEventInput)
+
     await this.provider.get().save(abiEventInput)
     return abiEventInput
+  }
+
+  async validate(abiEventInput: AbiEventInputEntity) {
+    const errors: ValidationError[] = await validate(abiEventInput)
+
+    if (errors.length > 0) {
+      throw new ValidationException(`ABI Event Input is invalid`, errors)
+    }
   }
 }

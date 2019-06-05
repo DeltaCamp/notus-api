@@ -43,6 +43,10 @@ export class ContractEntity {
   abi: AbiEntity;
 
   @Field()
+  @Column({ type: 'boolean', default: true, nullable: false })
+  isPublic: boolean;
+
+  @Field()
   @RelationId((contract: ContractEntity) => contract.abi)
   abiId: number;
 
