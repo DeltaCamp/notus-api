@@ -79,6 +79,7 @@ input ContractDto {
   id: ID
   name: String
   address: String
+  isPublic: Boolean
   networkId: Float
   abi: AbiDto
 }
@@ -89,6 +90,7 @@ type ContractEntity {
   ownerId: Float!
   name: String!
   abi: AbiEntity!
+  isPublic: Boolean!
   abiId: Float!
   address: String!
   networkId: Float!

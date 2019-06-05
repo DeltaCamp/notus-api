@@ -13,6 +13,9 @@ export class ContractDto {
   address?: string;
 
   @Field({ nullable: true })
+  isPublic?: boolean;
+
+  @Field({ nullable: true })
   networkId?: number;
 
   @Field(type => AbiDto, { nullable: true })

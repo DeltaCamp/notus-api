@@ -44,9 +44,7 @@ export class ContractResolver {
     if (!contractsQuery) {
       contractsQuery = new ContractsQuery()
     }
-    // Always force the userId to be the person making the request (until public contracts are made)
-    contractsQuery.ownerId = user.id
-    const [contracts, totalCount] = await this.contractService.findAndCount(contractsQuery);
+    const [contracts, totalCount] = await this.contractService.findAndCount(contractsQuery, user.id);
     result.contracts = contracts
     result.totalCount = totalCount
     result.skip = contractsQuery.skip
