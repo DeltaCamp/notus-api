@@ -29,6 +29,10 @@ module.exports = {
       migrationsDir: "./src/migrations",
       subscribersDir: "./src/subscribers"
    },
+   extra: {
+      // Max number of db connections
+      max: 9
+   },
    logging: true,
    logger: "debug"
 }
