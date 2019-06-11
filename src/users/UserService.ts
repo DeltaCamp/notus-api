@@ -47,7 +47,7 @@ export class UserService extends Service {
 
   public async findByEmailAndPassword(email: string, password: string): Promise<UserEntity> {
     let password_hash = keyHashHex(password)
-    return this.connection.manager.findOne(UserEntity, { email, password_hash })
+    return this.manager().findOne(UserEntity, { email, password_hash })
   }
 
   public async createOrRequestMagicLink(email: string): Promise<UserEntity> {

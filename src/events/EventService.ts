@@ -46,14 +46,14 @@ export class EventService extends Service {
   }
 
   async findOne(id: number): Promise<EventEntity> {
-    return this.connection.manager.findOne(EventEntity, id)
+    return this.manager().findOne(EventEntity, id)
   }
 
   async findOneOrFail(id: number): Promise<EventEntity> {
     if (notDefined(id)) {
       throw new Error(`id must be defined`)
     }
-    return this.connection.manager.findOneOrFail(EventEntity, id)
+    return this.manager().findOneOrFail(EventEntity, id)
   }
 
   async findAndCount(params: EventsQuery) {
@@ -168,7 +168,7 @@ export class EventService extends Service {
   }
 
   async createEvent(user: UserEntity, eventDto: EventDto): Promise<EventEntity> {
-    const em = this.connection.manager
+    const em = this.manager()
 
     const event = new EventEntity()
 

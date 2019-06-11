@@ -31,22 +31,23 @@ const MoneyMarket = require('./money-market_abi.json')
 describe('AbiService', () => {
   let service
 
-  let provider, repo, abiEventService
+  let connection, manager, abiEventService
 
   beforeEach(() => {
-    repo = {
+    manager = {
       save: jest.fn()
     }
 
-    provider = {
-      get: jest.fn(() => repo)
+    connection = {
+      manager,
+      transaction: jest.fn((callback) => callback(manager))
     }
 
     abiEventService = {
       create: jest.fn(() => ({ topic: '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' }))
     }
 
-    service = new AbiService(provider, abiEventService)
+    service = new AbiService(connection, abiEventService)
   })
 
   function newDto(abiObject: Object): AbiDto {

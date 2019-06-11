@@ -5,7 +5,8 @@ import { keyHashHex } from '../../utils/keyHashHex'
 describe('the test', () => {
   let userService
 
-  let entityManager,
+  let connection,
+      entityManager,
       mailerService,
       templateRenderer,
       subscriptionPublisher,
@@ -34,8 +35,11 @@ describe('the test', () => {
   })
 
   function newService() {
+    connection = {
+      manager: entityManager
+    }
     return new UserService(
-      { get: () => entityManager },
+      connection,
       mailerService,
       templateRenderer,
       subscriptionPublisher,

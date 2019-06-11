@@ -24,12 +24,12 @@ export class AppService extends Service {
   }
 
   async findOne(id: number): Promise<AppEntity> {
-    return this.connection.manager.findOne(AppEntity, id);
+    return this.manager().findOne(AppEntity, id);
   }
 
   async findOneOrFail(id: number): Promise<AppEntity> {
     if (notDefined(id)) { throw new Error('id must be defined') }
-    return this.connection.manager.findOneOrFail(AppEntity, id);
+    return this.manager().findOneOrFail(AppEntity, id);
   }
 
   async findOrCreate(user: UserEntity, appDto: AppDto): Promise<AppEntity> {

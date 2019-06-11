@@ -13,7 +13,7 @@ export class Service {
     if (transactionalEntityManager) { 
       return callback(transactionalEntityManager)
     } else {
-      return await this.manager().transaction(callback)
+      return await this.connection.transaction(callback)
     }
   }
 }
