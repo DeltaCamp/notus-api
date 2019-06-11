@@ -31,6 +31,7 @@ export class ContractService extends Service {
   async findAndCount(params: ContractsQuery, userId: number): Promise<[ContractEntity[], number]> {
     let query = await this.connection.createQueryBuilder(ContractEntity, 'contracts')
       .leftJoinAndSelect("contracts.abi", "abis")
+      .leftJoinAndSelect("contracts.owner", "owners")
       .leftJoinAndSelect("abis.abiEvents", "abiEvents")
     
     query = query.where('"contracts"."deletedAt" IS NULL')
@@ -133,7 +134,19 @@ export class ContractService extends Service {
         property: 'abi',
         value: contract.abi,
         constraints: {
-            'abi': `Must have an abi`
+          'abi': `Must have an abi`
+        },
+        children: []
+      })
+    }
+
+    if (!(contract.owner || contract.ownerId)) {
+      errors.push({
+        target: contract,
+        property: 'owner',
+        value: contract.owner,
+        constraints: {
+          'owner': `Must have an Owner`
         },
         children: []
       })

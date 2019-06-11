@@ -103,8 +103,8 @@ type ContractEntity {
   ownerId: Float!
   name: String!
   abi: AbiEntity!
-  isPublic: Boolean!
   abiId: Float!
+  isPublic: Boolean!
   address: String!
   networkId: Float!
   createdAt: Date!

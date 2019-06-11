@@ -16,6 +16,7 @@ import { ContractsQueryResponse } from './ContractsQueryResponse'
 const debug = require('debug')('notus:ContractResolver')
 import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter';
 import { AbiService } from '../abis/AbiService';
+import { UserService } from '../users/UserService';
 
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => ContractEntity)
@@ -23,7 +24,8 @@ export class ContractResolver {
 
   constructor(
     private readonly contractService: ContractService,
-    private readonly abiService: AbiService
+    private readonly abiService: AbiService,
+    private readonly userService: UserService
   ) {}
 
   @Query(returns => ContractEntity)
@@ -59,6 +61,13 @@ export class ContractResolver {
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
     return await this.contractService.createContract(user, contractDto)
+  }
+
+  @ResolveProperty('owner')
+  async owner(
+    @Parent() contract: ContractEntity
+  ): Promise<UserEntity> {
+    return await this.userService.findOneOrFail(contract.ownerId)
   }
 
   @ResolveProperty('abi')
