@@ -6,26 +6,30 @@ import {
   ContractEntity,
   UserEntity
 } from '../entities'
-import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
 import { ContractDto } from './ContractDto'
 import { AbiService } from '../abis/AbiService';
 import { ContractsQuery } from './ContractsQuery';
 import { ValidationException } from '../common/ValidationException';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 const debug = require('debug')('notus:ContractService')
 
 @Injectable()
-export class ContractService {
+export class ContractService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider,
-    private readonly abiService: AbiService
-  ) {}
+    private readonly abiService: AbiService,
+    @InjectConnection()
+    connection: Connection
+  ) {
+    super(connection)
+  }
 
-  @Transaction()
   async findAndCount(params: ContractsQuery, userId: number): Promise<[ContractEntity[], number]> {
-    let query = await this.provider.get().createQueryBuilder(ContractEntity, 'contracts')
+    let query = await this.connection.createQueryBuilder(ContractEntity, 'contracts')
       .leftJoinAndSelect("contracts.abi", "abis")
       .leftJoinAndSelect("abis.abiEvents", "abiEvents")
     
@@ -66,13 +70,11 @@ export class ContractService {
     return query.printSql().orderBy('"contracts"."createdAt"', 'DESC').getManyAndCount()
   }
 
-  @Transaction()
   async findOneOrFail(id: number): Promise<ContractEntity> {
     if (notDefined(id)) { throw new Error('id must be defined') }
-    return await this.provider.get().findOneOrFail(ContractEntity, id)
+    return await this.manager().findOneOrFail(ContractEntity, id)
   }
 
-  @Transaction()
   async createContract(user: UserEntity, contractDto: ContractDto): Promise<ContractEntity> {
 
     const contract = new ContractEntity()
@@ -87,12 +89,11 @@ export class ContractService {
 
     contract.address = getAddress(contract.address)
 
-    await this.provider.get().save(contract)
+    await this.manager().save(contract)
 
     return contract
   }
   
-  @Transaction()
   async updateAndSave(contract: ContractEntity, contractDto: ContractDto): Promise<ContractEntity> {
     if (contractDto.name !== undefined) {
       contract.name = contractDto.name
@@ -114,14 +115,13 @@ export class ContractService {
 
     contract.address = getAddress(contract.address)
 
-    await this.provider.get().save(contract)
+    await this.manager().save(contract)
 
     return contract
   }
 
-  @Transaction()
   async destroy(contract: ContractEntity) {
-    await this.provider.get().delete(ContractEntity, contract.id)
+    await this.manager().delete(ContractEntity, contract.id)
   }
 
   async validate(contract: ContractEntity) {

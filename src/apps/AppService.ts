@@ -2,37 +2,36 @@ import { Injectable } from '@nestjs/common';
 
 import { AppEntity, UserEntity } from '../entities';
 import { AppDto } from './AppDto';
-import { rollbar } from '../rollbar'
-import { Transaction } from '../transactions/Transaction'
-import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 import { EventService } from '../events/EventService'
 import { notDefined } from '../utils/notDefined';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 @Injectable()
-export class AppService {
+export class AppService extends Service {
 
   constructor(
-    private readonly provider: EntityManagerProvider,
+    @InjectConnection()
+    connection: Connection,
     private readonly eventService: EventService
-  ) { }
+  ) { 
+    super(connection)
+  }
 
-  @Transaction()
   async findAll(): Promise<AppEntity[]> {
-    return await this.provider.get().find(AppEntity);
+    return await this.manager().find(AppEntity);
   }
 
-  @Transaction()
   async findOne(id: number): Promise<AppEntity> {
-    return this.provider.get().findOne(AppEntity, id);
+    return this.connection.manager.findOne(AppEntity, id);
   }
 
-  @Transaction()
   async findOneOrFail(id: number): Promise<AppEntity> {
     if (notDefined(id)) { throw new Error('id must be defined') }
-    return this.provider.get().findOneOrFail(AppEntity, id);
+    return this.connection.manager.findOneOrFail(AppEntity, id);
   }
 
-  @Transaction()
   async findOrCreate(user: UserEntity, appDto: AppDto): Promise<AppEntity> {
     if (appDto.id) {
       return await this.findOneOrFail(appDto.id)
@@ -41,7 +40,6 @@ export class AppService {
     }
   }
 
-  @Transaction()
   public async createApp(
     user: UserEntity,
     appDto: AppDto
@@ -51,23 +49,21 @@ export class AppService {
     app.owner = user;
     app.name = appDto.name
 
-    await this.provider.get().save(app)
+    await this.manager().save(app)
 
     return app
   }
 
-  @Transaction()
   async update(appDto: AppDto) {
     const app = await this.findOneOrFail(appDto.id)
 
     app.name = appDto.name
 
-    await this.provider.get().save(app)
+    await this.manager().save(app)
 
     return app
   }
 
-  @Transaction()
   async destroy(appId: number) {
     const app = await this.findOneOrFail(appId)
     
@@ -75,6 +71,6 @@ export class AppService {
       return this.eventService.deleteEvent(event.id) // soft delete ...
     })))
 
-    await this.provider.get().delete(AppEntity, app.id) // soft delete?
+    await this.manager().delete(AppEntity, app.id) // soft delete?
   }
 }

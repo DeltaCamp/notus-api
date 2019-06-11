@@ -8,10 +8,6 @@ import {
 import {
   MatcherDto
 } from './MatcherDto'
-import {
-  Transaction,
-  EntityManagerProvider
- } from '../transactions'
 import { AbiEventInputService } from '../abis/AbiEventInputService'
 import * as Source from './Source'
 import { Operator } from './Operator'
@@ -21,16 +17,21 @@ import { validateOperand } from './validateOperand'
 import { ValidationException } from '../common/ValidationException'
 import { validate } from 'class-validator'
 import { notDefined } from '../utils/notDefined';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 @Injectable()
-export class MatcherService {
+export class MatcherService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider,
+    @InjectConnection()
+    connection: Connection,
     private readonly abiEventInputService: AbiEventInputService
-  ) {}
+  ) {
+    super(connection)
+  }
 
-  @Transaction()
   async createOrUpdate(event: EventEntity, matcherDto: MatcherDto): Promise<MatcherEntity> {
     if (matcherDto.id) {
       return await this.update(matcherDto)
@@ -39,7 +40,6 @@ export class MatcherService {
     }
   }
 
-  @Transaction()
   async createMatcher(event: EventEntity, matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = new MatcherEntity()
 
@@ -56,12 +56,11 @@ export class MatcherService {
 
     await this.validateMatcher(matcher)
 
-    await this.provider.get().save(matcher)
+    await this.manager().save(matcher)
 
     return matcher
   }
 
-  @Transaction()
   async update(matcherDto: MatcherDto): Promise<MatcherEntity> {
     const matcher = await this.findOneOrFail(matcherDto.id)
 
@@ -86,7 +85,7 @@ export class MatcherService {
 
     await this.validateMatcher(matcher)
 
-    await this.provider.get().save(matcher)
+    await this.manager().save(matcher)
 
     return matcher
   }
@@ -120,7 +119,7 @@ export class MatcherService {
       if (matcher.abiEventInput) {
         return matcher.abiEventInput.type        
       } else {
-        const abiEventInput = await this.provider.get().findOneOrFail(AbiEventInputEntity, matcher.abiEventInputId)
+        const abiEventInput = await this.manager().findOneOrFail(AbiEventInputEntity, matcher.abiEventInputId)
         return abiEventInput.type
       }
     } else {
@@ -128,19 +127,16 @@ export class MatcherService {
     }
   }
 
-  @Transaction()
   async findOne(matcherId: number): Promise<MatcherEntity> {
-    return await this.provider.get().findOne(MatcherEntity, matcherId)
+    return await this.manager().findOne(MatcherEntity, matcherId)
   }
 
-  @Transaction()
   async findOneOrFail(matcherId: number): Promise<MatcherEntity> {
     if (notDefined(matcherId)) { throw new Error(`id must be defined`) }
-    return await this.provider.get().findOneOrFail(MatcherEntity, matcherId)
+    return await this.manager().findOneOrFail(MatcherEntity, matcherId)
   }
 
-  @Transaction()
   async destroy(matcherId: number) {
-    await this.provider.get().delete(MatcherEntity, matcherId);
+    await this.manager().delete(MatcherEntity, matcherId);
   }
 }

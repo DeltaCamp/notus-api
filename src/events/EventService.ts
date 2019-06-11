@@ -1,6 +1,7 @@
-import { Injectable, Inject, forwardRef, Scope } from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { validate, ValidationError } from 'class-validator'
 import { ValidationException } from '../common/ValidationException'
+import { InjectConnection } from '@nestjs/typeorm'
 
 import { notDefined } from '../utils/notDefined'
 import {
@@ -13,7 +14,6 @@ import {
 import { Network } from '../networks/Network'
 import { EventDto } from './EventDto'
 import { MatcherService } from '../matchers/MatcherService'
-import { Transaction, EntityManagerProvider } from '../transactions'
 import { AppService } from '../apps/AppService';
 import { AbiEventService } from '../abis/AbiEventService'
 import { EventsQuery } from './EventsQuery'
@@ -23,39 +23,41 @@ import { WebhookHeaderService } from './WebhookHeaderService';
 import { EventLogService } from '../event-logs/EventLogService';
 import { NetworkName } from '../networks/NetworkName'
 import { EventScope } from './EventScope'
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 // const debug = require('debug')('notus:events:EventService')
 
 @Injectable()
-export class EventService {
+export class EventService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider,
     private readonly matcherService: MatcherService,
     @Inject(forwardRef(() => AppService))
     private readonly appService: AppService,
     private readonly abiEventService: AbiEventService,
     private readonly contractService: ContractService,
     private readonly webhookHeaderService: WebhookHeaderService,
-    private readonly eventLogService: EventLogService
-  ) {}
-
-  @Transaction()
-  async findOne(id: number): Promise<EventEntity> {
-    return this.provider.get().findOne(EventEntity, id)
+    private readonly eventLogService: EventLogService,
+    @InjectConnection()
+    connection: Connection
+  ) {
+    super(connection)
   }
 
-  @Transaction()
+  async findOne(id: number): Promise<EventEntity> {
+    return this.connection.manager.findOne(EventEntity, id)
+  }
+
   async findOneOrFail(id: number): Promise<EventEntity> {
     if (notDefined(id)) {
       throw new Error(`id must be defined`)
     }
-    return this.provider.get().findOneOrFail(EventEntity, id)
+    return this.connection.manager.findOneOrFail(EventEntity, id)
   }
 
-  @Transaction()
   async findAndCount(params: EventsQuery) {
-    let query = await this.provider.get().createQueryBuilder(EventEntity, 'events')
+    let query = await this.connection.createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect("events.user", "users")
       .leftJoinAndSelect("events.matchers", "matchers")
       .leftJoinAndSelect("matchers.abiEventInput", "input")
@@ -112,9 +114,8 @@ export class EventService {
     return `${searchQuery})`
   }
 
-  @Transaction()
   async findForUser(user: UserEntity): Promise<EventEntity[]> {
-    return this.provider.get().createQueryBuilder(EventEntity, 'events')
+    return this.connection.createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect("events.user", "users")
       .leftJoinAndSelect("events.matchers", "matchers")
       .where('"events"."deletedAt" IS NULL AND "events"."userId" = :id', { id: user.id })
@@ -122,9 +123,8 @@ export class EventService {
       .getMany()
   }
 
-  @Transaction()
   async findPublic(): Promise<EventEntity[]> {
-    return await this.provider.get().createQueryBuilder(EventEntity, 'events')
+    return await this.connection.createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect("events.user", "users")
       .leftJoinAndSelect("events.matchers", "matchers")
       .where('"events"."isPublic" IS TRUE AND "events"."parentId" IS NULL AND "events"."deletedAt" IS NULL')
@@ -132,9 +132,8 @@ export class EventService {
       .getMany()
   }
 
-  @Transaction()
   async getUser(event: EventEntity): Promise<UserEntity> {
-    return this.provider.get().createQueryBuilder()
+    return this.connection.createQueryBuilder()
       .select('users')
       .from(UserEntity, 'users')
       .innerJoin('users.events', 'events')
@@ -142,17 +141,15 @@ export class EventService {
       .getOne()
   }
 
-  @Transaction()
   async getAbiEvent(event: EventEntity): Promise<AbiEventEntity> {
-    return this.provider.get().createQueryBuilder(AbiEventEntity, 'abiEvents')
+    return this.connection.createQueryBuilder(AbiEventEntity, 'abiEvents')
       .innerJoin('abiEvents.events', 'events')
       .where('"events"."id" = :id', { id: event.id })
       .getOne()
   }
 
-  @Transaction()
   async getMatchers(event: EventEntity): Promise<MatcherEntity[]> {
-    return this.provider.get().createQueryBuilder()
+    return this.connection.createQueryBuilder()
       .select('matchers')
       .from(MatcherEntity, 'matchers')
       .innerJoin('matchers.event', 'events')
@@ -161,9 +158,8 @@ export class EventService {
       .getMany()
   }
 
-  @Transaction()
   async getWebhookHeaders(event: EventEntity): Promise<WebhookHeaderEntity[]> {
-    return this.provider.get().createQueryBuilder()
+    return this.connection.createQueryBuilder()
       .select('webhook_headers')
       .from(WebhookHeaderEntity, 'webhook_headers')
       .innerJoin('webhook_headers.event', 'events')
@@ -171,9 +167,8 @@ export class EventService {
       .getMany()
   }
 
-  @Transaction()
   async createEvent(user: UserEntity, eventDto: EventDto): Promise<EventEntity> {
-    const em = this.provider.get()
+    const em = this.connection.manager
 
     const event = new EventEntity()
 
@@ -230,7 +225,7 @@ export class EventService {
   }
 
   async findByScope(scope: EventScope, networkId: Network): Promise<EventEntity[]> {
-    return await this.provider.get().createQueryBuilder(EventEntity, 'events')
+    return await this.connection.createQueryBuilder(EventEntity, 'events')
       .leftJoinAndSelect('events.contract', 'contracts')
       .leftJoinAndSelect('events.user', 'users')
       .leftJoinAndSelect('events.abiEvent', 'abiEvents')
@@ -248,7 +243,6 @@ export class EventService {
       .getMany()
   }
 
-  @Transaction()
   async updateEvent(eventDto: EventDto): Promise<EventEntity> {
     const event = await this.findOneOrFail(eventDto.id)
 
@@ -331,7 +325,7 @@ export class EventService {
 
     await this.validateEvent(event)
 
-    await this.provider.get().save(event)
+    await this.manager().save(event)
 
     if (eventDto.matchers !== undefined) {
       await Promise.all(eventDto.matchers.map(matcherDto => (
@@ -342,19 +336,17 @@ export class EventService {
     return event
   }
 
-  @Transaction()
   async decrementRunCount(event: EventEntity) {
     event.runCount = event.runCount - 1
-    await this.provider.get().save(event)
+    await this.manager().save(event)
     return true
   }
 
-  @Transaction()
   async deleteEvent(eventId: number): Promise<EventEntity> {
     const event = await this.findOneOrFail(eventId)
     event.deletedAt = new Date
 
-    await this.provider.get().save(event)
+    await this.manager().save(event)
     return event
   }
 
@@ -382,15 +374,14 @@ export class EventService {
   }
 
   async disableEventEmail(disableEmailKey: string): Promise<EventEntity> {
-    const event = await this.provider.get().findOneOrFail(EventEntity, { disableEmailKey })
+    const event = await this.manager().findOneOrFail(EventEntity, { disableEmailKey })
     event.sendEmail = false
-    await this.provider.get().save(event)
+    await this.manager().save(event)
     return event
   }
 
-  @Transaction()
   async haltEmails(event: EventEntity) {
     event.sendEmail = false
-    await this.provider.get().save(event)
+    await this.manager().save(event)
   }
 }

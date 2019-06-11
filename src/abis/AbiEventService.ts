@@ -7,24 +7,27 @@ import {
   AbiEventEntity,
   AbiEventInputEntity
 } from '../entities'
-import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
 import { AbiEventsQuery } from './AbiEventsQuery'
 import { AbiEventDto } from './AbiEventDto'
 import { AbiEventInputService } from './AbiEventInputService';
-import { AbiService } from './AbiService';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection, EntityManager } from 'typeorm';
+import { Service } from '../Service';
 
 @Injectable()
-export class AbiEventService {
+export class AbiEventService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider,
+    @InjectConnection()
+    connection: Connection,
     private readonly abiEventInputService: AbiEventInputService
-  ) {}
+  ) {
+    super(connection)
+  }
 
-  @Transaction()
   async find(name: string, topic: string): Promise<AbiEventEntity[]> {
-    let query = this.provider.get().createQueryBuilder()
+    let query = this.manager().createQueryBuilder()
       .select('abiEvents')
       .from(AbiEventEntity, 'abiEvents')
 
@@ -39,22 +42,19 @@ export class AbiEventService {
     return query.getMany()
   }
 
-  @Transaction()
   async findOneOrFail(id: number): Promise<AbiEventEntity> {
     if (notDefined(id)) {
       throw new Error('id must be defined')
     }
-    return await this.provider.get().findOneOrFail(AbiEventEntity, id)
+    return await this.manager().findOneOrFail(AbiEventEntity, id)
   }
 
-  @Transaction()
   async findAbiEvents(abi: AbiEntity): Promise<AbiEventEntity[]> {
-    return await this.provider.get().find(AbiEventEntity, { abiId: abi.id })
+    return await this.manager().find(AbiEventEntity, { abiId: abi.id })
   }
   
-  @Transaction()
   async findAbiEventInputs(abiEvent: AbiEventEntity): Promise<AbiEventInputEntity[]> {
-    return this.provider.get().createQueryBuilder()
+    return this.manager().createQueryBuilder()
       .select('abiEventInputs')
       .from(AbiEventInputEntity, 'abiEventInputs')
       .innerJoin('abiEventInputs.abiEvent', 'abiEvents')
@@ -62,9 +62,8 @@ export class AbiEventService {
       .getMany()
   }
 
-  @Transaction()
   async findAndCount(params: AbiEventsQuery) {
-    let query = await this.provider.get().createQueryBuilder(AbiEventEntity, 'abiEvents')
+    let query = await this.manager().createQueryBuilder(AbiEventEntity, 'abiEvents')
 
     if (params) {
       if (params.abiId) {
@@ -84,8 +83,7 @@ export class AbiEventService {
     return query.printSql().orderBy('"abiEvents"."name"', 'ASC').getManyAndCount()
   }
 
-  @Transaction()
-  async create(abi: AbiEntity, descriptor: any): Promise<AbiEventEntity> {
+  async create(abi: AbiEntity, descriptor: any, entityManager?: EntityManager): Promise<AbiEventEntity> {
 
     const abiEvent = new AbiEventEntity()
     abiEvent.title = descriptor.name
@@ -95,16 +93,17 @@ export class AbiEventService {
 
     await validate(abiEvent)
 
-    this.provider.get().save(abiEvent)
+    await this.transaction(async manager => {
+      manager.save(abiEvent)
 
-    abiEvent.abiEventInputs = descriptor.inputs.map((input: any) => {
-      return this.abiEventInputService.create(abiEvent, input.name, input.type)
-    })
+      abiEvent.abiEventInputs = descriptor.inputs.map((input: any) => {
+        return this.abiEventInputService.create(abiEvent, input.name, input.type, manager)
+      })
+    }, entityManager)
     
     return abiEvent
   }
 
-  @Transaction()
   async update(abiEvent: AbiEventEntity, abiEventDto: AbiEventDto): Promise<AbiEventEntity> {
     if (abiEventDto.isPublic !== undefined) {
       abiEvent.isPublic = abiEventDto.isPublic
@@ -116,7 +115,10 @@ export class AbiEventService {
 
     await validate(abiEvent)
 
-    await this.provider.get().save(abiEvent)
+    await this.transaction(async manager => {
+      manager.save(abiEvent)
+    })
+    
     return abiEvent
   }
 

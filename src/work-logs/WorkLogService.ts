@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common'
 
-import { Transaction, EntityManagerProvider } from '../transactions'
 import { WorkLogEntity } from './WorkLogEntity';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 @Injectable()
-export class WorkLogService {
+export class WorkLogService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider
-  ) {}
+    @InjectConnection()
+    connection: Connection,
+  ) {
+    super(connection)
+  }
 
-  @Transaction()
   async setLastBlock(chainId: number, blockNumber: number) {
     let workLog = await this.findOrCreate(chainId)
     if (workLog.lastCompletedBlockNumber < blockNumber) {
       workLog.lastCompletedBlockNumber = blockNumber
-      await this.provider.get().save(workLog)
+      await this.manager().save(workLog)
     }
   }
 
@@ -25,7 +29,7 @@ export class WorkLogService {
   }
 
   async findOrCreate(chainId: number): Promise<WorkLogEntity> {
-    let workLog: WorkLogEntity = await this.provider.get().findOne(WorkLogEntity, { chainId })
+    let workLog: WorkLogEntity = await this.manager().findOne(WorkLogEntity, { chainId })
     if (!workLog) {
       workLog = new WorkLogEntity()
       workLog.chainId = chainId

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Validator } from 'jsonschema'
-import { Like } from 'typeorm'
+import { Like, Connection, EntityManager } from 'typeorm'
 import { validate } from 'class-validator'
 
 import { AbiDto } from './AbiDto'
@@ -11,39 +11,40 @@ import {
   AbiEventInputEntity,
   UserEntity
 } from '../entities'
-import { Transaction, EntityManagerProvider } from '../transactions'
 import { notDefined } from '../utils/notDefined';
 import { AbiEventService } from './AbiEventService';
 import { ValidationException } from '../common/ValidationException';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Service } from '../Service';
 
 const schema = require('../../abi.spec.json')
 
 const debug = require('debug')('notus:AbiService')
 
 @Injectable()
-export class AbiService {
+export class AbiService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider,
+    @InjectConnection()
+    connection: Connection,
     private readonly abiEventService: AbiEventService
-  ) {}
+  ) {
+    super(connection)
+  }
 
-  @Transaction()
   async find(name: String): Promise<AbiEntity[]> {
     const criteria: any = {}
     if (name) {
       criteria.name = Like(`%${name}%`)
     }
-    return await this.provider.get().find(AbiEntity, criteria)
+    return await this.manager().find(AbiEntity, criteria)
   }
 
-  @Transaction()
   async findOneOrFail(id: number): Promise<AbiEntity> {
     if (notDefined(id)) { throw new Error('id must be defined') }
-    return await this.provider.get().findOneOrFail(AbiEntity, id)
+    return await this.manager().findOneOrFail(AbiEntity, id)
   }
 
-  @Transaction()
   async findOrCreate(user: UserEntity, abiDto: AbiDto): Promise<AbiEntity> {
     if (abiDto.id) {
       return this.findOneOrFail(abiDto.id)
@@ -53,9 +54,8 @@ export class AbiService {
   }
 
   // should have a way of scoping by user instead of just all abis:
-  @Transaction()
   async findAndCount(params: AbisQuery) {
-    let query = await this.provider.get().createQueryBuilder(AbiEntity, 'abis')
+    let query = await this.manager().createQueryBuilder(AbiEntity, 'abis')
 
     if (params) {
       if (params.abiId) {
@@ -72,15 +72,13 @@ export class AbiService {
     return query.printSql().orderBy('"abis"."name"', 'ASC').getManyAndCount()
   }
 
-  @Transaction()
   async createAndSave(user: UserEntity, abiDto: AbiDto): Promise<AbiEntity> {
     const abi = await this.createAbi(abiDto)
     abi.owner = user
-    await this.provider.get().save(abi)
+    await this.manager().save(abi)
     return abi
   }
 
-  @Transaction()
   async updateAndSave(abi: AbiEntity, abiDto: AbiDto): Promise<AbiEntity> {
     if (abiDto.name !== undefined) {
       abi.name = abiDto.name
@@ -91,25 +89,26 @@ export class AbiService {
 
     await this.validate(abi)
 
-    await this.provider.get().save(abi)
+    await this.manager().save(abi)
 
     return abi
   }
 
-  @Transaction()
   async destroy(abi: AbiEntity) {
-    await Promise.all( (await this.findAbiEvents(abi)).map(abiEvent => (
-      this.destroyAbiEvent(abiEvent)
-    )))
-
-    await this.provider.get().delete(AbiEntity, abi.id)
+    await this.transaction(async manager => {
+      await Promise.all( (await this.findAbiEvents(abi)).map(abiEvent => (
+        this.destroyAbiEvent(abiEvent, manager)
+      )))
+  
+      await manager.delete(AbiEntity, abi.id)
+    })
   }
 
-  async destroyAbiEvent(abiEvent: AbiEventEntity) {
+  async destroyAbiEvent(abiEvent: AbiEventEntity, manager: EntityManager) {
     await Promise.all( (await this.findAbiEventInputs(abiEvent)).map(abiEventInput => (
-      this.provider.get().delete(AbiEventInputEntity, abiEventInput.id)
+      manager.delete(AbiEventInputEntity, abiEventInput.id)
     )))
-    await this.provider.get().delete(AbiEventEntity, abiEvent.id)
+    await manager.delete(AbiEventEntity, abiEvent.id)
   }
 
   async createAbi(abiDto: AbiDto): Promise<AbiEntity> {
@@ -128,30 +127,30 @@ export class AbiService {
     abi.abiEvents = []
     await this.validate(abi)
 
-    await this.provider.get().save(abi)
+    await this.transaction(async manager => {
+      await manager.save(abi)
 
-    let i
-    for (i = 0; i < abiJson.length; i++) {
-      const element = abiJson[i]
-      if (element.type === 'event') {
-        abi.abiEvents.push(await this.abiEventService.create(abi, element))
+      let i
+      for (i = 0; i < abiJson.length; i++) {
+        const element = abiJson[i]
+        if (element.type === 'event') {
+          abi.abiEvents.push(await this.abiEventService.create(abi, element, manager))
+        }
       }
-    }
+    })
 
     return abi
   }
 
-  @Transaction()
   async findAbiEvents(abi: AbiEntity): Promise<AbiEventEntity[]> {
     debug(`findAbiEvents: ${abi.id}: `)
-    return await this.provider.get()
-      .createQueryBuilder(AbiEventEntity, 'abiEvent')
+    return await this.manager().createQueryBuilder(AbiEventEntity, 'abiEvent')
       .where('"abiEvent"."abiId" = :abiId', { abiId: abi.id })
       .getMany()
   }
 
   async findAbiEventInputs(abiEvent: AbiEventEntity): Promise<AbiEventInputEntity[]> {
-    return await this.provider.get().find(AbiEventInputEntity, { abiEventId: abiEvent.id })
+    return await this.manager().find(AbiEventInputEntity, { abiEventId: abiEvent.id })
   }
 
   async validate(abi: AbiEntity) {

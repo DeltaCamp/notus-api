@@ -5,8 +5,6 @@ import { UserEntity } from '../entities';
 import { rollbar } from '../rollbar'
 import { MailJobPublisher } from '../jobs/MailJobPublisher'
 import { keyHashHex } from '../utils/keyHashHex'
-import { Transaction } from '../transactions/Transaction'
-import { EntityManagerProvider } from '../transactions/EntityManagerProvider'
 import { TemplateRenderer } from '../templates/TemplateRenderer';
 import { ValidationException } from '../common/ValidationException';
 import { validate } from 'class-validator';
@@ -14,48 +12,49 @@ import { UserDto } from './UserDto';
 import { notDefined } from '../utils/notDefined';
 import { SubscribeToMailchimpJobPublisher } from '../jobs/SubscribeToMailchimpJobPublisher';
 import { SlackDeltaCampJobPublisher } from '../jobs/SlackDeltaCampJobPublisher';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 const debug = require('debug')('notus:UserService')
 
 @Injectable()
-export class UserService {
+export class UserService extends Service {
 
   constructor(
-    private readonly provider: EntityManagerProvider,
+    @InjectConnection()
+    connection: Connection,
     private readonly mailJobPublisher: MailJobPublisher,
     private readonly templateRenderer: TemplateRenderer,
     private readonly subscribeToMailchimp: SubscribeToMailchimpJobPublisher,
     private readonly slackDeltaCamp: SlackDeltaCampJobPublisher
-  ) { }
+  ) {
+    super(connection)
+  }
 
-  @Transaction()
   async findAll(): Promise<UserEntity[]> {
-    return await this.provider.get().find(UserEntity);
+    return await this.manager().find(UserEntity);
   }
 
-  @Transaction()
   async findOne(id): Promise<UserEntity> {
-    return await this.provider.get().findOne(UserEntity, id)
+    return await this.manager().findOne(UserEntity, id)
   }
 
-  @Transaction()
   async findOneOrFail(id): Promise<UserEntity> {
     if (notDefined(id)) { throw new Error('id must be defined') }
-    return await this.provider.get().findOneOrFail(UserEntity, id)
+    return await this.manager().findOneOrFail(UserEntity, id)
   }
 
-  @Transaction()
   public async findByEmailAndPassword(email: string, password: string): Promise<UserEntity> {
     let password_hash = keyHashHex(password)
-    return this.provider.get().findOne(UserEntity, { email, password_hash })
+    return this.connection.manager.findOne(UserEntity, { email, password_hash })
   }
 
-  @Transaction()
   public async createOrRequestMagicLink(email: string): Promise<UserEntity> {
     let user
 
     try {
-      user = await this.provider.get().findOne(UserEntity, { email })
+      user = await this.manager().findOne(UserEntity, { email })
 
       if (!user) {
         user = new UserEntity()
@@ -66,7 +65,7 @@ export class UserService {
       const oneTimeKey = user.generateOneTimeKey()
 
       await this.validateUser(user)
-      await this.provider.get().save(user)
+      await this.manager().save(user)
 
       if (user.isNew) {
         this.sendWelcome(user, oneTimeKey)
@@ -85,30 +84,27 @@ export class UserService {
     }
   }
 
-  @Transaction()
   public async requestMagicLinkOrDoNothing(email: string): Promise<UserEntity> {
-    const user = await this.provider.get().findOne(UserEntity, { email })
+    const user = await this.manager().findOne(UserEntity, { email })
 
     if (user) {
       const oneTimeKey = user.generateOneTimeKey()
       await this.validateUser(user)
-      await this.provider.get().save(user)
+      await this.manager().save(user)
       this.sendMagicLink(user, oneTimeKey)
     }
 
     return user
   }
 
-  @Transaction()
   public async confirm(user: UserEntity, password: string): Promise<void> {
     user.clearOneTimeKey()
     user.confirmedAt = new Date()
     user.password_hash = keyHashHex(password)
     await this.validateUser(user)
-    await this.provider.get().save(user)
+    await this.manager().save(user)
   }
 
-  @Transaction()
   public async resendConfirmation(user: UserEntity): Promise<UserEntity> {
     this.doResendConfirmation(user)
     return user
@@ -121,12 +117,11 @@ export class UserService {
     user.password_hash = null
 
     const oneTimeKey = user.generateOneTimeKey()
-    await this.provider.get().save(user)
+    await this.manager().save(user)
     
     this.sendWelcome(user, oneTimeKey)
   }
 
-  @Transaction()
   public async update(user: UserEntity, userDto: UserDto): Promise<UserEntity> {
 
     if (userDto.name !== undefined) {
@@ -137,19 +132,17 @@ export class UserService {
       user.etherscan_api_key = userDto.etherscan_api_key
     }
 
-    await this.provider.get().save(user)
+    await this.manager().save(user)
 
     return user
   }
 
-  @Transaction()
   public async findOneByOneTimeKey(oneTimeKey: string) {
-    return await this.provider.get().findOne(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
+    return await this.manager().findOne(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
   }
 
-  @Transaction()
   public async findOneOrFailByOneTimeKey(oneTimeKey: string) {
-    return await this.provider.get().findOneOrFail(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
+    return await this.manager().findOneOrFail(UserEntity, { one_time_key_hash: keyHashHex(oneTimeKey) })
   }
 
   public sendWelcome(user: UserEntity, oneTimeKey: string) {

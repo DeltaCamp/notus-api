@@ -1,4 +1,4 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 
 import {
   EventEntity,
@@ -7,28 +7,31 @@ import {
 import { EntityManagerProvider, Transaction } from '../transactions'
 import { WebhookHeaderDto } from './WebhookHeaderDto'
 import { notDefined } from '../utils/notDefined';
+import { InjectConnection } from '@nestjs/typeorm';
+import { Connection } from 'typeorm';
+import { Service } from '../Service';
 
 const debug = require('debug')('notus:events:WebhookHeaderService')
 
 @Injectable()
-export class WebhookHeaderService {
+export class WebhookHeaderService extends Service {
 
   constructor (
-    private readonly provider: EntityManagerProvider
-  ) {}
-
-  @Transaction()
-  async findOne(webhookHeaderId: number): Promise<WebhookHeaderEntity> {
-    return await this.provider.get().findOne(WebhookHeaderEntity, webhookHeaderId)
+    @InjectConnection()
+    connection: Connection
+  ) {
+    super(connection)
   }
 
-  @Transaction()
+  async findOne(webhookHeaderId: number): Promise<WebhookHeaderEntity> {
+    return await this.manager().findOne(WebhookHeaderEntity, webhookHeaderId)
+  }
+
   async findOneOrFail(webhookHeaderId: number): Promise<WebhookHeaderEntity> {
     if (notDefined(webhookHeaderId)) { throw new Error(`id must be defined`) }
-    return await this.provider.get().findOneOrFail(WebhookHeaderEntity, webhookHeaderId)
+    return await this.manager().findOneOrFail(WebhookHeaderEntity, webhookHeaderId)
   }
   
-  @Transaction()
   async createOrUpdate(event: EventEntity, webhookHeaderDto: WebhookHeaderDto): Promise<WebhookHeaderEntity> {
     if (webhookHeaderDto.id) {
       return await this.update(webhookHeaderDto)
@@ -37,7 +40,6 @@ export class WebhookHeaderService {
     }
   }
 
-  @Transaction()
   async create(event: EventEntity, webhookHeaderDto: WebhookHeaderDto): Promise<WebhookHeaderEntity> {
     const webhookHeader = new WebhookHeaderEntity()
 
@@ -45,12 +47,11 @@ export class WebhookHeaderService {
     webhookHeader.key = webhookHeaderDto.key
     webhookHeader.value = webhookHeaderDto.value
 
-    await this.provider.get().save(webhookHeader)
+    await this.manager().save(webhookHeader)
 
     return webhookHeader
   }
 
-  @Transaction()
   async update(webhookHeaderDto: WebhookHeaderDto): Promise<WebhookHeaderEntity> {
     const webhookHeader = await this.findOneOrFail(webhookHeaderDto.id)
 
@@ -62,13 +63,12 @@ export class WebhookHeaderService {
       webhookHeader.value = webhookHeaderDto.value
     }
 
-    await this.provider.get().save(webhookHeader)
+    await this.manager().save(webhookHeader)
 
     return webhookHeader
   }
 
-  @Transaction()
   async destroy(webhookHeaderId: number) {
-    await this.provider.get().delete(WebhookHeaderEntity, webhookHeaderId);
+    await this.manager().delete(WebhookHeaderEntity, webhookHeaderId);
   }
 }

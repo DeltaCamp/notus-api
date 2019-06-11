@@ -32,6 +32,8 @@ import { EventsQuery } from './EventsQuery'
 import { EventsQueryResponse } from './EventsQueryResponse';
 import { ContractService } from '../contracts/ContractService';
 
+const debug = require('debug')('notus:events:EventResolver')
+
 @UseFilters(new GqlRollbarExceptionFilter())
 @Resolver(of => EventEntity)
 export class EventResolver {
@@ -84,11 +86,13 @@ export class EventResolver {
 
   @ResolveProperty('abiEvent')
   async abiEvent(@Parent() event: EventEntity): Promise<AbiEventEntity> {
+    debug('abiEvent')
     return await this.eventService.getAbiEvent(event)
   }
 
   @ResolveProperty('contract')
   async contract(@Parent() event: EventEntity): Promise<ContractEntity> {
+    debug('contract')
     if (event.contractId) {
       return await this.contractService.findOneOrFail(event.contractId)
     }
@@ -96,18 +100,21 @@ export class EventResolver {
 
   @ResolveProperty('user')
   async user(@Parent() event: EventEntity): Promise<UserEntity> {
+    debug('user')
     if (event.user) { return event.user }
     return await this.eventService.getUser(event)
   }
 
   @ResolveProperty('matchers')
   async matchers(@Parent() event: EventEntity): Promise<MatcherEntity[]> {
+    debug('matchers')
     if (event.matchers && event.matchers.length > 0) { return event.matchers }
     return await this.eventService.getMatchers(event)
   }
 
   @ResolveProperty('webhookHeaders')
   async webhookHeaders(@Parent() event: EventEntity): Promise<WebhookHeaderEntity[]> {
+    debug('webhookHeaders')
     if (event.webhookHeaders && event.webhookHeaders.length > 0) { return event.webhookHeaders }
     return await this.eventService.getWebhookHeaders(event)
   }
