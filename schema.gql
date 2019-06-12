@@ -88,6 +88,13 @@ type AppEntity {
   name: String!
 }
 
+input BlockJobsQuery {
+  skip: Float
+  take: Float
+  chainId: Float
+  state: String
+}
+
 input ContractDto {
   id: ID
   name: String
@@ -207,6 +214,38 @@ type EventsQueryResponse {
   events: [EventEntity!]!
 }
 
+"""Interval object scalar type"""
+scalar Interval
+
+type JobEntity {
+  id: ID!
+  name: String!
+  priority: Float!
+  data: Json!
+  state: String!
+  retrylimit: Float!
+  retrycount: Float!
+  retrydelay: Float!
+  retrybackoff: Boolean!
+  startafter: Date!
+  startedon: Date
+  singletonkey: String
+  singletonon: Date
+  expirein: Interval!
+  createdon: Date!
+  completedon: Date
+}
+
+type JobsQueryResponse {
+  totalCount: Float!
+  skip: Float
+  take: Float
+  jobs: [JobEntity!]!
+}
+
+"""Json object scalar type"""
+scalar Json
+
 input MatcherDto {
   id: ID
   eventId: Float
@@ -291,6 +330,7 @@ type Query {
   apps: [AppEntity!]!
   event(id: Float!): EventEntity
   events(eventsQuery: EventsQuery): EventsQueryResponse!
+  blockJobs(blockJobsQuery: BlockJobsQuery!): JobsQueryResponse!
   source(source: String!): SourceEntity!
   sources: [SourceEntity!]!
   metaDataType(metaDataType: String!): MetaDataTypeEntity!

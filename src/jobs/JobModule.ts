@@ -1,5 +1,9 @@
 import { Module } from '@nestjs/common'
+import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { JobEntity } from '../entities'
+import { JobService } from './JobService'
+import { JobResolver } from './JobResolver'
 import { PgBossProvider } from './PgBossProvider'
 import { MailJobRunner } from './MailJobRunner'
 import { BlockJobRunner } from './BlockJobRunner'
@@ -14,7 +18,14 @@ import { SlackDeltaCampJobRunner } from './SlackDeltaCampJobRunner'
 import { SlackDeltaCampJobPublisher } from './SlackDeltaCampJobPublisher'
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([
+      JobEntity
+    ])
+  ],
+
   providers: [
+    JobResolver,
     PgBossProvider,
     MailJobRunner,
     JobRunnerManager,
@@ -26,7 +37,8 @@ import { SlackDeltaCampJobPublisher } from './SlackDeltaCampJobPublisher'
     SubscribeToMailchimpJobRunner,
     SubscribeToMailchimpJobPublisher,
     SlackDeltaCampJobRunner,
-    SlackDeltaCampJobPublisher
+    SlackDeltaCampJobPublisher,
+    JobService
   ],
 
   exports: [
@@ -36,7 +48,8 @@ import { SlackDeltaCampJobPublisher } from './SlackDeltaCampJobPublisher'
     BlockJobPublisher,
     WebhookJobPublisher,
     SubscribeToMailchimpJobPublisher,
-    SlackDeltaCampJobPublisher
+    SlackDeltaCampJobPublisher,
+    JobService
   ]
 })
 export class JobModule {}

@@ -5,8 +5,6 @@ import { EventEntity, EventLogEntity } from '../entities';
 
 const debug = require('debug')('notus:event-logs:EventLogService')
 
-debug('HELLO!')
-
 @Injectable()
 export class EventLogService {
 
