@@ -1,11 +1,12 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common'
+import { Injectable, Inject, forwardRef, UnauthorizedException } from '@nestjs/common'
 import { validate, ValidationError } from 'class-validator'
 
 import { ValidationException } from '../common/ValidationException'
 import {
   AbiEntity,
   AbiEventEntity,
-  AbiEventInputEntity
+  AbiEventInputEntity,
+  UserEntity
 } from '../entities'
 import { notDefined } from '../utils/notDefined';
 import { AbiEventsQuery } from './AbiEventsQuery'

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { validate } from 'class-validator'
 import { getAddress } from 'ethers/utils'
 
@@ -26,6 +26,13 @@ export class ContractService extends Service {
     connection: Connection
   ) {
     super(connection)
+  }
+
+  checkUnauthorizedFields(contractDto: ContractDto, user: UserEntity): ContractDto {
+    if (!user.isPaid() && contractDto.isPublic === false) {
+      throw new UnauthorizedException('Only paid users can make their contracts private')
+    }
+    return contractDto
   }
 
   async findAndCount(params: ContractsQuery, userId: number): Promise<[ContractEntity[], number]> {

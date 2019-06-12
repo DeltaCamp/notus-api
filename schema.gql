@@ -376,6 +376,7 @@ type UserEntity {
   confirmedAt: Date
   etherscan_api_key: String
   isAdmin: Boolean!
+  isPaid: Boolean!
 }
 
 input WebhookHeaderDto {

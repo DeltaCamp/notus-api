@@ -97,6 +97,7 @@ export class AbiResolver {
     if (!user.isAdmin) {
       throw new UnauthorizedException()
     }
+    abiDto = this.abiService.checkUnauthorizedFields(abiDto, user)
     return await this.abiService.createAndSave(user, abiDto)
   }
 
@@ -107,7 +108,6 @@ export class AbiResolver {
     @Args('address') address: string,
     @Args({ name: 'networkId', type: () => Number, nullable: true }) networkId: number
   ): Promise<EtherscanAbiEntity> {
-
     let parsedAddress
     try {
       parsedAddress = getAddress(address)
@@ -126,9 +126,7 @@ export class AbiResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('abi') abiDto: AbiDto
   ): Promise<AbiEntity> {
-    if (!user.isAdmin) {
-      throw new UnauthorizedException()
-    }
+    abiDto = this.abiService.checkUnauthorizedFields(abiDto, user)
     const abi = await this.abiService.findOneOrFail(abiDto.id)
     if (abi.ownerId !== user.id) {
       throw new UnauthorizedException()
@@ -142,9 +140,6 @@ export class AbiResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('id') id: number
   ): Promise<AbiEntity> {
-    if (!user.isAdmin) {
-      throw new UnauthorizedException()
-    }
     const abi = await this.abiService.findOneOrFail(id)
     if (abi.ownerId !== user.id) {
       throw new UnauthorizedException()

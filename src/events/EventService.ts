@@ -238,6 +238,7 @@ export class EventService extends Service {
       .where('(events.scope = :scope)', { scope })
       .andWhere('("events"."networkId" = :networkId)', { networkId })
       .andWhere('"events"."deletedAt" IS NULL')
+      .andWhere('"events"."runCount" != 0')
       .andWhere('"users"."confirmedAt" IS NOT NULL')
       .andWhere('("events"."sendEmail" IS TRUE OR ("events"."callWebhook" IS TRUE AND "events"."webhookUrl" IS NOT NULL))')
       .getMany()

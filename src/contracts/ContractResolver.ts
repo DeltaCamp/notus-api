@@ -60,6 +60,7 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
+    contractDto = this.contractService.checkUnauthorizedFields(contractDto, user)
     return await this.contractService.createContract(user, contractDto)
   }
 
@@ -83,6 +84,7 @@ export class ContractResolver {
     @GqlAuthUser() user: UserEntity,
     @Args('contract') contractDto: ContractDto
   ): Promise<ContractEntity> {
+    contractDto = this.contractService.checkUnauthorizedFields(contractDto, user)
     const contract = await this.contractService.findOneOrFail(contractDto.id)
     if (contract.ownerId !== user.id) {
       throw new UnauthorizedException()

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, UnauthorizedException } from '@nestjs/common'
 import { Validator } from 'jsonschema'
 import { Like, Connection, EntityManager } from 'typeorm'
 import { validate } from 'class-validator'
@@ -30,6 +30,13 @@ export class AbiService extends Service {
     private readonly abiEventService: AbiEventService
   ) {
     super(connection)
+  }
+
+  checkUnauthorizedFields(abiDto: AbiDto, user: UserEntity): AbiDto {
+    if (!user.isPaid() && abiDto.isPublic === false) {
+      throw new UnauthorizedException('Only paid users can make their ABIs private')
+    }
+    return abiDto
   }
 
   async find(name: String): Promise<AbiEntity[]> {

@@ -82,6 +82,12 @@ export class UserEntity {
   @Exclude()
   isNew: boolean;
 
+  @Field()
+  isPaid(): boolean {
+    // Until we know whether they are paid up
+    return this.isAdmin
+  }
+
   public clearOneTimeKey(): void {
     this.one_time_key_hash = null
     this.one_time_key_expires_at = null
