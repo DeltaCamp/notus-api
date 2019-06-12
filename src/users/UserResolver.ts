@@ -26,10 +26,10 @@ export class UserResolver {
     return user
   }
 
-  @UseGuards(GqlAuthGuard)
+  @UseGuards(OptionalGqlAuthGuard)
   @ResolveProperty('email')
   async email(@GqlAuthUser() user: UserEntity, @Parent() requestedUser: UserEntity): Promise<string> {
-    if (user.id === requestedUser.id) {
+    if (user && user.id === requestedUser.id) {
       return requestedUser.email
     } else {
       return ''
