@@ -87,8 +87,6 @@ export class JobService extends Service {
           break
       }
     })
-
-    console.log(result, jobSummary)
     
     return jobSummary
   }
