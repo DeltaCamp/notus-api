@@ -5,6 +5,7 @@ import { Service } from "../Service";
 
 import { JobEntity } from '../entities'
 import { BlockJobsQuery } from "./BlockJobsQuery";
+import { JobSummary } from "./JobSummary";
 
 const debug = require('debug')('notus:jobs:JobService')
 
@@ -55,5 +56,40 @@ export class JobService extends Service {
     }
 
     return query
+  }
+
+  async summary(): Promise<JobSummary> {
+    let query = this.manager().createQueryBuilder(JobEntity, 'job')
+      .select(`COUNT(id) as count, state`)
+      .groupBy('state')
+
+    const jobSummary = new JobSummary()
+    jobSummary.createdCount = 0
+    jobSummary.activeCount = 0
+    jobSummary.failedCount = 0
+    jobSummary.completedCount = 0
+
+    const result = await query.getRawMany()
+
+    result.forEach(row => {
+      switch(row.state) {
+        case 'created':
+          jobSummary.createdCount = parseInt(row.count, 10)
+          break
+        case 'active':
+          jobSummary.activeCount = parseInt(row.count, 10)
+          break
+        case 'completed':
+          jobSummary.completedCount = parseInt(row.count, 10)
+          break
+        case 'failed':
+          jobSummary.failedCount = parseInt(row.count, 10)
+          break
+      }
+    })
+
+    console.log(result, jobSummary)
+    
+    return jobSummary
   }
 }

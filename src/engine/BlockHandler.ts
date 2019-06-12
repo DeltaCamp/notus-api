@@ -26,10 +26,6 @@ export class BlockHandler {
   handle = async (networkName: string, blockNumber: number): Promise<any> => {
     const provider = this.ethersProvider.getNetworkProvider(networkName)
     const network = await provider.getNetwork()
-    // Hack so that mainnet contracts and events work on localhost
-    if (networkName === 'unknown' && useLocalhostNotMainnet()) {
-      network.chainId = 1
-    }
     await this.checkBlockNumber(provider, network, blockNumber)
   }
 

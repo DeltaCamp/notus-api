@@ -8,6 +8,7 @@ import {
 } from '../entities'
 import { JobService } from './JobService'
 import { BlockJobsQuery } from './BlockJobsQuery';
+import { JobSummary } from './JobSummary';
 
 const debug = require('debug')('notus:JobResolver')
 
@@ -29,4 +30,8 @@ export class JobResolver {
     return result
   }
 
+  @Query(returns => JobSummary)
+  async jobSummary(): Promise<JobSummary> {
+    return await this.jobService.summary()
+  }
 }

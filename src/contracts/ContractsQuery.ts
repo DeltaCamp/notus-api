@@ -1,7 +1,6 @@
 import { Field, InputType } from "type-graphql";
 
 import { PagedQuery } from '../dtos/PagedQuery'
-import { Network } from '../networks/Network'
 
 @InputType()
 export class ContractsQuery extends PagedQuery {
@@ -12,7 +11,7 @@ export class ContractsQuery extends PagedQuery {
   address?: string
 
   @Field({ nullable: true })
-  networkId?: Network
+  networkId?: number
 
   @Field({ nullable: true })
   name?: string

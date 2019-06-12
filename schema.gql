@@ -243,6 +243,13 @@ type JobsQueryResponse {
   jobs: [JobEntity!]!
 }
 
+type JobSummary {
+  createdCount: Float!
+  activeCount: Float!
+  completedCount: Float!
+  failedCount: Float!
+}
+
 """Json object scalar type"""
 scalar Json
 
@@ -331,6 +338,7 @@ type Query {
   event(id: Float!): EventEntity
   events(eventsQuery: EventsQuery): EventsQueryResponse!
   blockJobs(blockJobsQuery: BlockJobsQuery!): JobsQueryResponse!
+  jobSummary: JobSummary!
   source(source: String!): SourceEntity!
   sources: [SourceEntity!]!
   metaDataType(metaDataType: String!): MetaDataTypeEntity!
