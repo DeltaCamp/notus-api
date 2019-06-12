@@ -38,7 +38,7 @@ export class AbiEntity {
   abi: string;
 
   @Field()
-  @Column({ type: 'boolean' })
+  @Column({ type: 'boolean', default: true, nullable: false })
   isPublic: boolean;
 
   @Field(type => [AbiEventEntity])

@@ -91,7 +91,7 @@ export class AbiService extends Service {
       abi.name = abiDto.name
     }
     if (abiDto.isPublic !== undefined) {
-      abi.isPublic = abiDto.isPublic || false
+      abi.isPublic = abiDto.isPublic
     }
 
     await this.validate(abi)
@@ -130,7 +130,7 @@ export class AbiService extends Service {
     const abi = new AbiEntity()
     abi.name = abiDto.name
     abi.abi = abiDto.abi
-    abi.isPublic = abiDto.isPublic || false
+    abi.isPublic = abiDto.isPublic
     abi.abiEvents = []
     await this.validate(abi)
 
