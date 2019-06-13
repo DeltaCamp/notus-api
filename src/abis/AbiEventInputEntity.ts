@@ -12,7 +12,7 @@ import { Field, ObjectType, ID } from 'type-graphql';
 import { SolidityDataType } from '../common/SolidityDataType';
 import { AbiEventEntity } from './AbiEventEntity'
 import { MetaDataType } from '../matchers/MetaDataType';
-import { IsDefined } from 'class-validator';
+import { IsDefined, MinLength } from 'class-validator';
 
 @ObjectType()
 @Entity({ name: 'abi_event_inputs' })
@@ -22,11 +22,17 @@ export class AbiEventInputEntity {
   id!: number;
 
   @IsDefined()
+  @MinLength(3, {
+    message: "Title is too short"
+  })
   @Field()
   @Column({ type: 'text', nullable: false })
   title: string = '';
 
   @IsDefined()
+  @MinLength(3, {
+    message: "Name is too short"
+  })
   @Field()
   @Column({ type: 'text', nullable: false })
   name: string = '';

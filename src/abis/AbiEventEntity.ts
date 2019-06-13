@@ -9,7 +9,7 @@ import {
   OneToMany
 } from 'typeorm';
 import { Field, ObjectType, ID } from 'type-graphql';
-import { IsDefined } from 'class-validator';
+import { IsDefined, MinLength } from 'class-validator';
 
 import {
   AbiEntity,
@@ -25,11 +25,17 @@ export class AbiEventEntity {
   id!: number;
 
   @IsDefined()
+  @MinLength(3, {
+    message: "Title is too short"
+  })
   @Field()
   @Column({ type: 'text', nullable: false })
   title: string = '';
 
   @IsDefined()
+  @MinLength(3, {
+    message: "Name is too short"
+  })
   @Field()
   @Column({ type: 'text', nullable: false })
   name: string = '';

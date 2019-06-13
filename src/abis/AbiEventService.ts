@@ -16,6 +16,8 @@ import { InjectConnection } from '@nestjs/typeorm';
 import { Connection, EntityManager } from 'typeorm';
 import { Service } from '../Service';
 
+const debug = require('debug')('notus:abis:AbiEventService')
+
 @Injectable()
 export class AbiEventService extends Service {
 
@@ -92,7 +94,7 @@ export class AbiEventService extends Service {
     abiEvent.topic = abi.interface().events[descriptor.name].topic
     abiEvent.abi = abi
 
-    await validate(abiEvent)
+    await this.validate(abiEvent)
 
     await this.transaction(async manager => {
       manager.save(abiEvent)
@@ -114,7 +116,7 @@ export class AbiEventService extends Service {
       abiEvent.title = abiEventDto.title
     }
 
-    await validate(abiEvent)
+    await this.validate(abiEvent)
 
     await this.transaction(async manager => {
       manager.save(abiEvent)
@@ -124,10 +126,10 @@ export class AbiEventService extends Service {
   }
 
   async validate(abiEvent: AbiEventEntity) {
-    const errors: ValidationError[] = await validate(event)
+    const errors: ValidationError[] = await validate(abiEvent)
 
     if (errors.length > 0) {
-      throw new ValidationException(`Event is invalid`, errors)
+      throw new ValidationException(`ABI Event is invalid`, errors)
     }
   }
 }

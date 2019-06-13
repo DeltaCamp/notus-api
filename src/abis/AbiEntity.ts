@@ -8,7 +8,7 @@ import {
   OneToMany,
   RelationId
 } from 'typeorm';
-import { MinLength } from 'class-validator';
+import { MinLength, IsDefined } from 'class-validator';
 import { ethers } from 'ethers';
 import { Interface } from 'ethers/utils';
 import { Field, ObjectType, ID } from 'type-graphql';
@@ -26,6 +26,7 @@ export class AbiEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @IsDefined()
   @MinLength(3, {
     message: "Name is too short"
   })
