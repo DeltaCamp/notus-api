@@ -21,7 +21,7 @@ import { NetworkModule } from './networks/NetworkModule';
 import { EventLogModule } from './event-logs/EventLogModule'
 import { WorkLogModule } from './work-logs/WorkLogModule'
 
-import { TransactionMiddleware, TransactionModule } from './transactions';
+import { TransactionModule } from './transactions';
 import { UserModule } from './users';
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -69,8 +69,5 @@ export class ApplicationModule implements NestModule {
   constructor(private readonly connection: Connection) { }
 
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(TransactionMiddleware)
-      .forRoutes('*')
   }
 }

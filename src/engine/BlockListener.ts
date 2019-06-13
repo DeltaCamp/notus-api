@@ -3,10 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { EthersProvider } from './EthersProvider';
 import { WorkLogService } from '../work-logs/WorkLogService';
 import { BlockJobPublisher } from '../jobs/BlockJobPublisher';
-import { transactionContextRunner } from '../transactions';
-import { Network } from 'ethers/utils';
 import { BaseProvider } from 'ethers/providers';
-import { number } from 'joi';
 
 const debug = require('debug')('notus:engine:BlockListener')
 
@@ -74,10 +71,8 @@ export class BlockListener {
         this.blockJobPublisher.newBlock({ blockNumber: startingBlock, networkName: network.name, chainId })
         startingBlock += 1;
       }
-  
-      await transactionContextRunner(() => {
-        return this.workLogService.setLastBlock(chainId, currentBlockNumber)
-      })
+
+      await this.workLogService.setLastBlock(chainId, currentBlockNumber)
     }
   }
 }

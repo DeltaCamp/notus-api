@@ -12,7 +12,6 @@ import { SingleEventTemplateView } from "../templates/SingleEventTemplateView";
 import { EventLogService } from "../event-logs/EventLogService";
 import { EventService } from "../events";
 import { EmailHaltWarningView } from "../templates/EmailHaltWarningView";
-import { transactionContextRunner } from "../transactions";
 
 const debug = require('debug')('notus:engine:EmailActionHandler')
 
@@ -64,16 +63,14 @@ export class EmailActionHandler {
       const { event, matchContext } = actionContext
       if (event.hasEmailAction()) {
         debug('has email action')
-        await transactionContextRunner(async () => {        
-          const eventLog = await this.eventLogService.logEvent(event)
-          if (eventLog.isWindowFull()) {
-            debug('window is full')
-            await this.haltEmails(actionContext, eventLog)
-          } else {
-            debug('adding view')
-            views.push(new SingleEventTemplateView(matchContext, event))          
-          }
-        })
+        const eventLog = await this.eventLogService.logEvent(event)
+        if (eventLog.isWindowFull()) {
+          debug('window is full')
+          await this.haltEmails(actionContext, eventLog)
+        } else {
+          debug('adding view')
+          views.push(new SingleEventTemplateView(matchContext, event))          
+        }
       } else {
         debug('does not have email action')
       }
