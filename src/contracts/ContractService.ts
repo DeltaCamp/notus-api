@@ -49,10 +49,12 @@ export class ContractService extends Service {
       query = query.andWhere('"contracts"."abiId" IN (SELECT "abi_events"."abiId" FROM abi_events GROUP BY "abi_events"."abiId" HAVING COUNT(*) > 0)')
     }
     
-    if (params.ownerId) {
-      query = query.andWhere('("contracts"."isPublic" IS TRUE AND "contracts"."ownerId" = :id)', { id: params.ownerId })
-    } else {
-      query = query.andWhere('("contracts"."isPublic" IS TRUE OR "contracts"."ownerId" = :id)', { id: userId })
+    const queryOwnerIsUser = params.ownerId && params.ownerId === userId
+
+    if (queryOwnerIsUser || !params.ownerId) {
+      query = query.andWhere('(("contracts"."isPublic" IS TRUE AND "owners"."confirmedAt" IS NOT NULL) OR "contracts"."ownerId" = :id)', { id: userId })
+    } else if (params.ownerId) {
+      query = query.andWhere('("contracts"."isPublic" IS TRUE AND "owners"."confirmedAt" IS NOT NULL AND "contracts"."ownerId" = :id)', { id: params.ownerId })
     }
 
     if (params.networkId) {

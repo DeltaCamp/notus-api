@@ -61,8 +61,15 @@ export class AbiService extends Service {
   }
 
   // should have a way of scoping by user instead of just all abis:
-  async findAndCount(params: AbisQuery) {
+  async findAndCount(params: AbisQuery, userId?: number) {
     let query = await this.manager().createQueryBuilder(AbiEntity, 'abis')
+      .leftJoinAndSelect("abis.owner", "owners")
+
+    if (userId) {
+      query = query.where(`abis."ownerId" = :userId OR (abis."isPublic" IS TRUE and "owners"."confirmedAt" IS NOT NULL)`, { userId })
+    } else {
+      query = query.where(`abis."isPublic" IS TRUE and "owners"."confirmedAt" IS NOT NULL`)
+    }
 
     if (params) {
       if (params.abiId) {

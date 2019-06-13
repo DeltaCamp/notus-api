@@ -28,6 +28,7 @@ import { GqlRollbarExceptionFilter } from '../filters/GqlRollbarExceptionFilter'
 import { EtherscanAbiEntity } from './EtherscanAbiEntity';
 import { ExceptionsHandler } from '@nestjs/core/exceptions/exceptions-handler';
 import { ValidationException } from '../common/ValidationException';
+import { OptionalGqlAuthGuard } from '../auth/OptionalGqlAuthGuard';
 
 const axios = require('axios')
 const debug = require('debug')('notus:AbiResolver')
@@ -60,15 +61,18 @@ export class AbiResolver {
   //   return await this.abiService.find(name)
   // }
 
+  @UseGuards(OptionalGqlAuthGuard)
   @Query(returns => AbisQueryResponse)
   async abis(
+    @GqlAuthUser() user: UserEntity,
     @Args({
       name: 'abisQuery',
       type: () => AbisQuery, nullable: true
     }) abisQuery: AbisQuery): Promise<AbisQueryResponse> {
 
     const result = new AbisQueryResponse()
-    const [abis, totalCount] = await this.abiService.findAndCount(abisQuery);
+    const userId = user ? user.id : null
+    const [abis, totalCount] = await this.abiService.findAndCount(abisQuery, userId);
 
     result.abis = abis
     result.totalCount = totalCount
