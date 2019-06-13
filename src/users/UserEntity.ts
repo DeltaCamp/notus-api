@@ -19,7 +19,8 @@ import {
 import { keyHashHex } from '../utils/keyHashHex'
 import { newKeyHex } from '../utils/newKeyHex'
 import { newKeyExpiryDate } from '../utils/newKeyExpiryDate'
-import { IsEmail } from 'class-validator';
+import { IsEmailWithPlusOk } from '../validators/IsEmailWithPlusOk';
+import { Validate } from "class-validator";
 
 @Entity({ name: 'users' })
 @ObjectType()
@@ -44,7 +45,9 @@ export class UserEntity {
   @Column({ type: 'text' })
   name: string = '';
 
-  @IsEmail()
+  @Validate(IsEmailWithPlusOk, {
+    message: "has an invalid email"
+  })
   @Field()
   @Column({ type: 'text' })
   email: string = '';
