@@ -83,7 +83,7 @@
     "subscriptions-transport-ws": "^0.9.16",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.5.0",
-    "type-graphql": "^0.17.1",
+    "type-graphql": "^0.17.6",
     "typeorm": "^0.2.15",
     "typescript": "^3.4.1"
   },
